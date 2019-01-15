@@ -1,0 +1,65 @@
+package com.my;
+
+// 子系统A，B，C
+class SystemA
+{
+	public void doSomething1()
+	{
+		System.out.println("doSomething1");
+	}
+}
+class SystemB
+{
+	public void doSomething2()
+	{
+		System.out.println("doSomething2");
+	}
+}
+class SystemC
+{
+	public void doSomething3()
+	{
+		System.out.println("doSomething3");
+	}
+}
+
+class Facade
+{
+	// 将子系统的功能封装起来形成一个统一接口，供其他系统访问，减少类间的
+	// 依赖关系
+	private SystemA a = new SystemA();
+	private SystemB b = new SystemB();
+	private SystemC c = new SystemC();
+	
+	public void funcationA()
+	{
+		a.doSomething1();
+	}
+	
+	public void funcationB()
+	{
+		b.doSomething2();
+	}
+	
+	public void funcationC()
+	{
+		c.doSomething3();
+	}
+	
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Facade f = new Facade();
+		
+		f.funcationA();
+		
+		f.funcationB();
+		
+		f.funcationC();
+
+	}
+
+}

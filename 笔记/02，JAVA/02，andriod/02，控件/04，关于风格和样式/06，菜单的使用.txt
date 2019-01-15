@@ -1,0 +1,96 @@
+// 主activity
+public class MainActivity extends ActionBarActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		// Inflate the menu; this adds items to the action bar if it is present.
+		
+		// 加载Xml文件菜单
+//		getMenuInflater().inflate(R.menu.main, menu);
+		
+		// 直接添加菜单，设置id即可，id不要重复
+		// 第一个参数可以随便填写一个
+		menu.add(Menu.NONE, 1, 100, "setting1");
+		menu.add(Menu.NONE, 2, 100, "setting2");
+		menu.add(Menu.NONE, 3, 100, "setting3");
+		
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		int id = item.getItemId();
+		switch (id)
+		{
+		
+		case 1:
+		case R.id.p111:
+		{
+			Intent intent = new Intent();
+
+			intent.setAction(Intent.ACTION_DIAL);
+
+			startActivity(intent);
+			break;
+		}
+		case 2:
+		case R.id.p222:
+		{
+			Intent intent = new Intent();
+
+			intent.setAction(Intent.ACTION_PICK);
+			intent.setType("image/*");
+			startActivity(intent);
+			break;
+		}
+		case 3:
+		case R.id.p333:
+			Process.killProcess(Process.myPid());
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+}
+
+//菜单布局文件
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.menu.MainActivity" >
+
+    <!--
+    orderInCategory属性在低版本有效，高版本无效，用于指定在菜单中的显示位置，值越低，越在前面显示，高版本是用列表显示的，所以不存在用
+    more隐藏，showAsAction决定是否添加在actionbar中，4.0以上的新特性,ifRoom如果有空闲的位置就显示，never永远不显示，always永远显示
+    显示之后，菜单栏里就没有了
+
+    -->
+    <item
+        android:id="@+id/p111"
+        android:icon="@drawable/ic_launcher"
+        android:orderInCategory="100"
+        android:title="11111111"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/p222"
+        android:icon="@drawable/ic_launcher"
+        android:orderInCategory="100"
+        android:title="22222222"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/p333"
+        android:icon="@drawable/img1"
+        android:orderInCategory="100"
+        android:title="33333333"
+        app:showAsAction="always"/>
+
+</menu>

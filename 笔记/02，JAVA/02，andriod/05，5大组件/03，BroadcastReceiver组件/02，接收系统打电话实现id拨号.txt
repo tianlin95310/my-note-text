@@ -1,0 +1,32 @@
+1,android有这种机制，如系统打电话时，他会发出广播，
+接收者在<intent-filter>中有指定的action的话，那么注册的接收者就可以接收到
+并通过函数来处理接收后的操作，通过API能得到许多数据信息。
+
+2，使用举例：
+继承BroadcastReceiver类
+public class CallReceiver extends BroadcastReceiver
+{
+
+	context是当前应用的设备上下文，intent用于携带数据
+	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+		SharedPreferences sp = context.getSharedPreferences("ip", Context.MODE_PRIVATE);
+		
+		String ip = sp.getString("ip", "");
+		// 获取接收到的电话号码
+		String number = this.getResultData();
+		// 重新设置电话
+		this.setResultData(ip + number);
+	}
+
+}
+
+3，注册信息
+// 接受者类名
+ <receiver android:name="com.example.broadcast.CallReceiver" >
+            <intent-filter>
+		// action是指定该接受者能接收到的action，相当于指定该接受者的接收频率。
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>

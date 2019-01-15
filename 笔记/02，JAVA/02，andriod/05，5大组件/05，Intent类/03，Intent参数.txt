@@ -1,0 +1,11 @@
+Intent与IntentFilter的关系：
+IntentFilter是用来匹配Intent，IntentFilter主要出现在组件的配置信息里
+Intent主要是代码里
+
+1，intent可以设置action，category，data，type这些将与目标组件的IntentFilter进行匹配，type即是IntentFilter的data里的mimeType
+
+2，flags 它是匹配activity的属性的
+
+  01，FLAG_ACTIVITY_NEW_TASK，当intent含有该属性时，TaskAffinity就会起作用，当用该intent来启动activity时，如果某个task的TaskAffinity属性与待启动的activity的TaskAffinity相同，那么系统并不会产生一个新的task来存放待启动的activity，而是直接将待启动的放入到这个task中
+
+  02，FLAG_ACTIVITY_

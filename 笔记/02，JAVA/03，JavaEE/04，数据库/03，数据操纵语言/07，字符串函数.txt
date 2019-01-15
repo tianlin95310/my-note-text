@@ -1,0 +1,32 @@
+1,char_length(str)		//求字符串长度
+
+2,format(#，###，###.###，N)	//保留N位小数，返回字符串
+
+3,insert(str,pos,len,newstr)	//用newstr替换掉pos-len的部分返回新的str
+
+4,instr(str，substr)		//返回substr在str里第一次出现的索引位置,下标从1开始，不存在返回0
+
+	// 以下两个函数的功能类似，第一个的集合要用，分隔开
+	select FIND_IN_SET('r','s,t,r') as position;
+	select INSTR('str','r');
+
+5,left/right(str,n)		//从左或右截取n个字符
+
+6,length(str)			//返回字节数
+
+7,ltrim/rtrim/trim(str)		//去掉str最左最右边的空格
+
+select trim(both‘ ’from '  tian   ');//默认为both，默认去空格
+select trim(leading 'x' from  'xxxtianlinxxx');//可以指定要去掉什么字符
+select trim(trailing 'x' from  'xxxtianlinxxx');//去掉头尾
+
+8,strcmp(str1,str2)	//字符串比较函数
+9,concat(str1，str2)	//字符串拼接，如果有一个为空，则返回空
+
+select 			//若有一个参数为二进制字符串，结果为二进制字符串，数字
+concat('t','i','a'); 	//参数转为为二进制形式，用cast()可以避免
+
+10,substring(str,begin,end);	//字符串截取，下标从1开始，与java不同，java是从0开始的
+这些函数及操作符可以加在select，where后面。
+
+11,lower(sName) 转换大小写

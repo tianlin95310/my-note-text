@@ -1,0 +1,12 @@
+所有的button都是可以设置图片的，除了ImageButton外，Button可以设置文字
+drawableTop设置图片的位置，然后就可以在其余地方设置文字，drawablePadding
+来指定文字的图片的距离。
+
+src表示只能显示图片，整个都是图片,不能显示文字
+
+不管是src还是drawable都能用select选择器来选择哪个图片，通常对应的是两个状态
+
+若将Radiobutton的button属性设为@null，则不会显示按钮，
+CheckBox应该也是这样
+
+backGround也可以设置图片。

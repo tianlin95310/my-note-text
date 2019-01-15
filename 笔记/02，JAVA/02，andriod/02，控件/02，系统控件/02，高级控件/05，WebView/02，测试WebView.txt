@@ -1,0 +1,322 @@
+package com.example.webview;
+
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.net.http.SslError;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.webkit.ConsoleMessage;
+import android.webkit.GeolocationPermissions.Callback;
+import android.webkit.HttpAuthHandler;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+
+public class MainActivity extends Activity {
+
+	WebView wv;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        wv = (WebView) findViewById(R.id.wv);
+       
+        wv.loadUrl("file:///android_asset/protocol.html");
+        
+	// 加载网页客户端，不使用系统的浏览器，使用自己的应用来加载网页
+        wv.setWebViewClient(new WebViewClient(){
+
+        	// 控制新的链接在当前的WebView中打开
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url)
+			{
+				Log.d("my", "shouldOverrideUrlLoading");
+				
+				return super.shouldOverrideUrlLoading(view, url);
+			}
+
+			// 开始加载页面
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon)
+			{
+				Log.d("my", "onPageStarted");
+				super.onPageStarted(view, url, favicon);
+			}
+
+			// 页面加载结束
+			@Override
+			public void onPageFinished(WebView view, String url)
+			{
+				Log.d("my", "onPageFinished");
+				super.onPageFinished(view, url);
+			}
+
+			// 加载指定地址提供的资源
+			@Override
+			public void onLoadResource(WebView view, String url)
+			{
+				Log.d("my", "onLoadResource");
+				super.onLoadResource(view, url);
+			}
+
+			// 拦截请求
+			@Override
+			public WebResourceResponse shouldInterceptRequest(WebView view,
+					String url)
+			{
+				Log.d("my", "shouldInterceptRequest");
+				return super.shouldInterceptRequest(view, url);
+			}
+
+			// 报告错误信息
+			@Override
+			public void onReceivedError(WebView view, int errorCode,
+					String description, String failingUrl)
+			{
+				Log.d("my", "onReceivedError");
+				super.onReceivedError(view, errorCode, description, failingUrl);
+			}
+
+			// 表单重新提交
+			@Override
+			public void onFormResubmission(WebView view, Message dontResend,
+					Message resend)
+			{
+				Log.d("my", "onFormResubmission");
+				super.onFormResubmission(view, dontResend, resend);
+			}
+
+			// 更新历史记录
+			@Override
+			public void doUpdateVisitedHistory(WebView view, String url,
+					boolean isReload)
+			{
+				Log.d("my", "doUpdateVisitedHistory");
+				super.doUpdateVisitedHistory(view, url, isReload);
+			}
+
+			// 
+			@Override
+			public void onReceivedSslError(WebView view,
+					SslErrorHandler handler, SslError error)
+			{
+				Log.d("my", "onReceivedSslError");
+				super.onReceivedSslError(view, handler, error);
+			}
+
+			@Override
+			public void onReceivedHttpAuthRequest(WebView view,
+					HttpAuthHandler handler, String host, String realm)
+			{
+				Log.d("my", "onReceivedHttpAuthRequest");
+				super.onReceivedHttpAuthRequest(view, handler, host, realm);
+			}
+
+			@Override
+			public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event)
+			{
+				Log.d("my", "shouldOverrideKeyEvent");
+				return super.shouldOverrideKeyEvent(view, event);
+			}
+
+			@Override
+			public void onUnhandledKeyEvent(WebView view, KeyEvent event)
+			{
+				Log.d("my", "onUnhandledKeyEvent");
+				super.onUnhandledKeyEvent(view, event);
+			}
+
+			// webview发生变化
+			@Override
+			public void onScaleChanged(WebView view, float oldScale,
+					float newScale)
+			{
+				Log.d("my", "onScaleChanged");
+				super.onScaleChanged(view, oldScale, newScale);
+			}
+
+			@Override
+			public void onReceivedLoginRequest(WebView view, String realm,
+					String account, String args)
+			{
+				Log.d("my", "onReceivedLoginRequest");
+				super.onReceivedLoginRequest(view, realm, account, args);
+			}
+			
+        });
+        
+        wv.setWebChromeClient(new WebChromeClient(){
+
+        	// 加载进队条改变
+			@Override
+			public void onProgressChanged(WebView view, int newProgress)
+			{
+				Log.d("my", "onProgressChanged");
+				super.onProgressChanged(view, newProgress);
+			}
+
+			// 接收网页标题更改
+			@Override
+			public void onReceivedTitle(WebView view, String title)
+			{
+				Log.d("my", "onReceivedTitle");
+				super.onReceivedTitle(view, title);
+			}
+
+			// 接受网页图标更改
+			@Override
+			public void onReceivedIcon(WebView view, Bitmap icon)
+			{
+				Log.d("my", "onReceivedIcon");
+				super.onReceivedIcon(view, icon);
+			}
+
+			// 
+			@Override
+			public void onReceivedTouchIconUrl(WebView view, String url,
+					boolean precomposed)
+			{
+				Log.d("my", "onReceivedTouchIconUrl");
+				super.onReceivedTouchIconUrl(view, url, precomposed);
+			}
+
+			// 显示自定义视图
+			@Override
+			public void onShowCustomView(View view, CustomViewCallback callback)
+			{
+				Log.d("my", "onShowCustomView");
+				super.onShowCustomView(view, callback);
+			}
+
+			// 隐藏自定义视图
+			@Override
+			public void onHideCustomView()
+			{
+				Log.d("my", "onHideCustomView");
+				super.onHideCustomView();
+			}
+
+			// 创建webview
+			@Override
+			public boolean onCreateWindow(WebView view, boolean isDialog,
+					boolean isUserGesture, Message resultMsg)
+			{
+				Log.d("my", "onCreateWindow");
+				return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+			}
+
+			// webview请求焦点
+			@Override
+			public void onRequestFocus(WebView view)
+			{
+				Log.d("my", "onRequestFocus");
+				super.onRequestFocus(view);
+			}
+
+			// 关闭webview
+			@Override
+			public void onCloseWindow(WebView window)
+			{
+				Log.d("my", "onCloseWindow");
+				super.onCloseWindow(window);
+			}
+
+			// 处理js alert
+			@Override
+			public boolean onJsAlert(WebView view, String url, String message,
+					JsResult result)
+			{
+				Log.d("my", "onJsAlert");
+				return super.onJsAlert(view, url, message, result);
+			}
+
+			// 处理js
+			@Override
+			public boolean onJsConfirm(WebView view, String url,
+					String message, JsResult result)
+			{
+				Log.d("my", "onJsConfirm");
+				return super.onJsConfirm(view, url, message, result);
+			}
+
+			// 处理prompt对话框
+			@Override
+			public boolean onJsPrompt(WebView view, String url, String message,
+					String defaultValue, JsPromptResult result)
+			{
+				Log.d("my", "onJsPrompt");
+				return super.onJsPrompt(view, url, message, defaultValue, result);
+			}
+
+			// 
+			@Override
+			public boolean onJsBeforeUnload(WebView view, String url,
+					String message, JsResult result)
+			{
+				Log.d("my", "onJsBeforeUnload");
+				return super.onJsBeforeUnload(view, url, message, result);
+			}
+
+			// 
+			@Override
+			public void onGeolocationPermissionsShowPrompt(String origin,
+					Callback callback)
+			{
+				Log.d("my", "onGeolocationPermissionsShowPrompt");
+				super.onGeolocationPermissionsShowPrompt(origin, callback);
+			}
+
+			// 
+			@Override
+			public void onGeolocationPermissionsHidePrompt()
+			{
+				Log.d("my", "onGeolocationPermissionsHidePrompt");
+				super.onGeolocationPermissionsHidePrompt();
+			}
+
+			// 
+			@Override
+			public boolean onConsoleMessage(ConsoleMessage consoleMessage)
+			{
+				Log.d("my", "onConsoleMessage");
+				return super.onConsoleMessage(consoleMessage);
+			}
+
+			// 
+			@Override
+			public Bitmap getDefaultVideoPoster()
+			{
+				Log.d("my", "getDefaultVideoPoster");
+				return super.getDefaultVideoPoster();
+			}
+
+			// 
+			@Override
+			public View getVideoLoadingProgressView()
+			{
+				Log.d("my", "getVideoLoadingProgressView");
+				return super.getVideoLoadingProgressView();
+			}
+
+			// 花去历史记录
+			@Override
+			public void getVisitedHistory(ValueCallback<String[]> callback)
+			{
+				Log.d("my", "getVisitedHistory");
+				super.getVisitedHistory(callback);
+			}
+        	
+        	
+        });
+    }
+}

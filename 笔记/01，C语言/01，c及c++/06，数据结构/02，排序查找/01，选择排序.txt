@@ -1,0 +1,51 @@
+1,
+C1，以第一个数为键值，在后面的N - 1个数中选出最大值，然后与第1数个交换
+C2，以第二个数为键值，在后面的N - 2个数中选出最大值，然后与第2个数交换
+。。。。。。。。。。。。。。。
+
+#include <iostream>
+using namespace std;
+
+
+int sort(int* p,int n)
+{
+	int count = 0;
+	for(int i = 0; i < n ; i++)
+	{
+		int indexOfMax = i;
+		for(int j = i + 1; j < n ; j++,count++)
+		{
+			if(p[j] < p[indexOfMax])
+				indexOfMax = j;
+		}
+		int temp = p[i];
+		p[i] = p[indexOfMax];
+		p[indexOfMax] = temp;
+	}
+
+	return count;
+}
+int main()
+{
+	int* a = new int[9];
+	a[0] = 9;
+	a[1] = 8;
+	a[2] = 7;
+	a[3] = 6;
+	a[4] = 5;
+	a[5] = 4;
+	a[6] = 3;
+	a[7] = 2;
+	a[8] = 1;
+	
+	int count = sort(a,9);
+	
+	for(int i = 0; i < 9 ; i++)
+	{
+		cout<<a[i]<<" ";
+	}
+	cout<<endl<<count<<endl;
+	//(n - 1)的求和的循环次数
+	delete a;
+	return 0;
+}

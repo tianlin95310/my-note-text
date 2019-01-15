@@ -1,0 +1,68 @@
+1，
+public abstract class AC
+{
+	
+	public abstract static class c3		// 内部类为static才能被继承，只有接口特殊
+	{
+		public abstract void funACC3();
+	}
+	public interface i4			// 接口很特殊，他不需要static也能直接让其他类实现，因为内部接口默认就是static的
+	{
+		public abstract void funACI4();
+	}
+	
+}
+
+2，public interface I
+{
+	public abstract class c3	// 对于接口，内部类不需要static也能继承，因为接口内部的类以及接口默认用static修饰，
+					// 所以不用加static也能直接继承和实现
+	{
+		public abstract void funIC3();
+	}
+	public interface i4
+	{
+		public abstract void funII4();
+	}
+
+}
+
+3，
+class t2 extends AC.c3 	// 继承只能单一的继承,也可以继承I.c3
+implements I.i4,AC.i4	// 接口可以多实现
+{
+
+	public void funACC3()
+	{
+		System.out.println("funacc3");
+	}
+	public void funACI4()
+	{
+	
+		System.out.println("funaci4");
+	}
+	public void funII4()
+	{
+		System.out.println("funii4");
+		
+	}
+	/*
+	public void funIC3()
+	{
+		System.out.println("funic3");
+	}
+	*/
+}
+
+4，
+public static void main(String[] args)
+	{		
+		AC.c3 p1 = new t2();
+		p1.funACC3();
+		
+		I.i4 p2 = new t2();
+		p2.funII4();
+		
+		AC.i4 p3 = new t2();
+		p3.funACI4();
+	}

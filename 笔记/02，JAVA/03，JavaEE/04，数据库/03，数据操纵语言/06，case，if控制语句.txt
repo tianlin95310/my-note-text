@@ -1,0 +1,22 @@
+下面的这些语句case，if也可用在存贮过程与函数里
+
+1,case语句
+select case 1
+when 1 then 'f'
+when 2 then 'm'
+else  'fm'
+end as red
+
+2,if语句
+select 
+if(1>2,'yes','no');
+类似于3目表达式
+
+3，ifnull(exp1,exp2)
+如果第一个为空，则取第二个
+第一个不为空，则取第二个
+
+4，nullif(exp1,exp2)
+如果两表达式相等则返回空，
+不等则返回第一个表达式
+

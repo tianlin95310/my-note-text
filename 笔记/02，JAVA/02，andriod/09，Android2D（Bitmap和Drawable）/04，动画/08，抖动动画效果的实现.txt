@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translate
+    android:fromXDelta="10"
+    android:toXDelta="-10"
+    android:interpolator="@anim/interpolator"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+</translate>
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<cycInterpolator
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:cycles="7"
+/>

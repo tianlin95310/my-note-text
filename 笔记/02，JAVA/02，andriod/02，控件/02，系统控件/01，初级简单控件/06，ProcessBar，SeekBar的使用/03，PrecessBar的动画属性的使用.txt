@@ -1,0 +1,2 @@
+android:indeterminateDrawable=""	可以使用动画
+android:indeterminateDuration=""	动画的时长

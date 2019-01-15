@@ -1,0 +1,91 @@
+1，多态有两种形式，多态只针对方法，属性没有多态性，如果出现名字覆盖，内存中是有两份的
+	1，函数的重载
+	    重载的多态性在编译阶段就会体现，所以叫早期多态，编译时多态，静态多态。	
+		1、必须具有不同的参数列表；
+		2、可以有不同的返回类型，
+		3、可以有不同的访问修饰符；
+		4、可以抛出不同的异常；
+
+	2，多态（重写父类方法）
+    		1，两同：方法名和参数列表相同
+    		2，两小：返回类型和抛出异常类型应该比父类更小或者相等。
+    		3，一大：子类方法的访问权限应该比父类更大或者相等
+		private 	-> private, default, protected, public 
+		default 	-> default, protected, public 
+		protected 	-> protected, public 
+		public 		-> public
+
+****************4，对于抽象类，抽象子类可以将重写的方法变为抽象的
+		5，子类可以将重写的方法变成final的
+		6，子类可以将重写的方法的形参变为final的
+
+需要注意的地方
+2，子类若有新的方法，那么用基类引用不能直接调用，需要向下转型一下才能调用子类的特有函数
+
+特殊的地方
+	1，Java里面没有二义性，因为普通类不支持多继承，接口支持多继承，但方法都只有声明，始终只有一个版本,
+	而C语言借助虚基类来消除二义性。
+
+	2，某个类实现了多个接口，多个接口有相同的函数，接口函数抛出了不同的异常，
+	那么重写的方法只能抛出公共的异常，也可以不抛出，接口函数只有声明，要看实现函数
+	是否真的抛出了异常。
+
+
+
+3，实现举例
+
+abstract class A
+{
+	public abstract void fun1();
+	public void fun2()
+	{
+		System.out.println("fun2 = A");
+	}
+	public void fun3()
+	{
+		System.out.println("fun3 = A");
+	}
+}
+class B extends A
+{
+	public void fun1()
+	{
+		System.out.println("fun1 = B");
+	}
+	public void fun2()
+	{
+		System.out.println("fun2 = B");
+	}
+	public void fun4()
+	{
+
+	}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		A p = new B();	//基类引用指向派生类，相当于C语言的基类指针指向派生类
+		p.fun1();	//父类可以是抽象函数
+		p.fun2();	//父类可以不是抽象函数
+		p.fun3();	//这个是继承过来的。
+		
+	(*******)p要想调用fun4需要做一个转型
+		(B)p.fun4();	//不转型不能访问，因为不符合多态条件
+	}
+}
+
+3，转型
+1，向上转型,包括基本数据类型，Java能自动转换，函数参数传递时也能
+	1，byte a ;
+	int b = a;	//转型安全，系统自动转换
+	
+	2，A p = new B();//A的范围更广，所以安全
+
+2，向下转型
+需要强制转换
+char c = 133;	//133默认为int类型，不支持转换，这与C语言不同，C语言他自动截断。
+A p = new B()；
+
+B b = (B)p;	//没有继承关系的话，不允许此种转型
+
+

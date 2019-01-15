@@ -1,0 +1,17 @@
+void main()
+{
+	set<int> num;
+	num.insert(num.begin(),1);
+	num.insert(2);
+	num.insert(3);
+	set<int>::const_iterator it;
+	it = num.begin();
+
+	while(it != num.end())
+	{
+		cout<<*it<<endl;
+		it++;
+	}
+
+
+}

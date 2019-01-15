@@ -1,0 +1,34 @@
+#include <iostream>
+
+using namespace std;
+
+class a
+{
+public:
+	virtual void fun()
+	{
+		cout<<"a fun\n";
+	}
+};
+
+class b : public a
+{
+public :
+	void fun()
+	{
+		cout<<"b fun\n";
+	}
+	void fun2()	//新定义烦人函数
+	{
+		cout<<"b fun2\n";
+	}
+};
+void main()
+{
+	a* p1 = new a();
+	p1->fun();
+	//p1->fun2();	//发现不能调用,与java一样，多态只能在重写的函数之间，并且基类要有virtual关键字
+				//子类的特有函数不能用基类指针直接使用
+
+			//要想使用子类的函数，需要用子类的指针
+}	

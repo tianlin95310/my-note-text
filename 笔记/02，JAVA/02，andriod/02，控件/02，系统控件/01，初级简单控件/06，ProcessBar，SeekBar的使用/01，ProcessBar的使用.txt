@@ -1,0 +1,3 @@
+特殊控件，子线程可以直接操作它
+setMax
+setProgress来操作

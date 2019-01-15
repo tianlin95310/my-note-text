@@ -1,0 +1,23 @@
+scss和less里的语法，表示当前选择对象
+
+.edit-div {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    word-break: break-all;
+    outline: none;
+    user-select: text;
+    white-space: pre-wrap;
+    text-align: left;
+    // &代表当前对象，[]可以接上属性进行判断
+    &[contenteditable=true]{
+      /*内容可读写，但粘贴内容中的富文本格式（如文本的颜色、大小，图片等）会丢失*/
+      user-modify: read-write-plaintext-only;
+     // :empty表示当内容为空时的:before内容
+      &:empty:before {
+        content: attr(placeholder);
+        display: block;
+        color: #ccc;
+      }
+    }
+  }

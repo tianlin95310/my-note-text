@@ -1,0 +1,176 @@
+概念：Set<T>接口的元素是不可以重复的，添加无序的集合,
+
+1，HashSet<T>
+	1，对于系统类型，数据类型包装类，他们的HashCode，equals方法都已被重写实现了，因为不能重复，
+    Set集合会自动调用类的HashCode，equals方法，所以自定义类型需要重写这两个方法。hashcode用于元素排列的依据，但不是排序
+    equals用于判断对象内容是否相等，若返回的HashCode重复，equals也返回True，系统才会认为他们是重复的
+
+	2，不能重复，添加是采用哈希散列函数来实现的，重写的HashCode返回值不同，结合排列规则也不同.
+
+	3，
+	  // 1，若HashCode恒定，equals永久返回true，则只能添加一个元素，			*********最好不要这样
+	  // 2，若equals永久返回false，则能重复添加，						*********最好不要这样
+	  // 3，若equals永久返回true，HashCode正确重写，按照返回的哈希值排列，能消除重复，	*********最好不要这样
+
+	   4，若HashCode为一个定值，equals正确重写（每个成员都涉及到），实际上是一种倒序添加，能消除重复
+	   5，尽量HashCode，equals都正确重写，如下例
+	
+
+import java.util.HashSet;
+class My
+{
+	private int a;
+	private String name;
+	public int getA()
+	{
+		return a;
+	}
+	public void setA(int a)
+	{
+		this.a = a;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public My(int a, String name)
+	{
+		super();
+		this.a = a;
+		this.name = name;
+	}
+	@Override
+	public String toString()
+	{
+		return "" + a + ","+ name;
+	}
+	@Override
+	public int hashCode()				//用于线性哈希散列
+	{
+		return this.name.hashCode() + this.a;	
+
+		//利用系统已经写好的hashCode方法，若equals返回true，则hashCode相等
+		//哈希函数处理不同，则集合排列结果可能不一样	
+	}
+	@Override
+	public boolean equals(Object obj)		//重写用于判断两个对象是否相等，保持不重复
+	{
+		// TODO Auto-generated method stub
+		return this.name.equals(( (My)obj ).name) && this.a == ((My)obj).a;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		//系统类
+		HashSet<String> hs = new HashSet<String>();
+//		hs.add("qweqwe");
+//		hs.add("asdasd");
+//		hs.add("zxczxc");
+		String str1 = "123123";
+//		hs.add(str1);
+
+		String str2 = new String("123123");	//虽然str2,str2两个是不同的对象，但系统写的hashCode返回值一样，所以他们被看做
+							//是同一个对象
+		hs.add(str2);
+//		System.out.println(hs);
+		
+
+		//自定义类
+		HashSet<My> hs = new HashSet<My>();
+		hs.add(new My(12,"123123"));
+		hs.add(new My(7,"qweqwe"));
+		hs.add(new My(32,"asdasd"));
+		hs.add(new My(24,"zxczxc"));
+		hs.add(new My(12,"123123"));	//正确重写了equals方法，hashcode方法后，就不能添加重复的元素
+		
+		System.out.println(hs);	
+	}
+}
+
+2，TreeSet<T>
+  1，对Set进行了排序，此时，不用重写equals方法，和Hashcode方法，但必须要实现比较
+
+  2，自然排序，实现 Comparable接口的compareTo函数，用无参构造函数实例化
+
+  3，定制排序，用一个类来实现Comparator接口的compare函数，并在实例化的时候用
+	public TreeSet(Comparator<? super E> comparator)这样一个构造函数
+
+  4，也可用接口式的匿名内部类，就不用专门用一个类来实现Comparator接口了。
+	TreeSet<MyClass> ts = new TreeSet<MyClass>(new Comparator()
+							{
+								int compare(Test t1,Test t2)
+								{
+								}
+							})
+class My implements Comparable<My>
+{
+	private int a;
+	private String name;
+
+	public int getA(){	return a;	}
+	public void setA(int a){	this.a = a;	}
+	public String getName(){	return name;	}
+	public My(int a, String name){	super();	this.a = a;	this.name = name;}
+	@Override
+	public String toString(){	return "" + a + ","+ name;	}
+	
+	public void setName(String name){	this.name = name;	}
+	@Override
+	public int compareTo(My m)
+	{
+		return this.a - m.a;	//以年龄作为依据比较
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+//		TreeSet<String> hs = new TreeSet<String>();
+//		hs.add("qweqwe");
+//		hs.add("asdasd");
+//		hs.add("zxczxc");
+
+		String str1 = "123123";			//*************************************
+//		hs.add(str1);				//系统String已经写了compareTo函数，用ASCII吗作为比较依据
+//		System.out.println(hs);			
+							//系统认为字符串内容一样的算同一个，所以不管是用String str1 = "";
+		String str2 = new String("123123");	//还是String str2 = new String("");会被当做相同的对象，虽然他们并不相同
+//		
+//		System.out.println(hs);
+		
+//		//1，自定排序,接口内部类实现
+//		TreeSet<My> hs = new TreeSet<My>(new Comparator<My>()
+//		{
+//			public int compare(My o1, My o2)
+//			{
+//				return o1.getA() - o2.getA();
+//			}
+//		}
+//		);
+//		hs.add(new My(12,"123123"));
+//		hs.add(new My(7,"qweqwe"));
+//		hs.add(new My(32,"asdasd"));
+//		hs.add(new My(24,"zxczxc"));
+//		
+//		hs.add(new My(12,"zxc"));	//因为我只写了a成员，所以只要a成员一样，name不同也是不能添加的
+//		
+//		System.out.println(hs);	
+		
+		//2，自然排序
+		TreeSet<My> hs = new TreeSet<My>();	//自然排序必须要重写CompareTo函数
+		hs.add(new My(12,"123123"));
+		hs.add(new My(7,"qweqwe"));
+		hs.add(new My(32,"asdasd"));
+		hs.add(new My(24,"zxczxc"));
+		
+		hs.add(new My(12,"zxc"));	//因为我只写了a成员，所以只要a成员一样，name不同也是不能添加的
+		
+		System.out.println(hs);			
+	}
+}

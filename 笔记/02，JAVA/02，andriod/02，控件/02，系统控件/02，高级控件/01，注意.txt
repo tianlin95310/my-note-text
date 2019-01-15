@@ -1,0 +1,3 @@
+测试发现，RecycleView与CoordinatorLayout的配合效果要优于NestedScrollView
+
+CoordinatorLayout与NestedScrollView配合时，向上滑动会出现卡顿

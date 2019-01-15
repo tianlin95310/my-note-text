@@ -1,0 +1,100 @@
+1，字符，字节流需要关联其他的流，既可以关联文件，也可以关联标准输出。
+	1，与其他的关联文件的流一样，创建一个关联文件的流的对象，就会生成一个文件，
+	
+2，字符，字节打印流的print函数专门用来输出的，并且都是以字符串形式输出，不是字符串先转化为字符串，
+	默认调用头toString函数，输出比较方便。还支持格式化，format。
+
+3，System.out就是一个PrintStream流，改流是一个字节性质的，write函数是针对字节的，但他提供了字符串的输出函数，
+	就像out对象那样。
+
+4，PrintWriter是字符性质的，但有转换流，顾他能接受OutputStream,也能接受Writer，write函数是针对字符的
+
+
+public class Print
+{
+	// 1，字节打印流
+	public static void write1()
+	{
+//			try
+//			{
+//				 //1,输出到文件，用FileOutputStream初始化
+//				PrintStream ps = new PrintStream(new FileOutputStream("C:/Users/LX/Desktop/1.txt",true),true);
+//				//true表示自动刷新，若关联的FileOutputStream具有追加的功能，则PrintStream也具有追加的功能
+				
+				//具有打印字符串的功能
+//				ps.print("asdasd");
+//				//能对字节数组进行操作
+//				ps.write("qweqwe".getBytes());
+//				
+//				ps.write(0x41424344);
+//				//输出到文件时，因为只能写一个字节，顾会截取0x44，写了一个D
+//				ps.close();
+//			} catch (FileNotFoundException e)
+//			{
+//				e.printStackTrace();
+//			} catch (IOException e)
+//			{
+//				e.printStackTrace();
+//			}
+			
+			// 2,输出到标准输出，PrintStream是OutputStream的子类，可以传递给PrintStream
+			PrintStream ps = new PrintStream(System.out);
+			
+			ps.println(true);
+			
+			//直接支持字符串的操作
+			ps.println("asddfghgj\n");
+			try
+			{
+				ps.write("asda\n".getBytes());
+				
+				//该重载形式每次只能写入一个字符，顾会截断，英文字母占一个字节，顾打印了D
+				ps.write(0x00000044);
+				
+				ps.close();
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+	}
+	// 2，字符打印流
+	public static void write2()
+	{
+//		try
+//		{
+//			// 1，直接绑定字符流（Writer）对象，能直接写入字符串
+//			PrintWriter pw = new PrintWriter(new FileWriter("C:/Users/LX/Desktop/1.txt"));
+			//如果FileWriter支持追加，那么PrintWriter也支持追加
+
+//			//直接对字符串进行操作，
+//			pw.write("qweqwe123123");
+//			
+//			pw.flush();
+//			
+//			//对字符数组进行操作
+//			char chs[] = {'h','e','l','l','o'};
+//			pw.write(chs);
+//			
+//			pw.close();
+//			
+//		} catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+		
+//		// 2，直接用OutputStream初始化
+//		PrintWriter pw = new PrintWriter(System.out);
+//		pw.println("asdasd");
+//		pw.flush();
+		
+		// 3，OutputStreamWriter将字节流转换为字符流
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+		pw.println("qweqwe12312313");
+		pw.flush();
+	}
+	public static void main(String[] args)
+	{
+		write1();
+		//write2();
+	}
+}

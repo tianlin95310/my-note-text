@@ -1,0 +1,44 @@
+概念：
+1，能定义静态成员，函数
+
+2，只能访问外部类的静态成员，不能用外部类加this来区分命名冲突
+
+3，内部类可以导包，不用OutClass.来访问
+
+public class C
+{
+	private int a;
+	public int b;
+	
+	static private int c;
+	public c2 getC2()
+	{
+		return new c2();
+	}
+	public static class c2
+	{
+		private static int i1;	//可以定义静态的成员变量，与函数
+		public int i2;
+		public void t()
+		{
+			this.i2 = 10;		//内部类自身内部可以接受this
+			//C.this。c = 10;	//不接受外部内的this
+			System.out.println(i2);
+		}
+		public static void fun()
+		{
+			//a = 10;		
+			c = 10;			//静态内部类只能访问静态外部类成员
+			i1 = 10;
+			
+			//C.this.c = 10;	
+			System.out.println(c + "  " + i1);
+		}
+		
+	}
+
+public static void masin(String[] args)
+	{
+		C.c2 cp2 = new C.c2();	//在类外部获取内部类对象，不需要经过外部类对象
+		cp2.t();
+	}

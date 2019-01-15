@@ -1,0 +1,19 @@
+1，TaskAffinity
+	1，当启动某个activity的Intent含有FLAG_ACTIVITY_NEW_TASK时，以及待启动的activity的allowTaskReparenting为true时，TaskAffinity才会起作用
+	2，一个应用程序中的不同的activity可以有不同的TaskAffinity，也就是说
+同一个应用中的不同的activity可以处在不同的task中来运行
+	3，一个task任务栈中的TaskAffinity值是从一个应用的栈底activity获取的，也就是打开应用的第一个页面的TaskAffinity
+
+2，allowTaskReparenting
+	允许某个activity在不同的task任务来回移动，只要该activity的TaskAffinity与task任务栈相同即可
+
+3，clearTaskOnLaunch
+	如果一个task任务栈中的底部activity的该属性为true，当用户有一瞬间没有使用该task，那么系统就会清除掉出底部activity之外的所有activity
+
+4，alwayRetainTaskState
+	如果一个task任务栈中的底部activity的该属性设为true，那么不管这个task
+任务栈多久没有使用，他也会留在内存中
+
+5，finishOnTaskLaunch
+	他不针对底部activity，任何一个任务栈中的activity的该属性为true，表名
+该任务栈运行时，activity才在，一旦任务栈离开前台，该activity就会不存在

@@ -1,0 +1,109 @@
+主要通过第三方的工具类AsyncHttpClient 
+
+// 服务器端使用的主要类
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+1，Servlet服务器的处理
+@WebServlet("/Uplaod")
+public class Uplaod extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public Uplaod() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try
+		{
+			// 上传的文件的接收目录
+			File file = new File("C:/AA");
+			// 目录如果不存在，就创建一个
+			if(!file.exists())
+				file.mkdirs();
+			
+			// 判断表单是普通表单，还是文件表单，是文件表单才做处理
+			if(ServletFileUpload.isMultipartContent(request))
+			{
+				// 获取工厂对象
+				FileItemFactory fif = new DiskFileItemFactory();
+				// 获取文件上传内容解析对象
+				ServletFileUpload sfu = new ServletFileUpload(fif);
+
+				// 用集合来接受数据块
+				List<?> list = sfu.parseRequest(request);
+				
+				for(int i = 0;i < list.size() ; i++)
+				{
+					// 得到每一个数据快 
+					FileItem item = (FileItem) list.get(i);
+					
+					// 判断表单项是普通类型表单还是文件类型表单
+					if(!item.isFormField())
+					{
+						// 将文件表单内容写入到文件中
+						item.write(new File(file,item.getName()));
+					}
+				}
+				System.out.println("success");
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+}
+
+
+2,客户端的处理
+public class MainActivity extends ActionBarActivity {
+
+	private SmartImageView siv;
+	
+	private EditText et;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        siv = (SmartImageView) findViewById(R.id.siv);
+        
+        et = (EditText) findViewById(R.id.et);
+    }
+    // 通过第三方的 com.loopj.android.image.SmartImageView很容易的设置网络图片
+    public void get(View v)
+    {
+    	String url = "http://h.hiphotos.baidu.com/image/w%3D310/sign=a4bdbe2e8501a18bf0eb144eae2e0761/472309f7905298225d6701c1d5ca7bcb0a46d45f.jpg";
+    	siv.setImageUrl(url);
+    }
+    
+    public void send(View v)
+    {
+    	try
+		{
+    		// 得到需要上传的文件dir
+			String path = et.getText().toString().trim();
+			// 上传的目标url
+			String url = "http://10.176.163.139:8080/002fileupload/Uplaod";
+			// 使用第三方工具类AsyncHttpClient
+			AsyncHttpClient ahc = new AsyncHttpClient();
+			
+			RequestParams data = new RequestParams();
+			// 他的RequestParams类的put方法支持文件的传输，profile_picture是固定的写法
+			data.put("profile_picture", new File(path));
+			// AsyncHttpResponseHandler的方法可重写，也可不用重写
+			ahc.post(url, data,new AsyncHttpResponseHandler());
+			
+			Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+    }
+}

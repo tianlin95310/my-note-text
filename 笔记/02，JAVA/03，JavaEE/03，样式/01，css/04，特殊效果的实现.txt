@@ -1,0 +1,64 @@
+1，子元素自动换行
+对于flex要让容器内的孩子自动换行，需要知道容器的宽度
+对于文字也一样，需要知道容器的宽度
+
+2，清除浮动
+.cf:before,
+.cf:after {
+    content: " ";
+    display: table; 
+}
+.cf:after {
+    clear: both;
+}
+.cf {
+    *zoom: 1;
+}
+
+3，伪元素，不在dom中，不能使用事件
+<style type="text/css">
+p::before {
+    content: "《";
+    color: blue;
+}
+
+4，相对于父布局的位置
+ .function-item {
+      position: relative;		// 父布局relative，如果不设的话，子元素会相对与跟元素进行定位
+      padding: 12px;
+      min-width: 100px;
+      min-height: 100px;
+      text-align: center;
+
+      .item-check {	
+        position: absolute;	// 子布局absolute
+        top: 0px;
+        right: 0px;
+      }
+
+5，竖直方向使用flex时
+占满全屏时需要使用vh单位，不能用100%
+
+6，关于浮动元素的居中
+如果有多个浮动元素，将他们用div包起来
+
+7，多个行内元素居中需要用vertical-align（每个元素都要），然后进行微调（特别是input）
+
+6，整个dom在竖直方向上的分配
+height: calc(100vh - 380rpx - 100rpx); 在竖直布局上很有用
+
+7，相对位置元素竖直居中
+即使此时父布局没有设置竖直的百分比，此时也是有效的
+.concrete-fun {
+      cursor: pointer;
+      background: white;
+      padding: 32rpx 32rpx;
+      position: relative;
+
+      .arrow-right {
+        position: absolute;
+        width: 20rpx;
+        top: calc(50% - 15rpx);
+        height: 30rpx;
+        right: 32rpx;
+      }

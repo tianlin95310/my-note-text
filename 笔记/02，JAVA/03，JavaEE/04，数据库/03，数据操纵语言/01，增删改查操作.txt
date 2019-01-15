@@ -1,0 +1,15 @@
+1，增
+insert into game(name,gender,age,creatDate)
+values('doubi','f',25,now());
+
+2，改
+update game 
+set gender='f' 
+where sid=1;
+
+注意：不能把需要修改的值作为条件，特别是需要修改多个列
+
+3，删除
+delete
+from game
+where sid=1;

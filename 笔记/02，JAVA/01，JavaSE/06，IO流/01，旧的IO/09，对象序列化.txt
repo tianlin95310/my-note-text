@@ -1,0 +1,218 @@
+1，对象序列化有两种方式，序列化以后，对象就可以保存在文件中。
+	1，对象序列化，将一个对象转化为二进制的byte流，用于存储对象和网络传输
+	2，反序列化，即从文件中取出对象
+	3，与数据流一样，遇到文件结尾直接抛异常，需要特殊处理
+	4，静态的成员也不能被序列化
+	5，序列化id能检测类是否发生更改，若发生更改，回报类无效异常	
+
+方式1，序列化对象所在的类必须实现Serializable接口，他没有函数
+
+方式2，实现Externalizable接口，实现两个函数
+
+	***特殊：ArrayList也实现了Serializable接口，但他不能实例化，他的核心成员是transient修饰的，不会被序列化
+
+class Person implements Serializable
+{
+	
+	private static final long serialVersionUID = 1L;
+	private int age;
+	private String name;
+	public Person(int age, String name)
+	{
+		super();
+		this.age = age;
+		this.name = name;
+	}
+	@Override
+	public String toString()
+	{
+		return "Person [age=" + age + ", name=" + name + "]";
+	}
+	public int getAge()
+	{
+		return age;
+	}
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+}
+
+public class ObjectData
+{
+	public static void writeObject()
+	{
+		try
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("C:/Users/LX/Desktop/1.txt"));
+			Person p1 = new Person(21,"123");
+			Person p2 = new Person(20,"qwe");
+			Person p3 = new Person(23,"asd");
+			Person p4 = new Person(11,"zxc");
+			
+			oos.writeObject(p1);
+			oos.writeObject(p2);
+			oos.writeObject(p3);
+			oos.writeObject(p4);
+			
+			oos.writeObject(new Person(0,null));
+			
+			oos.close();
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void readObject()
+	{
+		try
+		{
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("C:/Users/LX/Desktop/1.txt"));
+			ArrayList<Person> alp = new ArrayList<Person>();
+			while(true)
+			{
+				Person p = (Person)ois.readObject();
+				if(p.getName() == null)
+					break;
+				alp.add(p);
+			}
+			
+			for(Person p : alp)
+			{
+				System.out.println(p);
+			}
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args)
+	{
+		writeObject();
+		readObject();
+	}
+}
+
+2，实现Externalizable
+	除了实现两个函数以外，其他的与实现Serializable基本一样。
+class Person implements Externalizable
+{
+	private static final long serialVersionUID = 1L;
+	private int age;
+	private String name;
+	// 1，必须要指定一个无参构造函数
+	public Person(){}
+	public Person(int age, String name)
+	{
+		super();
+		this.age = age;
+		this.name = name;
+	}
+	public String toString()
+	{
+		return "Person [age=" + age + ", name=" + name + "]";
+	}
+	public int getAge()
+	{
+		return age;
+	}
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	// 2，用内置的ObjectOutput对象对每一个成员进行自定义序列化，与ObjectOutputStream的用法相似
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		//根据自己的需要自定义
+		out.writeInt(age + 25);
+		out.writeObject(name);
+	}
+	@Override
+	// 3，用内置的ObjectInput对象进行读取对象成员，与ObjectInputStream类似
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException
+	{
+		this.age = in.readInt();
+		this.name = (String)in.readObject();
+	}
+}
+
+public class ObjectData
+{
+	public static void writeObject()
+	{
+		try
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("C:/Users/LX/Desktop/1.txt"));
+			Person p1 = new Person(21,"123");
+			Person p2 = new Person(20,"qwe");
+			Person p3 = new Person(23,"asd");
+			Person p4 = new Person(11,"zxc");
+			oos.writeObject(p1);
+			oos.writeObject(p2);
+			oos.writeObject(p3);
+			oos.writeObject(p4);
+			oos.writeObject(new Person(0,null));
+			oos.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void readObject()
+	{
+		try
+		{
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("C:/Users/LX/Desktop/1.txt"));
+			ArrayList<Person> alp = new ArrayList<Person>();
+			while(true)
+			{
+				Person p = (Person)ois.readObject();
+				if(p.getName() == null)
+					break;
+				alp.add(p);
+			}
+			for(Person p : alp)
+			{
+				System.out.println(p);
+			}
+			ois.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args)
+	{
+		writeObject();
+		readObject();
+	}
+}
+

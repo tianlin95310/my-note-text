@@ -1,0 +1,33 @@
+数据传递需要借助Intent来实现
+接收方通过，getActivity得到发送的activity,再从中得到数据
+
+
+public class MainActivity extends ActionBarActivity
+{
+
+	private EditText et;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		et = (EditText) findViewById(R.id.et);
+	}
+	
+	public void send(View v)
+	{
+		String text = et.getText().toString().trim();
+		
+		// intent还可以传递数据
+		Intent intent = new Intent(this, MyActivity.class);
+		// 方式1 单个数据一个一个添加
+//		intent.putExtra("text", text);
+		// 方式2 通过Bundle打包
+		Bundle b = new Bundle();
+		b.putString("text", text);
+		intent.putExtras(b);
+		startActivity(intent);
+	}
+
+}

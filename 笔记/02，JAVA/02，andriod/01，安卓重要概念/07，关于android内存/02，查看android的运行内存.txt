@@ -1,0 +1,51 @@
+package com.example.android;
+
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
+
+public class MainActivity extends Activity
+{
+
+	ActivityManager am;
+	
+	ActivityManager.MemoryInfo info;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		am = (ActivityManager) getSystemService(Activity.ACTIVITY_SERVICE);
+		info = new ActivityManager.MemoryInfo();
+		
+		getRunMemory();
+//		get();
+	}
+	
+	// 获取手机运行内存
+	public void getRunMemory()
+	{
+		am.getMemoryInfo(info);
+		
+		Log.i("my","当系统剩余内存低于" + (info.totalMem >> 10 >> 10) + "MB");
+		// 可用Ram
+		Log.i("my","系统剩余内存:" + (info.availMem >> 10 >> 10) + "MB");   
+		 
+	    Log.i("my","系统是否处于低内存运行：" + info.lowMemory);
+	 
+	    Log.i("my","当系统剩余内存低于" + (info.threshold >> 10 >> 10) + "时就看成低内存运行");
+	}
+	
+	// 获取Native堆中的堆内存
+	public void get()
+	{
+		Log.d("my", "" + Debug.getNativeHeapSize() / 1024);
+		Log.d("my", "" + Debug.getNativeHeapFreeSize() / 1024);
+		Log.d("my", "" + Debug.getNativeHeapAllocatedSize() / 1024);
+	}
+
+}

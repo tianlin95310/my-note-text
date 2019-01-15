@@ -1,0 +1,6 @@
+1£¬install»º´æ³ö´í
+npm ERR! code Z_BUF_ERROR
+npm ERR! errno -5
+npm ERR! zlib: unexpected end of file
+
+npm cache clean --force

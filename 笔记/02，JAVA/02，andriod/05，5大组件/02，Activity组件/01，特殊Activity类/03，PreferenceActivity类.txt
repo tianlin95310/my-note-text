@@ -1,0 +1,76 @@
+// 主类，很多方法已经过时
+
+
+public class MainActivity extends PreferenceActivity
+{
+
+	// 特殊的EditText，
+	EditTextPreference et;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+		// 方法已经过时
+		this.addPreferencesFromResource(R.xml.preference);
+		
+		// 通过key来查找控件
+		et = (EditTextPreference) this.findPreference("name");
+		
+		// 得到控件后可以得到其内容
+		Toast.makeText(this, et.getText(), 0).show();
+	}
+}
+
+// 布局文件
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+   
+    <!-- 使用这些属性，他们能永久保存在系统里
+    
+    	***常见属性***
+    1，dialogTitle，弹出的对话款的标题 
+    2，title，大黑字的提示
+    3，summary，小的绿色字提示
+    4，key，相当于id
+    5，entries。ListView也可以使用，列表上显示的值
+    6，summaryOff，summaryOn关闭，打开的状态
+    -->
+    
+     <!-- PreferenceCategory一组分界的标志 -->
+    <PreferenceCategory android:title="个人信息设置" >
+        <EditTextPreference
+            android:dialogTitle="你所使用的用户名为"
+            android:key="name"
+            android:summary="请填写你的用户名"
+            android:title="请填写用户名" >
+        </EditTextPreference>
+
+        <ListPreference
+            android:dialogTitle="list"
+            android:entries="@array/gender"
+            android:entryValues="@array/gender"
+            android:key="gender"
+            android:summary="请选择你的性别"
+            android:title="性別" >
+        </ListPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="系统铃声设置" >
+        <RingtonePreference
+            android:key="ring_key"
+            android:ringtoneType="all"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:summary="选择铃声" >
+        </RingtonePreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="autoSave"
+            android:summaryOff="自动保存，关闭"
+            android:summaryOn="自动保存，开启"
+            android:title="自动保存进度" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

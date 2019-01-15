@@ -1,0 +1,171 @@
+1，map<K,V>存的是键值对，然后每一个键值对用内部接口entry<K,V>，内部应该保持了一致性。
+	Map的本质其实就是Set< Entry<K,V> >这种形式。Map实现了对Entry的动态处理
+
+2，
+HashMap<K,V>
+  1，内部以key作为判断重复的依据，如有重复的key，就替换原有的value，HashSet因为只有一个值，所以相当于什么
+		也没做。
+  2，与HashSet一样，以Key的哈希吗排列
+class t
+{
+	private int a;
+	private String name;
+	public int getA()
+	{
+		return a;
+	}
+	public t(int a, String name)
+	{
+		super();
+		this.a = a;
+		this.name = name;
+	}
+	public void setA(int a)
+	{
+		this.a = a;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	public String toString()	//自定义类型用print函数序重写函数
+	{
+		return "[" + a + "," + name + "]";
+	}
+	@Override
+	public int hashCode()				//每一个成员都涉及到
+	{
+		return this.getName().hashCode()+this.getA();
+	}
+	@Override
+	public boolean equals(Object obj)	//每一成员都要涉及到
+	{
+		t temp = (t)obj;
+		return this.getName().equals(temp.getName()) && this.getA() == temp.getA();
+	}
+}
+public class Test 
+{
+	public static void main(String[] args)
+	{
+//		HashMap<String,String> hp  = new HashMap<String,String>();
+//		hp.put("123", "321");			//添加
+//		hp.put("qwe", "ewq");
+//		hp.put("asd", "das");
+//		hp.put("zxc", "cxz");
+//		hp.remove(new String("qwe"));		//删除
+//		hp.put("123", "asdasdasdasd");	//系统为String已经写好了equals，hashcode方法
+//		System.out.println(hp);
+		
+		HashMap<t,String> hm = new HashMap<t,String>();
+		hm.put(new t(123,"123"), "123");
+		hm.put(new t(456,"qwe"), "eqw");
+		hm.put(new t(789,"asd"), "das");
+		hm.put(new t(123,"123"), "123");	//要想消除重复，需要重写key值类型的equals，hashCode函数
+		
+		System.out.println(hm);		//另外HashMap自己也有toString，有一对大括号
+	}
+}
+
+
+2，TreeMap<K,V>
+  1，与Set类似，是能进行排序的，对key进行排序
+  2，排序规则与TreeSet一样
+  3，与TreeSet一样，Key类型的equals，hashcode不用写了，因为比较结果等于0，就是相同了。
+	但要为自定义类型的key写比较函数
+
+class t
+{
+	private int a;
+	private String name;
+	public int getA()
+	{
+		return a;
+	}
+	public t(int a, String name)
+	{
+		super();
+		this.a = a;
+		this.name = name;
+	}
+	public void setA(int a)
+	{
+		this.a = a;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	public String toString()	//自定义类型用print函数序重写函数
+	{
+		return "[" + a + "," + name + "]";
+	}
+}
+public class Test 
+{
+	public static void main(String[] args)
+	{
+//		TreeMap<String,String> tm = new TreeMap<String,String>();
+//		tm.put("123", "123");
+//		tm.put("qwe", "qwe");
+//		tm.put("asd", "asd");	//String类已经实现了比较函数
+//		tm.put("123", "zxc");	//与HashMap一样，相同的会替换原来的Value
+//		
+//		System.out.println(tm);
+		
+		TreeMap<t,String> tm = new TreeMap<t,String>(new Comparator<t>()
+		{
+			//为key值类实现比较函数
+			public int compare(t o1, t o2)
+			{
+				return o1.getA() - o2.getA();
+			}
+			//注意：因为我只用了a,所以如果a是一样的，他就会替换value值，不会考虑name了
+		});
+		
+		tm.put(new t(123,"123"), "123");
+		tm.put(new t(456,"456"), "qwe");
+		tm.put(new t(789,"zxc"), "zxc");
+		tm.put(new t(123,"123"), "asd");	//根据自己写的比较函数进行排序，为key值对应的类实现比较函数
+								//发现key值相同的就替换原来的key值
+		//1
+		System.out.println(tm);
+		
+		
+//		//2
+//		Set<Entry<t, String>> set = tm.entrySet();	//这里涉及到内部接口也可以导包的问题
+//			//将map里的元素Entry<t, String>，放到set集合里
+//		Iterator<Entry<t, String>> it = set.iterator();
+//		//获取set的迭代器
+//		while(it.hasNext())
+//		{
+//			Entry<t, String> entry = it.next();
+//			//取set里的每一个内容
+//			System.out.println(entry.getKey() + "=" + entry.getValue());
+//		}
+		
+		//3
+		Set<t> set = tm.keySet();
+		//获取key集合
+		Iterator<t> it = set.iterator();
+		while(it.hasNext())
+		{
+			t temp = it.next();
+			//取key
+			String value = tm.get(temp);
+			//在map里根据key取value
+			System.out.println(temp + "="  + value);
+		}
+		
+	}
+}

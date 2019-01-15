@@ -1,0 +1,51 @@
+介绍：
+
+1，自定义列表控件需要继承BaseAdapter，或者ListAdapter接口，但实现ListAdapter接口需要实现的函数有点多，故通常继承的是
+	BaseAdapter类，
+
+2，ListView的实现思路是让一个XML布局文件，通过inflate函数转化成为另一个布局文件的ListView子块，相当于另一个布局文件
+	只是主布局文件上的的一块，通过ListView可以复制出多块，通过对布局文件的设置，可以快速的让每一个ListView子
+	块有着相同的内容。
+
+3，自定义列表的每个子块可以有多个控件，用自定义的能实现ArrayAdapter和SimpleAdapter的所有功能。
+	只不过ArrayAdapter和SimpleAdapter他已经实现了ListAdapter相关接口，所以使用起来比较方便
+
+ class MyAdapter extends BaseAdapter
+    {
+		public int getCount() {			// 1，ListView有多少块
+			return MainActivity.this.list.size();
+		}
+
+		public Object getItem(int position) {
+			return null;
+		}
+		public long getItemId(int position) {
+			return 0;
+		}
+
+			// convertView是上一次刚刚被移除在可见区的一个Item
+		public View getView(int position, View convertView, ViewGroup parent) {		
+			// 2，返回一个ListView子块的具体内容
+			
+			View itemView = View.inflate(MainActivity.this, R.layout.view, null);
+				// 3，让view布局文件成为主布局文件的ListView子块的部分，相当于一种放缩移植。
+				// 4，假如view里面有3个Button，那么ListView里面的每一个子块都有3个button
+			
+			TextView tv_id = (TextView) itemView.findViewById(R.id.tv_id);
+			TextView tv_name = (TextView) itemView.findViewById(R.id.tv_name);
+			TextView tv_sex = (TextView) itemView.findViewById(R.id.tv_sex);
+			TextView tv_age = (TextView) itemView.findViewById(R.id.tv_age);
+			
+			// 这里面写了多少个控件，就有多少个控件
+			tv_id.setText("学号：" + list.get(position).getsNo());
+			
+			tv_name.setText("姓名：" + list.get(position).getsName());
+			
+			tv_sex.setText("性别：" + list.get(position).getSex());
+			
+			tv_age.setText("年龄：" + list.get(position).getsAge());
+			
+			return itemView;
+		}
+    	
+    }

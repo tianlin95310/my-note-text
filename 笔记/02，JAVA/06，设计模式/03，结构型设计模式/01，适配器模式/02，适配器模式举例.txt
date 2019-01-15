@@ -1,0 +1,85 @@
+定义：将类的接口变成客户希望的另外一个接口。从而使原本不匹配烦人接口能一起工作
+
+使用场合：
+1，系统需要使用现有的类，但接口不符合系统需要
+2，建立一些可以重复使用的类，彼此之间关系不大，但又要协同合作的类
+
+//使用举例
+
+// 两种不同的接口
+interface CicleVolume
+{
+	public double getCicleVolume();
+}
+interface CubeVolume
+{
+	public double getCubeVolume();
+}
+
+// 某一类接口的实现
+class Cicle implements CicleVolume
+{
+	private double radius;
+
+	public double getRadius()
+	{
+		return radius;
+	}
+	public void setRadius(double radius)
+	{
+		this.radius = radius;
+	}
+	@Override
+	public double getCicleVolume()
+	{
+		return 4 * Math.PI * radius * radius * radius;
+	}
+}
+
+// 适配器类，用其中一个角色来适配另一个角色
+// 现要求Cube用Cicle的方法来得到体积
+class Cube implements CubeVolume
+{
+	// 核心对象，该对象来完成适配工作
+	private Cicle cicle;
+	
+	private double sideLength;
+	
+	public Cube(Cicle cicle)
+	{
+		this.cicle = cicle;
+	}
+	
+	public double getSideLength()
+	{
+		return sideLength;
+	}
+	public void setSideLength(double sideLength)
+	{
+		this.sideLength = sideLength;
+	}
+	
+	@Override
+	public double getCubeVolume()
+	{
+		// 先为核心对象设置属性，Cube类的getCubeVolume方法实际上变成了Cicle
+		// 类的getCicleVolume的方法
+		cicle.setRadius(sideLength);
+		return cicle.getCicleVolume();
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Cicle cicle = new Cicle();
+		cicle.setRadius(2);
+		System.out.println(cicle.getCicleVolume());
+
+		Cube cube = new Cube(cicle);
+		cube.setSideLength(2);
+		System.out.println(cube.getCubeVolume());
+	}
+
+}

@@ -1,0 +1,33 @@
+1，该类的方法会在/data/data/com.xxx/xxx/files/里面产生一些列文件，占用的是系统盘里的空间
+	1，ObjectOutputStream oos = new ObjectOutputStream(context.openFileOutput("1.txt", Context.MODE_APPEND));带有追加
+
+	2，BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+		context.openFileOutput("user.txt", Context.MODE_PRIVATE | Context.MODE_APPEND)) );
+		Context.MODE_PRIVATE 表示其他的应用不能读也不能写，Context.MODE_APPEND表示能追加。
+		android的每一个应用就相当于一个linux用户
+
+
+2，getFilesDir() ，会返回该路径,相对应的还external，内存卡上的data里的，包括缓存也是
+
+3，读写方式是用一些常见的字节流，字符流等
+
+4，使用实例
+public boolean writeContext(UserVo user )
+	{
+		try {
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE | Context.MODE_APPEND)) );
+			
+			bw.write(user.getEmil() + "\r\n");
+			bw.write(user.getName() + "\r\n");
+			bw.write(user.getPassword() + "\r\n");
+			
+			bw.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return true;
+	}

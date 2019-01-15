@@ -1,0 +1,70 @@
+package com.tl;
+// 抽象状态
+abstract class State
+{
+	public abstract void handle1();
+	
+}
+// 状态1
+class ConcreteState1 extends State
+{
+	@Override
+	public void handle1()
+	{
+		// 状态1做的
+		System.out.println("ConcreteState1 handle1");
+	}
+	
+}
+// 状态2
+class ConcreteState2 extends State
+{
+
+	@Override
+	public void handle1()
+	{
+		// 状态1做的
+		System.out.println("ConcreteState2 handle1");
+	}
+	
+}
+// 控制状态
+class Context
+{
+	// 状态常量
+	public final static State STATE1 = new ConcreteState1();
+	public final static State STATE2 = new ConcreteState2();
+	
+	private State currentState;
+
+	public State getCurrentState()
+	{
+		return currentState;
+	}
+
+	public void setCurrentState(State currentState)
+	{
+		this.currentState = currentState;
+	}
+	// 行为的委托
+	public void handle1()
+	{
+		currentState.handle1();
+	}
+	
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Context context = new Context();
+		// 状态1的行为
+		context.setCurrentState(Context.STATE1);;
+		context.handle1();
+		// 状态2的行为
+		context.setCurrentState(Context.STATE2);
+		context.handle1();
+	}
+
+}

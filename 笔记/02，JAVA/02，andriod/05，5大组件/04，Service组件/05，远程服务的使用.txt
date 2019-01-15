@@ -1,0 +1,213 @@
+概念：为了让服务也能跨进程加进了AIDL,依赖Android的IBinder机制实现进程间通信
+
+1，服务器段
+// 服务只需要安装即可
+public class MyService extends Service
+{
+	@Override
+	public IBinder onBind(Intent intent)
+	{
+		// TODO Auto-generated method stub
+		return new MyBinder();
+	}
+	
+	// 用MyBinder传递给Connection，所以他需要含有目标功能函数pay
+	class MyBinder extends IPay.Stub
+	{
+		@Override
+		public void pay() throws RemoteException
+		{
+			MyService.this.pay();
+		}
+	}
+	private void pay()
+	{
+		System.out.println("success");
+	}
+
+}
+
+2，服务注册时需要加上action，因为是不同的应用，在不同的应用里面不可能通过类名来开启
+所以需要隐式开启
+ <service
+            android:name="com.example.remoteservice.MyService"
+            >
+            <intent-filter>
+                <action android:name="aaa.bbb.ccc" />
+
+3，AIDL的编写
+package com.example.remoteservice;
+interface IPay
+{
+	void pay();
+}
+
+            </intent-filter>
+            
+        </service>
+
+4，自动生成的接口
+package com.example.remoteservice;
+public interface IPay extends android.os.IInterface
+{
+	// 核心类Stub，继承了Binder可以传递给Connection，实现IPay即是目标函数
+	public static abstract class Stub extends android.os.Binder implements
+			com.example.remoteservice.IPay
+	{
+		private static final java.lang.String DESCRIPTOR = "com.example.remoteservice.IPay";
+		
+		public Stub()
+		{
+			this.attachInterface(this, DESCRIPTOR);
+		}
+		public static com.example.remoteservice.IPay asInterface(
+				android.os.IBinder obj)
+		{
+			if ((obj == null))
+			{
+				return null;
+			}
+			android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+			if (((iin != null) && (iin instanceof com.example.remoteservice.IPay)))
+			{
+				return ((com.example.remoteservice.IPay) iin);
+			}
+			return new com.example.remoteservice.IPay.Stub.Proxy(obj);
+		}
+		public android.os.IBinder asBinder()
+		{
+			return this;
+		}
+		public boolean onTransact(int code, android.os.Parcel data,
+				android.os.Parcel reply, int flags)
+				throws android.os.RemoteException
+		{
+			switch (code)
+			{
+			case INTERFACE_TRANSACTION:
+			{
+				reply.writeString(DESCRIPTOR);
+				return true;
+			}
+			case TRANSACTION_pay:
+			{
+				data.enforceInterface(DESCRIPTOR);
+				this.pay();
+				reply.writeNoException();
+				return true;
+			}
+			}
+			return super.onTransact(code, data, reply, flags);
+		}
+		private static class Proxy implements com.example.remoteservice.IPay
+		{
+			private android.os.IBinder mRemote;
+
+			Proxy(android.os.IBinder remote)
+			{
+				mRemote = remote;
+			}
+			public android.os.IBinder asBinder()
+			{
+				return mRemote;
+			}
+			public java.lang.String getInterfaceDescriptor()
+			{
+				return DESCRIPTOR;
+			}
+			// 目标方法实现
+			public void pay() throws android.os.RemoteException
+			{
+				android.os.Parcel _data = android.os.Parcel.obtain();
+				android.os.Parcel _reply = android.os.Parcel.obtain();
+				try
+				{
+					_data.writeInterfaceToken(DESCRIPTOR);
+					mRemote.transact(Stub.TRANSACTION_pay, _data, _reply, 0);
+					_reply.readException();
+				} finally
+				{
+					_reply.recycle();
+					_data.recycle();
+				}
+			}
+		}
+		
+		static final int TRANSACTION_pay = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+	}
+	// 目标方法的抽象定义
+	public void pay() throws android.os.RemoteException;
+}
+
+// 客户端
+package com.example.client;
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+
+import com.example.remoteservice.IPay;
+import com.example.remoteservice.IPay.Stub;
+
+public class MainActivity extends ActionBarActivity
+{
+	
+	private ServiceConnection con;
+	
+	private IPay ipay;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	public void open(View v)
+	{
+		Intent intent = new Intent();
+		// 设置与目标服务相一致的action
+		intent.setAction("aaa.bbb.ccc");
+		
+		con = new MyConnection();
+		
+		bindService(intent, con, Activity.BIND_AUTO_CREATE);
+	}
+	
+	class MyConnection implements ServiceConnection
+	{
+		public void onServiceConnected(ComponentName name, IBinder service)
+		{
+			//way1,asInterface可以得到接口对象，它应是指向内部类对象的。
+			ipay = Stub.asInterface(service);
+		}
+
+		public void onServiceDisconnected(ComponentName name)
+		{
+		}
+	}
+	public void pay(View v)
+	{
+		try
+		{
+			ipay.pay();
+		} catch (RemoteException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+2，需要新建文件名为包名，内容如下的文件
+package com.example.remoteservice;
+
+interface IPay
+{
+	void pay();
+}
+

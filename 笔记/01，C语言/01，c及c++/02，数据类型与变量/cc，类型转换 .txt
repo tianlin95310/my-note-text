@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <typeinfo>
+
+void main()
+{
+	//1. 赋值转换
+//	//   a. 赋值时的转换
+//	unsigned char x1 = 1;
+//	unsigned char x2 = -1;
+//	unsigned char x3 = 255;
+//	unsigned char x4 = 256;
+//	unsigned char x5 = -129;
+//	printf("%d %d %d %d %d \n", x1, x2, x3, x4, x5);
+//
+//	char m = 1000;
+//	unsigned char n = -1000;
+//	printf("%d %d \n", m, n);
+
+	//不同类型间的转换原则：尽量不丢失数据.
+//	//   b. 小整数转大整数: 对有符号数，用符号位补齐高位；对无符号数，用0补齐高位
+//	char x = 0x12;	//18 = 0001 0010			= 0x12
+//	short y = x;	//18 = 0000 0000 0001 0010	= 0x0012
+//	printf("%d\n", y);
+//
+//	x = -1;			//-1 = 1111 1111			= oxff
+//	y = x;			//-1 = 1111 1111 1111 1111	= 0xffff
+//	printf("%d\n", y);
+//
+//	unsigned char m = 255;	//255 = 1111 1111 = 0xff;
+//	short n = m;			//255 = 0000 0000 1111 1111 = 0x00ff
+//	printf("%d\n", n);
+//
+//	//   c. 大整数转小整数: 截去高位，保留低位
+//	short a = 0x1234;
+//	char b = a;
+//	printf("%x\n", n);	//0x34
+//
+//	int aa = 0x12345678;
+//	char bb = aa;	//0x78
+//	short cc = aa;	//0x5678
+
+//	//  d. 小数间的转换
+//	//float 范围 -3.40282 e 38  ~ +3.40282 e 38
+//	//double范围 -1.79769 e 308 ~ +1.79769 e 308
+//	float f = 3.14f;
+//	double d = f;
+//	printf("%f\n", d);
+//
+//	double x = 3.1415926535897;
+////	double x = 1.8e308;
+//	float y = x;
+//	printf("%f\n", y);
+//
+//	double xx = 5E40;
+//	float yy = xx;
+//	printf("%e\n", yy);
+//	printf("%e\n", yy);
+
+//	//   e. 整数和小数间的转换
+//	int x = 3;
+//	float y = x;
+//	printf("%f\n", y);
+//
+//	float m = 3.14f;
+//	int n = m;
+//	printf("%d\n", n);
+//
+//	int r = m + 0.5f;
+//	printf("%d\n", r);
+//
+//	float f = 3.4567f;
+//	int i = f * 100 + 0.5;	//345.67 + 0.5 = 346.17 = int()	346
+//	f = i / 100.0;		//3.46
+//
+//	printf("%f\n", f);	//3.46000
+//
+//
+//	//   f. 对bool类型进行赋值: 0转换为false, 非0转换为true
+//	bool b1 = 123;	//true, 1
+//	bool b2 = 0;	//false 0
+//	bool b3 = 1.23;	//true
+//	bool b4 = 0.0f;	//true
+//
+//	if (f == 0.0f);		//错误
+//	if (f >= -0.000001f && f <= 0.000001f);	//正确
+
+//	//2. 表达式中的转换
+////	bool x = true;
+//	char a = 1;
+//	short b = 2;
+//	int c = 3;
+//	float d = 3.14f;
+//	double e = 1.1;
+//
+//	printf("%s %f\n", typeid(a+b+c+e+d).name(), a+b+c+e+d);
+
+//	//3. 函数参数转换
+//	int i = 3;
+//	float f = 3.14f;
+//	printf("%f\n", i);
+//	printf("%d\n", f);
+
+	//4. 强制类型转换
+	char x = 'A';
+	//int y = (int)x;
+	int y = int(&x);
+
+	printf("%08x\n", y);
+}

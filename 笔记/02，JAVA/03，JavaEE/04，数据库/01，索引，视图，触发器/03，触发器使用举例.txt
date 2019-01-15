@@ -1,0 +1,14 @@
+BEGIN
+// 定义变量
+DECLARE newExp int;
+DECLARE	oldExp int;
+DECLARE Tel VARCHAR(15);
+// 为变量赋值
+select NEW.uTel into Tel from tiezi where tId=NEW.tId;
+
+select uExp into oldExp from tuser where uTel=Tel;
+
+set newExp=oldExp + 1;
+
+update tuser set uExp=newExp where uTel=Tel;
+end

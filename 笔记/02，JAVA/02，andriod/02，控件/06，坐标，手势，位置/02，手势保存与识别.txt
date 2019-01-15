@@ -1,0 +1,115 @@
+主要借助于几个类来实现，一个库与数据库的某个表类似
+手势绘制视图布局
+<android.gesture.GestureOverlayView
+        android:id="@+id/gesture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+	// 该属性控制手势是一笔还是多笔画完
+        android:gestureStrokeType="single" >
+    </android.gesture.GestureOverlayView>
+
+
+public class MainActivity extends ActionBarActivity
+{
+	// 画手势的视图类
+	GestureOverlayView gestureView;
+	
+	// 用于存放手势图片
+	ImageView iv_gesture;
+	
+	// 手势名称， 一个手势文件可以有多个手势
+	EditText et_name;
+	
+	// 手势库文件，类似于一个小的数据库，存放多个名称不同的手势
+	GestureLibrary lib;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		gestureView = (GestureOverlayView) findViewById(R.id.gesture);
+		// 从文件里加载所有手势集合
+		lib = GestureLibraries.fromFile("/storage/sdcard0/mygesture");
+		
+		if(lib.load() == false)
+		{
+			System.out.println("load failed");
+			return;
+		}
+		
+		// 设置手势滑动事件
+		gestureView.addOnGesturePerformedListener(new MyGesturePerformedListener2());
+		
+		// 设置手势的颜色，线条粗度
+//		gestureView.setGestureColor(Color.BLUE);
+//		gestureView.setGestureStrokeWidth(4);
+		
+//		gestureView.addOnGesturePerformedListener(new MyGesturePerformedListener());
+		
+	}
+	
+	// 匹配手势,将之前保存的手势进行匹配
+	class MyGesturePerformedListener2 implements OnGesturePerformedListener
+	{
+		// 画了一次之后，手势存到了gesture里面
+		@Override
+		public void onGesturePerformed(GestureOverlayView overlay,
+				Gesture gesture)
+		{
+			// 得到所有与本次画的gesture匹配的结果
+			// Prediction是匹配精确度的类，含有手势名称，和精确度
+			ArrayList<Prediction> list = lib.recognize(gesture);
+			
+			StringBuffer sb = new StringBuffer();
+			
+			for(Prediction p : list)
+			{
+				sb.append(p.name + ":" + p.score + "\n");
+			}
+			TextView tv = new TextView(MainActivity.this); 
+			tv.setText(sb.toString());
+			
+			// 每次操作的结果都返回builder，所以可以接连设置
+			new AlertDialog.Builder(MainActivity.this).setTitle("匹配结果").setView(tv).show();
+		}
+		
+	}
+	
+	// 添加手势
+	class MyGesturePerformedListener1 implements OnGesturePerformedListener
+	{
+		// gesture为滑动中的手势图案
+		public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture)
+		{
+			final Gesture ges = gesture;
+			
+			View view  = View.inflate(MainActivity.this, R.layout.dialog, null);
+			iv_gesture = (ImageView) view.findViewById(R.id.iv_gesture);
+			et_name = (EditText) view.findViewById(R.id.et_name);
+			
+			// 将某个手势转化为位图，可以显示出来
+			Bitmap bmp = gesture.toBitmap(200, 200, 01, 0xffff000);
+			
+			iv_gesture.setImageBitmap(bmp);
+			
+			AlertDialog.Builder builder = new Builder(MainActivity.this);
+			builder.setView(view);
+			
+			builder.setPositiveButton("保存", new OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// 打开保存的文件，相当于建立了一个与表的连接
+					GestureLibrary lib = GestureLibraries.fromFile("/storage/sdcard0/mygesture");
+					lib.addGesture(et_name.getText().toString(), ges);
+					lib.save();
+				}
+			});
+			
+			builder.setNegativeButton("取消", null);
+			
+			builder.create().show();
+		}
+	}
+}

@@ -1,0 +1,77 @@
+JDK1.0就实现了该模式
+
+系统的Observable类就是一个被观察者基类
+
+系统的Observer类就是一个观察者的基类
+
+2，使用举例
+
+// 系统的API的实现代码
+//    public class Observable {
+//    private boolean changed = false;
+//    private Vector obs;
+//    public Observable() {
+//        obs = new Vector();
+//    }
+
+// 虽然obs是private，子类不可见，但一些公有的public子类继承后，仍然可以对obs做操作。
+class Doll extends Observable
+{
+	// 不需要维护观察者集合，基类已经实现
+	private float price;
+	
+	public Doll(float price)
+	{
+		this.price = price;
+	}
+	public float getPrice()
+	{
+		return price;
+	}
+	public void setPrice(float price)
+	{
+		this.price = price;
+		// 将更新标志设置为true
+		this.setChanged();	
+		// 调用基类的通知方法
+		this.notifyObservers();
+	}
+}
+class People implements Observer
+{
+	private String name;
+	
+	public People(String name)
+	{
+		this.name = name;
+	}
+	// 这里内部已经实现了集合处理
+	public void update(Observable o, Object arg)
+	{
+		if(o instanceof Doll)
+		{
+			Doll doll = (Doll)o;
+			
+			System.out.println(name + "关注的东西" + "的价格为" + doll.getPrice());
+		}
+	}
+	
+}
+
+public class API
+{
+	public static void main(String[] s)
+	{
+		Doll doll = new Doll(2000f);
+		
+		doll.addObserver(new People("zhangsan"));
+		doll.setPrice(1800f);
+		
+		doll.addObserver(new People("lisi"));
+		doll.setPrice(1600f);
+		
+		doll.addObserver(new People("wangwu"));
+		doll.setPrice(1400f);
+	}
+	
+}

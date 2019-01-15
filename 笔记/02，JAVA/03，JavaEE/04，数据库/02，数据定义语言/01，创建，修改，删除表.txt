@@ -1,0 +1,12 @@
+create table game(
+    -> sid int primary key auto_increment,
+    -> name varchar(20) not null,
+    -> gender char(1),
+    -> age int(2),
+    -> birth date);
+
+alter table game add column creatDate date;//添加一列
+
+alter table game drop job;//删除某列
+
+alter table game modify gender char(2);//修改某列的字符的长度

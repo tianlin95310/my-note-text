@@ -1,0 +1,81 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct STUDENT
+{
+	char sName[20];
+	int nAge;
+	STUDENT *pNext;
+};
+
+void ShowNode(STUDENT *pNode)
+{
+	//链表的遍历
+	STUDENT *pCurr = pNode;
+	while (pCurr)
+	{
+		cout << pCurr->sName << "\t" << pCurr->nAge << endl;
+		pCurr = pCurr->pNext;
+	}
+	cout << endl;
+}
+
+int main()
+{
+	//链表的创建
+	STUDENT e = {"EE", 20, NULL};
+	STUDENT d = {"DD", 23, &e};
+	STUDENT c = {"CC", 24, &d};
+	STUDENT b = {"BB", 22, &c};
+	STUDENT a = {"AA", 21, &b};
+
+	STUDENT *pHead = &a;
+
+	//链表的遍历
+	ShowNode(pHead);
+
+	//链表的查找
+	STUDENT *pCurr = pHead;
+	while (pCurr)
+	{
+		if (pCurr->nAge == 23)
+		{
+			cout << pCurr->sName << "\t" << pCurr->nAge << endl;
+			break;
+		}
+		pCurr = pCurr->pNext;
+	}
+	//链表的删除
+	cout << endl;
+	pCurr = pHead;
+	STUDENT *pPrev = NULL;
+	while (pCurr)
+	{
+		if (pCurr->nAge == 23)
+		{
+			if (pPrev == NULL)
+			{
+				pHead = pCurr->pNext;
+			}
+			else
+			{
+				pPrev->pNext = pCurr->pNext;
+				pCurr->pNext = NULL;
+			}
+			break;
+		}
+		pPrev = pCurr;
+		pCurr = pCurr->pNext;
+	}
+
+	//delete one node
+	ShowNode(pHead);
+
+	//作业1: 链表的插入将DD 23插入到CC的后边
+
+
+	//作业2: 反转链表
+
+	return 0;
+}

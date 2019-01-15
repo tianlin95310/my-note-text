@@ -1,0 +1,5 @@
+1,insert into newtable seltct lable from oldtable
+	newtable需要先建好
+
+2，select lable into newtable from oldtable
+	newtable会马上创建，newtable也可以不是表，而是一些属性列

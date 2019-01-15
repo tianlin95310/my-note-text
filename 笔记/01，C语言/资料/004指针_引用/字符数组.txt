@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	char szText1[6] = {'h', 'e', 'l', 'l', 'o', '\0'};
+	char szText2[] = {'h', 'e', 'l', 'l', 'o', '\0'};
+	char szText3[6] = {"hello"};
+	char szText4[] = {"hello"};
+	char szText5[] = "hello";
+	char *pszText6 = "hello"; //注意与	char szText5[]="hello";的区别
+	char szNames[][6] = {"li", "zhang", "wang"};
+	char *pszNames[] = {"li", "zhang", "wang"};
+	
+	return 0;
+}
+
+
+int main(int argc, char *argv[])
+{
+	printf("%d个参数\r\n", argc);
+	for (int i = 0; i < argc; i++)
+	{
+		printf("第%d个参数是%s \r\n", i, argv[i]);
+	}
+
+	return 0;
+}

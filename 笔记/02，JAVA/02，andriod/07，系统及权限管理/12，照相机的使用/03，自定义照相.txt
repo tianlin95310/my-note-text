@@ -1,0 +1,172 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	// 动态预览
+	SurfaceView sv;
+	// SurfaceView的监听器
+	SurfaceHolder sh;
+
+	// 照相机类
+	Camera camera;
+
+	// 延时处理
+	Handler handler = new Handler();
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		sv = (SurfaceView) findViewById(R.id.sv);
+		sh = sv.getHolder();
+
+		// 为监听器添加回调事件
+		sh.addCallback(new Callback()
+		{
+			public void surfaceDestroyed(SurfaceHolder holder)
+			{
+				System.out.println("surfaceDestroyed");
+				if (camera != null)
+				{
+					// 当activitystop时，SurfaceView会Destroyed
+					// 此时camera应该停止预览并释放资源
+					camera.stopPreview();
+					camera.release();
+				}
+			}
+
+			public void surfaceCreated(SurfaceHolder holder)
+			{
+				System.out.println("surfaceCreated");
+				try
+				{
+					// 相机打开时。默认图片是与屏幕垂直的，假设竖屏为标准
+					camera = Camera.open();
+					
+					// Parameters不是静态的内部类
+					Camera.Parameters params = camera.getParameters();
+					
+					// 该函数不会再预览时转动图片，但在交给EXIF处理时是会让图片旋转90度,所以正着拍的图片
+					// 看的时候会旋转,所以需要让图片保存时转动一下，就是正的
+					params.setRotation(90);
+
+//					 如果屏幕不是横屏的，那么将图片转动90度
+					 if(MainActivity.this.getRequestedOrientation() !=
+					 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+					 {
+					 // 将预览界面旋转90，但图片保存时仍然是横着的，所以setDisplayOrientation
+					 // 通常与params.setRotation(90);配合使用就能得到正确的效果
+					 camera.setDisplayOrientation(90);
+					 }
+					 
+					// 不同的手机支持的效果可能不同，EFFECT_BLACKBOARD表示黑板
+					// params.setColorEffect(Camera.Parameters.EFFECT_WHITEBOARD);
+
+					// 查看手机支持的所有的效果
+					// List<String> effect = params.getSupportedColorEffects();
+					// StringBuilder sb = new StringBuilder();
+					// for(String s : effect)
+					// {
+					// 	sb.append(s + "\n");
+					// }
+					// System.out.println("e" + sb.toString());
+
+					// 将参数设置给camera
+					camera.setParameters(params);
+					// 设置预览界面
+					camera.setPreviewDisplay(sh);
+					// 开始预览
+					camera.startPreview();
+
+				} catch (IOException e)
+				{
+					camera.release();
+					e.printStackTrace();
+				}
+			}
+
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height)
+			{
+				System.out.println("surfaceChanged");
+			}
+		});
+	}
+
+	public void take(View v)
+	{
+		// 通过takePicture回调进行保存，回调接口还有其他的
+		camera.takePicture(null, null, null, new PictureCallback()
+		{
+			public void onPictureTaken(byte[] data, Camera camera)
+			{
+				ContentValues values = new ContentValues();
+
+				// 向系统的图库应用程序添加图片，ContentResolver的insert将会返回一个uri，系统的图库也会返回一个uri
+				// 不过这两者机制是不一样的，这里得到的就是生成的文件的uri,他会在系统的DCIM生成一个文件夹Camera
+				// 当然也可以自己随便生成一个文件来存放文件，然后用过ExifInterface来对图片的信息进行修改
+				
+				// contentProvider的insert方法会返回一个uri
+				Uri dataUri = MainActivity.this.getContentResolver().insert(
+						Media.EXTERNAL_CONTENT_URI, values);
+
+				try
+				{
+					// 将文件转换为输出流，因为新构造的图片的是空的
+					OutputStream os = MainActivity.this.getContentResolver()
+							.openOutputStream(dataUri);
+					os.write(data);
+					os.flush();
+					os.close();
+					camera.startPreview();
+					
+				} catch (FileNotFoundException e)
+				{
+					e.printStackTrace();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	// 延迟3秒后再拍摄
+	public void delaytake(View v)
+	{
+		handler.postDelayed(new Runnable()
+		{
+			public void run()
+			{
+					camera.takePicture(null, null, null, new PictureCallback()
+					{
+						public void onPictureTaken(byte[] data, Camera camera)
+						{
+							try
+							{
+								// 随便保存到到一个文件夹，缺点是，这样生成的文件，图库有可能无法检测出来
+								File dir = Environment.getExternalStorageDirectory();
+								File dataImg = new File(dir,"p1.jpg");
+								if(!dataImg.exists())
+									dataImg.createNewFile();
+								FileOutputStream fos = new FileOutputStream(dataImg);
+								
+								fos.write(data);
+								fos.flush();
+								fos.close();
+								camera.startPreview();
+								System.out.println("success");
+							} catch (FileNotFoundException e)
+							{
+								e.printStackTrace();
+							} catch (IOException e)
+							{
+								e.printStackTrace();
+							}
+						}
+					});
+			}
+		}, 3000);
+	}
+
+}

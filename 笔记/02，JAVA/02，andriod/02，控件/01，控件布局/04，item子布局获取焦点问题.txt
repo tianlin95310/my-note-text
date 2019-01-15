@@ -1,0 +1,10 @@
+1，descendantFocusability该属性能控制父布局和子布局获取焦点的优先级问题
+
+beforeDescendants：viewgroup	item会优先其子控件而获取到焦点
+
+afterDescendants：viewgroup	item只有当其子控件不需要获取焦点时才获取焦点
+
+blocksDescendants：viewgroup	item会覆盖子控件而直接获得焦点
+
+2，如果没有给控件（包括布局）设置点击事件，发现他是点击不了的，包括设置的选择器也是没有
+效果的，只有为他设置点击事件，他的选择器才有效果

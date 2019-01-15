@@ -1,0 +1,84 @@
+// 1，修改ip
+
+BEGIN
+	DECLARE i int;
+	set i = 0;
+
+	loop1:LOOP
+
+	set i = i + 1;
+
+#传入参数时不需要带&
+	if i <= 10 then
+		call changeIP(i);
+
+	elseif i > 10 then
+	leave loop1;
+
+	end if;
+
+	end loop loop1;
+END
+
+// 输入参数，int类型
+changeIP(in ip int)
+BEGIN
+	declare Npath varchar(255);
+	DECLARE length int;
+	declare sname VARCHAR(50);
+
+#此句里的id为传入参数
+	select path into Npath from musics where sId=id;
+#求字符串长度
+	set length = CHAR_LENGTH(Npath);
+#得到歌曲名	
+	set sname = SUBSTRING(Npath,43,length);
+#拼接得到新的路径
+	set Npath = CONCAT('http://10.181.118.96:8080/005_musicServer/music/',sname);
+
+	update musics set path=Npath where sId=id;
+END
+
+
+// 2，更新剩余休假时间
+BEGIN
+	#Routine body goes here...
+
+	declare veid int;
+	declare vleavetype varchar(10);
+	declare vhourcount int;
+
+	declare vleftsickhour int;
+
+declare continue HANDLER for SQLEXCEPTION
+	BEGIN
+	rollback;
+	end;
+	
+	set autocommit = false;
+
+#开始事务
+	start TRANSACTION;
+
+#更新休假信息表
+	update leaveinfo lf 
+	set lf.withdrawReason = withdrawReason, lf.withdrawDate = withdrawTime, lf.status = `status`, lf.whoWithdraw = whoWithdraw where lf.lid = lid;
+
+	select lf.eid, lf.leaveType, lf.hourCount into veid, vleavetype, vhourcount from leaveinfo lf where lf.lid=lid;
+
+	if vleavetype = 'holiday' then 
+		update daycount d set d.leftHolidayHour = d.leftHolidayHour + vhourcount where d.eId = veid and d.startDate < now() and d.endDate > now() ;
+
+	elseif vleavetype = 'sickleave' then 
+		select d.leftSickLeaveHour into vleftsickhour from daycount d where d.eId = veid and d.startDate < now() and d.endDate > now();
+
+		if vleftsickhour >= 0 then 
+		update daycount d set d.leftSickLeaveHour = d.leftSickLeaveHour + vhourcount where d.eId = veid and d.startDate < now() and d.endDate > now();
+		elseif vleftsickhour < 0 then
+		update daycount d set d.leftHolidayHour = d.leftHolidayHour - vleftsickhour, d.leftSickLeaveHour = vleftsickhour + vhourcount where d.eId = veid and d.startDate < now() and d.endDate > now();
+
+		end if;
+	end if;
+#提交
+	commit;
+END

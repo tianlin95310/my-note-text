@@ -1,0 +1,49 @@
+1，Error它属于错误，也是Exception的子类，但他不属于受检异常，它属于费受检异常，不需要强制捕获
+
+public class Test113_dead_loop
+{
+
+	public static void main(String[] args)
+	{
+		
+		System.out.println("begin");
+		try
+		{
+			stackoverflow();		捕获时，后面的输出语句会输出
+		} catch (StackOverflowError e)
+		{
+			System.out.println("StackOverflowError");
+		}
+
+		System.out.println("end");
+	}
+	
+	public static void stackoverflow()
+	{
+		stackoverflow();
+	}
+	
+	public static void outofmem()
+	{
+		System.out.println("begin");
+		ArrayList<String> list = new ArrayList<>();
+		try
+		{
+			while(true)
+			{
+				list.add("string");
+			}
+		} 
+		catch (RuntimeException e)
+		{
+			System.out.println("RuntimeException");
+		}
+		catch(OutOfMemoryError e)
+		{
+			System.out.println("OutOfMemoryError");
+		}
+		
+		System.out.println("end");	捕获时，后面的输出语句会输出
+	}
+
+}

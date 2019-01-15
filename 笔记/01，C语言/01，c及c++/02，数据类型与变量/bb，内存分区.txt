@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int x1;
+int x2 = 0x11;
+
+void ff()
+{
+	static int m = 0x11;
+	int n = 0x11;
+	m++;
+	n++;
+	x2++;
+	printf("%x %x %x\n", m, n, x2);
+}
+
+void main()
+{
+	//1、栈区(stack): 由编译器自动分配释放，存放函数的参数值，局部变量的值等。函数执行完毕，局部变量会被释放掉
+	int a1;							//0012ff7c : cc cc cc cc
+	int a2 = 0x33;					//0012ff78 : 33 00 00 00
+	a1 = 0x22;
+	printf("%08x : %08x\n", &a1, a1);
+	printf("%08x : %08x\n", &a2, a2);
+	printf("\n");
+
+	//2、堆区(heap): 一般由程序员分配释放(在方法内分配时，需要及时释放，否则内存会泄露)，若程序员不释放，程序结束时由系统释放。
+	short *p1 = (short *)malloc(2 * sizeof(short));		//0012ff74 : 00381000 : cd cd cd cd
+	*p1 = 0x44;
+	*(p1 + 1) = 0x45;
+//	p1 = p1 + 1;
+//	*p1 = 0x45;
+	printf("%08x : %08x\n", p1, *p1);
+	printf("%08x : %08x\n", p1+1, *(p1+1));
+	printf("\n");
+	free(p1);
+
+	//c++
+//	int *p2 = new int;	//cd cd cd cd
+//	int *p2 = new int(2);//02 00 00 00
+	int *p2 = new int[2];//cd cd cd cd cd cd cd cd
+	*p2 = 0x46;
+	*(p2 + 1) = 0x47;
+	printf("%08x : %08x\n", p2, *p2);
+	printf("%08x : %08x\n", p2+1, *(p2+1));
+	printf("\n");
+//	delete p2;
+	delete[] p2;
+
+	//3、全局区(静态区,static): 全局变量和静态变量的存储是放在一块的，初始化的
+	//	 全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在
+	//	 相邻的另一块区域。程序结束后由系统释放。
+	static int b1;
+	static int b2 = 0x22;
+	printf("%08x : %08x\n", &x1, x1);
+	printf("%08x : %08x\n", &x2, x2);
+	printf("%08x : %08x\n", &b1, b1);
+	printf("%08x : %08x\n", &b2, b2);
+	printf("\n");
+
+	ff();
+	ff();
+	ff();
+	printf("\n");
+
+	//4、文字常量区: 常量字符串就是放在这里的。程序结束后由系统释放。
+	char *sz1 = "Hello";
+//	*sz1 = 'h';
+	char *sz2 = (char *)malloc(6);
+	//sz2 = sz1;	//浅拷贝
+//	*sz2 = *sz1;
+//	*(sz2+1) = *(sz1+1);
+//	*(sz2+2) = *(sz1+2);
+//	*(sz2+3) = *(sz1+3);
+//	*(sz2+4) = *(sz1+4);
+//	*(sz2+5) = *(sz1+5);
+	strcpy(sz2, sz1);	//深拷贝
+	printf("%08x : %s\n", sz1, sz1);
+	printf("%08x : %s\n", sz2, sz2);
+	printf("\n");
+	free(sz2);
+
+	//5、程序代码区: 存放函数体的二进制代码。
+	printf("main(): %08x\n", &main);
+	printf("ff()  : %08x\n", &ff);
+	printf("\n");
+}

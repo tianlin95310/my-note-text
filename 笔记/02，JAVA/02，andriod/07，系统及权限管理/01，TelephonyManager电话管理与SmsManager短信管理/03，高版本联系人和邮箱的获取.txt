@@ -1,0 +1,76 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	TextView tv;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		tv = (TextView) findViewById(R.id.tv);
+
+		get1();
+
+	}
+
+	public void get1()
+	{
+		// 联系人表
+		System.out.println(ContactsContract.Contacts.CONTENT_URI);
+		// 电话表
+		System.out.println(ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+		// 邮箱表
+		System.out.println(ContactsContract.CommonDataKinds.Email.CONTENT_URI);
+
+		Cursor rs1 = getContentResolver().query(
+				ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		StringBuilder sb = new StringBuilder();
+
+		while (rs1.moveToNext())
+		{
+			// 先得到id，id为int类型，联系人表里只保存了联系人的姓名和id以及一些图标，根据id在其他的表里继续再查询得到电话号码
+			int id = rs1.getInt(rs1.getColumnIndex(Contacts._ID));
+			// 联系人表里的联系人姓名
+			sb.append(rs1.getString(rs1.getColumnIndex(Contacts.DISPLAY_NAME))
+					+ ",");
+
+			// 查询电话信息表
+			Cursor rs2 = getContentResolver().query(
+					ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+					ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
+					new String[] { String.valueOf(id) }, null);
+
+			while (rs2.moveToNext())
+			{
+				// 电话信息表里，也有联系人的信息
+				sb.append(rs2.getString(rs2
+						.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+						+ ",");
+				// 得到电话
+				sb.append(rs2.getString(rs2
+						.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+						+ ",");
+			}
+			// 查询电子邮件表
+			Cursor rs3 = getContentResolver().query(
+					ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+					ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?",
+					new String[] { String.valueOf(id) }, null);
+			while (rs3.moveToNext())
+			{
+				// 得到邮箱地址
+				sb.append(rs3.getString(rs3
+						.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))
+						+ ",");
+			}
+
+			sb.append("\n");
+		}
+
+		tv.setText(sb.toString());
+
+	}
+
+}

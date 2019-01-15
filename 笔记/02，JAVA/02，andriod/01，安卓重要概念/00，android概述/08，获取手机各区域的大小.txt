@@ -1,0 +1,59 @@
+package com.example.getheight;
+
+import android.app.Activity;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class MainActivity extends Activity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		// 状态栏 38
+		// 标题栏 72
+		
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		Log.d("my", "onResume");
+		super.onResume();
+	}
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus)
+	{
+		Log.d("my", "onWindowFocusChanged");
+		if(hasFocus)
+		{
+			WindowManager wm = this.getWindowManager();
+			
+			// 1,整个手机屏幕
+			DisplayMetrics dm = new DisplayMetrics();
+			wm.getDefaultDisplay().getMetrics(dm);
+			Log.d("my", dm.widthPixels + ":" + dm.heightPixels);
+			
+			Rect rect1 = new Rect();
+			// 2,状态栏高度
+			this.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect1);
+			Log.d("my", rect1.left + ":" + rect1.top + ":" + rect1.right + ":" + rect1.bottom);
+			Log.d("my", rect1.width() + "," + rect1.height());
+			
+			Rect rect2 = new Rect();
+			// 3,标题栏
+			getWindow().findViewById(Window.ID_ANDROID_CONTENT).getDrawingRect(rect2);
+			Log.d("my", rect2.left + ":" + rect2.top + ":" + rect2.right + ":" + rect2.bottom);
+			Log.d("my", rect2.width() + "," + rect2.height());
+		}
+		super.onWindowFocusChanged(hasFocus);
+	}
+
+}

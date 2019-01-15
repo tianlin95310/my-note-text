@@ -1,0 +1,54 @@
+面向接口编程
+
+oo设计原则：
+1，面向接口编程（面向抽象编程）
+2，封装变化
+3，多用组合，少用继承
+
+应用举例
+
+public class ti
+{
+	public static void main(String[] args){
+	who w = new who("tian");
+	w.setjiekou(new a());
+	w.f();
+	w.setjiekou(new b());
+	w.f();
+	}
+}
+interface ia//所有成员为public
+{
+	public void fun1();//抽象方法，属性为public abstract
+}
+class a implements ia
+{
+	public void fun1()
+	{
+		System.out.println("doubi");
+	}
+}
+class b implements ia//两种不同的实现方法
+{
+	public void fun1()
+	{
+		System.out.println("shabi");
+	}
+}
+class who
+{
+	private String who;
+	private ia i1 = null;	//接口不能实例化,接口可以作为属性，但不能实例化
+	public void setjiekou(ia i1)//选择用哪个类来实现fun1,类类型传给接口类型（有继承关系）
+	{
+		this.i1 = i1;
+	}
+	public who(String who)
+	{
+		this.who = who;
+	}
+	public void f()
+	{
+		i1.fun1();
+	}
+}

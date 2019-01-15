@@ -1,0 +1,39 @@
+package com.example.testhandler;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+
+public class MainActivity extends Activity
+{
+	// 在主线程中定义的handler是属于主线程中的
+	// 通过它的postDelayed设置的线程也都在主线程运行，并不是在分线程中运行，要注意这个误区
+	// 用handler还可以模拟定时
+	Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			
+			Log.d("my", "handleMessage");
+		};
+		
+	};
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		new Timer().schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				handler.sendEmptyMessage(1);
+			}
+		}, 0, 1000);
+	}
+
+}

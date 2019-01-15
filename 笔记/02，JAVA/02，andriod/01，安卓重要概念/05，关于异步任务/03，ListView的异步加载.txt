@@ -1,0 +1,195 @@
+package com.example.listview;
+
+import java.util.ArrayList;
+
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Matrix;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+
+public class MainActivity extends ActionBarActivity
+{
+
+	ListView lv;
+	ArrayList<String> list;
+
+	int w ;
+	int h;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		w = this.getWindowManager().getDefaultDisplay().getWidth();
+		h = this.getWindowManager().getDefaultDisplay().getHeight();
+		
+		list = new ArrayList<String>();
+		
+		lv = (ListView) this.findViewById(R.id.lv);
+		
+		Cursor rs = this.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, new String[]{Media.DATA}, null, null, null);
+		
+		while(rs.moveToNext())
+		{
+			list.add(rs.getString(0));
+		}
+		
+		Log.d("my", list.toString());
+		
+		rs.close();
+		
+		// 为ListView添加头部
+		ImageView v1 = new ImageView(this);
+		v1.setImageResource(R.drawable.sj0741);
+		lv.addHeaderView(v1);
+		
+		lv.setAdapter(new MyAdapter());
+		
+		lv.setOnScrollListener(new OnScrollListener()
+		{
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState)
+			{
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount)
+			{
+				
+			}
+		});
+	}
+	
+	class MyAdapter extends BaseAdapter
+	{
+
+		@Override
+		public int getCount()
+		{
+			return list.size();
+		}
+
+		@Override
+		public Object getItem(int position)
+		{
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position)
+		{
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			View view = View.inflate(MainActivity.this, R.layout.lv_item, null);
+			
+			ImageView img = (ImageView) view.findViewById(R.id.lv_img);
+			String path = list.get(position);
+//			1，直接加载，有可能导致程序崩溃
+//			Bitmap bmp = BitmapFactory.decodeFile(path);
+//			img.setImageBitmap(bmp);
+			
+//		    2，异步加载，图片的大小同样也需要注意，系统有限制
+			// 并且需要注意的是，图片的长宽测量方式，尽量不要让系统去计算测量，因为这是有消耗的，尽量
+			// 匹配父窗口大小，或者指定宽高
+			loadImage(img, path);
+			return view;
+		}
+		
+	}
+	
+	private void loadImage(ImageView img, String path)
+	{
+		AsyncLoad async = new AsyncLoad(img);
+		// 执行异步方法，他会自动的执行onPostExecute
+		async.execute(path);
+	}
+	
+	public Bitmap scale(String path, int x, int y)
+	{
+		BitmapFactory.Options ops = new Options();
+		ops.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, ops);
+		
+		int srcX = ops.outWidth;
+		int srcY = ops.outHeight;
+		
+		int rateX = srcX / x;
+		int rateY = srcY / y;
+		
+		int rate = 0;
+		
+		// 注意函数的写法不能随便乱改，上次就是改错了这个东西，导致奇怪的错误
+		if(rateX > 1 && rateX >= rateY)
+			rate = rateX;
+		if(rateY > 1 && rateY >= rateX)
+			rate = rateY;
+		ops.inSampleSize = rate;
+		ops.inJustDecodeBounds = false;
+		
+		Bitmap obj = BitmapFactory.decodeFile(path, ops);
+		
+		if(obj.getWidth() > (int)(obj.getHeight() * 1.5f))
+		{
+			// 通过Bitmap的带有matrix的createBitmap来实现图像的旋转,二不是用canvas来画图，画的东西在内存中不便处理
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90, obj.getWidth() / 2, obj.getHeight() / 2);
+			return Bitmap.createBitmap(obj, 0 , 0, obj.getWidth() , obj.getHeight(), matrix, false);
+		}
+		return obj;
+	}
+	
+	// 三个泛型分别是参数， 过程， 返回结果
+	class AsyncLoad extends AsyncTask<String, Void, Bitmap>
+	{
+		
+		private ImageView img;
+		
+		public AsyncLoad(ImageView img)
+		{
+			super();
+			this.img = img;
+		}
+
+		// 返回结果用在这里
+		@Override
+		protected Bitmap doInBackground(String... params)
+		{
+			Bitmap bmp = scale(params[0],w / 5, h / 5);
+			
+			if(bmp == null)
+				return null;
+			
+			return bmp;
+		}
+		
+		// 形参用在这里
+		@Override
+		protected void onPostExecute(Bitmap result)
+		{
+			if(img != null && result != null)
+				img.setImageBitmap(result);
+		}
+		
+	}
+}

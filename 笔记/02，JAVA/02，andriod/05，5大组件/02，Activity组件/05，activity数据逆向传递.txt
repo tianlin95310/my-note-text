@@ -1,0 +1,178 @@
+主要用到两个API
+1，startActivityForResult,
+2，setResult，
+
+2，源activity
+public class MainActivity extends ActionBarActivity
+{
+
+	private EditText et;
+	private EditText text;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		et = (EditText) findViewById(R.id.et);
+		text = (EditText) findViewById(R.id.text);
+		// 与清单文件一样，该函数能设置默认的屏幕方向
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
+	}
+	public void add(View v)
+	{
+		// 显示打开
+		Intent intent = new Intent(this,ContactActivity.class);
+		// 调用该方法启动activity才能得到他的返回值，1用于区分是那个界面启动了目标界面，有可能一个界面能被多个界面启动
+		startActivityForResult(intent, 1);
+	}
+	
+	// 该方法用于接受返回值的处理
+	protected void onActivityResult(int arg0, int arg1, Intent data)
+	{
+		// data用于传递数据，有可能为空，所以需要判断一下
+		if(data == null)
+			return;
+		// 与正向传递一样，逆向传递也有两种方式，直接获取，或者通过Bundle来得到
+		String number = data.getStringExtra("number");
+		et.setText(number);
+		
+		super.onActivityResult(arg0, arg1, data);
+	}
+	public void send(View v)
+	{
+		
+	}
+	
+	public void change(View v)
+	{
+		// getRequestedOrientation函数要求应用必须在清单文件里设置screenOrientation属性，或者调用setRequestedOrientation才能
+		// 返回正确的结果，SCREEN_ORIENTATION_LANDSCAPE表示横版，SCREEN_ORIENTATION_PORTRAIT表示竖版
+		if(this.getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+			this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		else if(this.getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+			this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+	}
+
+}
+
+2，被启动activity
+public class ContactActivity extends Activity
+{
+	private ArrayList<ContactVo> list;
+	private ListView lv;
+	
+	private ContentResolver cr;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		this.setContentView(R.layout.contact_view);
+		super.onCreate(savedInstanceState);
+		
+		lv = (ListView) findViewById(R.id.lv);
+		list = new ArrayList<ContactVo>();
+		// 得到contentProvider操作对象
+		cr = getContentResolver();
+		// 获取联系人
+		getContacts();
+		
+		// 设置显示
+		lv.setAdapter(new MyAdapter());
+		lv.setOnItemClickListener(new OnItemClickListener()
+		{
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id)
+			{
+				ContactVo c = list.get(position);
+				String number = c.getNumber();
+				Intent i = new Intent();
+				i.putExtra("number", number);
+				
+				// 调用该函数才能返回结果，与startActivityForResult对应
+				ContactActivity.this.setResult(1, i);
+				// 传完值后，关闭activity
+				ContactActivity.this.finish();
+			}
+		});
+	}
+	
+	public void getContacts()
+	{
+		// 联系人数据库id表
+		Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
+		// 查询所有的id
+		Cursor idrs = cr.query(uri, new String[]{"contact_id"}, null, null, null);
+		
+		// 一次遍历id
+		while(idrs.moveToNext())
+		{
+			// 先得到id
+			int id = idrs.getInt(idrs.getColumnIndex("contact_id"));
+			// 根据id查询data表，一个id可能占有多列，表示的是同一个人的信息
+			Cursor datars = cr.query(Uri.parse("content://com.android.contacts/data"), new String[]{"mimetype","data1"}
+			, "raw_contact_id=?", new String[]{String.valueOf(id)}, null);
+			// 产生一个联系人
+			ContactVo contact = new ContactVo();
+			while(datars.moveToNext())
+			{
+				// 设置id
+				contact.setId("" + id);
+				// 先得到该条数据的类型
+				String type = datars.getString(datars.getColumnIndex("mimetype"));
+				// 如果是name，就设置name
+				if("vnd.android.cursor.item/name".equals(type))
+					contact.setName(datars.getString(datars.getColumnIndex("data1")));
+				else if("vnd.android.cursor.item/phone_v2".equals(type))
+					contact.setNumber(datars.getString(datars.getColumnIndex("data1")));
+			}
+			//添加到集合
+			list.add(contact);
+			// 需要关闭数据库，不关可能有问题
+			datars.close();
+		}
+		
+		idrs.close();
+	}
+	
+	// 自定义类实现listview
+	class MyAdapter extends BaseAdapter
+	{
+		public int getCount()
+		{
+			// 得到listview的项数
+			return list.size();
+		}
+		public Object getItem(int position)
+		{
+			return null;
+		}
+		public long getItemId(int position)
+		{
+			return 0;
+		}
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			// 先得到联系人对象
+			ContactVo c = list.get(position);
+			// 将制定的布局文件放缩到每个item中
+			View view = View.inflate(ContactActivity.this, R.layout.itemview, null);
+			// 定位到每个item上面控件的id
+			TextView id = (TextView) view.findViewById(R.id.id);
+			// 设置每个item上面控件的显示信息
+			id.setText("序号： " + c.getId());
+			 
+			TextView name = (TextView) view.findViewById(R.id.name);
+			name.setText("姓名： " + c.getName());
+			
+			TextView number = (TextView) view.findViewById(R.id.number);
+			number.setText("电话：" + c.getNumber());
+			
+			// 返回每个item的视图信息
+			return view;
+		}
+	}
+	
+	
+}

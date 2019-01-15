@@ -1,0 +1,61 @@
+概念：一个工厂产生一个产品
+
+特点：
+1，一个产品接口，一个工厂接口
+2，每个工厂只产生一个产品
+interface Food
+{
+	public abstract void getName();
+}
+interface FoodFactory
+{
+	public abstract Food getFood();
+}
+
+class Food1 implements Food
+{
+	public void getName()
+	{
+		System.out.println("Food1");
+	}
+}
+class Food2 implements Food
+{
+	public void getName()
+	{
+		System.out.println("Food2");
+	}
+	
+}
+
+class Factory1 implements FoodFactory
+{
+	public Food getFood()
+	{
+		return new Food1();
+	}
+	
+}
+class Factory2 implements FoodFactory
+{
+	public Food getFood()
+	{
+		return new Food2();
+	}
+	
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		FoodFactory ff1 = new Factory1();
+		Food1 food1 = (Food1) ff1.getFood();
+		food1.getName();
+		
+		FoodFactory ff2 = new Factory2();
+		Food2 food2 = (Food2) ff2.getFood();
+		food2.getName();
+	}
+
+}

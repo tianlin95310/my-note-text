@@ -1,0 +1,12 @@
+1,mysqldump命令可用来备份数据库
+
+	1,mysqldump [选项] databasename tablename	//选项是-u root -p 
+	mysqldump -u root -p test > e:\test.sql	//用root用户将test导出到d盘
+
+	2,mysqldump database databasename1,databasename2
+
+	3，mysqldump all database
+
+2，mysql的目录文件也可实现备份，存贮文件结构与数据也可保存
+
+3，可视化工具也可实现

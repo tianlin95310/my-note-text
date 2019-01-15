@@ -1,0 +1,8 @@
+PrepareStatement ps = con.prepareStatement(sql);
+
+1,
+java.sql.Date date = rs.getDate("Date");	//若有同名的类，加上包名
+
+2,
+ps.setDate(4,new java.sql.Date( date.getTime() ) );	//数据库用java.sql.Date
+

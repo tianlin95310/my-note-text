@@ -1,0 +1,262 @@
+package com.example.filecache;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+
+import libcore.io.DiskLruCache;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+public class MainActivity extends ActionBarActivity
+{
+
+	ArrayList<File> imgs = new ArrayList<File>();
+	ListView lv;
+
+	Point point;
+
+	DiskLruCache diskCache;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		// 得到缓存目录
+		File cacheFile = new File(getCacheDir(), "imgs");
+
+		try
+		{
+			// 得到缓存对象
+			diskCache = DiskLruCache.open(cacheFile, 1, 1, 10 * 1024 * 1024);
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		point = new Point();
+		lv = (ListView) findViewById(R.id.lv);
+		this.getWindowManager().getDefaultDisplay().getSize(point);
+
+		Cursor rs = getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
+				new String[] { Media.DATA }, null, null, null);
+		
+		while (rs.moveToNext())
+		{
+			imgs.add(new File(rs.getString(0)));
+		}
+		rs.close();
+		Toast.makeText(this, imgs.toString(), 0).show();
+		
+		lv.setAdapter(new MyAdapter());
+	}
+	class MyAdapter extends BaseAdapter
+	{
+
+		@Override
+		public int getCount()
+		{
+			return imgs.size();
+		}
+
+		@Override
+		public Object getItem(int position)
+		{
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position)
+		{
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			View view = View.inflate(MainActivity.this, R.layout.lv_item, null);
+			
+			ImageView img = (ImageView) view.findViewById(R.id.iv_img);
+			
+			Bitmap bmp = getBmp(imgs.get(position).getPath());
+			if(bmp == null)
+			{
+				bmp = scale(imgs.get(position).getPath(), point.x / 3, point.y / 3);
+				writeToFile(imgs.get(position).getPath());
+			}
+			
+			img.setImageBitmap(bmp);
+			return view;
+		}
+		
+	}
+	
+	public String toMD5String(String key)
+	{
+		String cacheKey;
+		try
+		{
+			final MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest.update(key.getBytes());
+			cacheKey = bytesToHexString(digest.digest());
+		} catch (NoSuchAlgorithmException e)
+		{
+			cacheKey = String.valueOf(key.hashCode());
+		}
+		return cacheKey;
+	}
+
+	private String bytesToHexString(byte[] bytes)
+	{
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < bytes.length; i++)
+		{
+			String hex = Integer.toHexString(0xFF & bytes[i]);
+			if (hex.length() == 1)
+			{
+				sb.append('0');
+			}
+			sb.append(hex);
+		}
+		return sb.toString();
+	}
+
+	public void writeToFile(String filePath)
+	{
+		try
+		{
+			String key = toMD5String(filePath);
+			
+			Log.d("my", "write:" + key);
+			
+			// 类似于SharePerf的用法
+			DiskLruCache.Editor editor = diskCache.edit(key);
+			
+			if(editor != null)
+			{
+				OutputStream os = editor.newOutputStream(0);
+				Bitmap bmp = scale(filePath, point.x / 3, point.y / 3);
+				
+				// 将图片缩小后，存入缓存中
+				boolean bool = bmp.compress(CompressFormat.JPEG, 100, os);
+			
+				// 注意这里需要添加递交任务，否则不能成功写入
+				if(bool)
+				{
+					editor.commit();
+				}
+				else
+				{
+					editor.abort();
+				}
+			}
+			// 刷新
+			diskCache.flush();
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public Bitmap getBmp(String filePath)
+	{
+		Bitmap bmp = null;
+		try
+		{
+			String key = toMD5String(filePath);
+			
+			Log.d("my", "get:" + key);
+			
+			DiskLruCache.Snapshot shot = diskCache.get(key);
+			if(shot == null)
+			{
+				Log.d("my", "shot == null");
+				return null;
+			}
+				
+			InputStream is = shot.getInputStream(0);
+			if(is == null)
+			{
+				Log.d("my", "is == null");
+				return null;
+			}
+			
+			bmp = BitmapFactory.decodeStream(is);
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		Log.d("my", "get");
+		return bmp;
+	}
+	public File getCacheDir()
+	{
+		File cacheDir;
+		// 得到内存卡缓存目录
+		cacheDir = this.getExternalCacheDir();
+		Log.d("my", cacheDir.getAbsolutePath());
+		return cacheDir;
+	}
+
+	
+	public Bitmap scale(String path, int x, int y)
+	{
+		BitmapFactory.Options ops = new Options();
+		ops.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, ops);
+		
+		int srcX = ops.outWidth;
+		int srcY = ops.outHeight;
+		
+		int rateX = srcX / x;
+		int rateY = srcY / y;
+		
+		int rate = 0;
+		
+		// 注意函数的写法不能随便乱改，上次就是改错了这个东西，导致奇怪的错误
+		if(rateX > 1 && rateX >= rateY)
+			rate = rateX;
+		if(rateY > 1 && rateY >= rateX)
+			rate = rateY;
+		ops.inSampleSize = rate;
+		ops.inJustDecodeBounds = false;
+		
+		Bitmap obj = BitmapFactory.decodeFile(path, ops);
+		
+		if(obj.getWidth() > (int)(obj.getHeight() * 1.5f))
+		{
+			// 通过Bitmap的带有matrix的createBitmap来实现图像的旋转,二不是用canvas来画图，画的东西在内存中不便处理
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90, obj.getWidth() / 2, obj.getHeight() / 2);
+			return Bitmap.createBitmap(obj, 0 , 0, obj.getWidth() , obj.getHeight(), matrix, false);
+		}
+		return obj;
+	}
+
+}

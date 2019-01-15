@@ -1,0 +1,68 @@
+	A
+
+	B
+box-sizing: border-box	// padding，border不增大自身，weex仅支持border-box属性的box-sizing
+	C
+
+	D
+display: inline-block; 		// 为inline-block时块作为行内块元素，他不进行换行
+display: none;		// 为none时元素不显示
+display: block;		// block元素单独占一行，默认占整行(不给出宽度)， 有换行符
+	E
+
+	F
+float: right; 		// 元素脱离文档流，元素忽略块行属性，只要行内剩余的空间足够就在该行显示，不换行，不够使才会换行
+			// 对于块元素，设置后宽度属性变成auto，而不是占满
+flex: 0 0 50px;		// 默认的50px，不等比分，不收缩
+	G
+
+	H
+
+	I
+
+	J
+
+	K
+
+	L
+line-height: 10vh;	// 用于元素文字的居中inline，对于文字元素在父布局居中
+
+	M
+margin: 0 auto; 	// 块元素在父块中水平居中，要求是元素必须是一个块元素（需注意行内块）
+		// 行内块可以是指margin，padding，行内元素只有水平有效
+		
+
+	N
+
+	O
+overflow: scroll	// 元素可上下滑动
+	P
+position: absolute; 	// 配合left: 0;bottom: 30px;属性能实现在父容器的任意位置，在weex经常用到
+pointer-events	// 发生时间冒泡时会用到，就是元素重叠时
+   
+	Q
+
+	R
+
+	S
+
+	T
+text-overflow: clip	// 文本移除处理方式，修剪
+text-overflow: ellipsis	// 文本移除处理方式，用...显示
+text-align: center	// inline元素水平居中
+
+word-break: break-all;	// 文字换行
+word-wrap: break-word;	// 文字换行
+	U
+
+	V
+vertical-align:middle	// 定义同父块内其他行内块元素(inline-block)的基线，行内块元素的居中时使用，需要有参考的其他元素
+	W
+word-wrap: normal	// 换行要求，只在允许的断字点换行
+white-space: pre	// 保留空白，类似于pre标签
+	X
+
+	Y
+
+	Z
+

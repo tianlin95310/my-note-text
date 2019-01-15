@@ -1,0 +1,2 @@
+1.所有的Falsy值，当进行逻辑判断时均为false。Falsy值包括：false、undefined、null、正负0、NaN、‘’(对应json的“”)。
+2.其余所有的值均为Truthy，当进行逻辑判断时均为true。值得注意的是，Infinity、空数组、”0″都是Truthy值。

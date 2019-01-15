@@ -1,0 +1,26 @@
+颜色选择器可以当做颜色来使用，原理就是按下显示一张图，不安显示另外一张图
+
+state_checked,选中有效
+state_selected,
+state_pressed,被按下并且保持按的状态才有效
+
+1,颜色选择器
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="@color/RED"></item>
+    <item android:state_checked="false" android:color="@color/BLACK"></item>
+</selector>
+
+2，图片选择器
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/p1" android:state_checked="true"></item>
+    <item android:drawable="@drawable/ic_launcher"  android:state_checked="false"></item>
+
+</selector>
+
+3，当控件不需要通过点击或者选择时，我们可以
+用控件的enabled属性来改变控件的背景
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    	<item android:state_enabled="true" android:drawable="@drawable/test"></item>
+ 	<item android:state_enabled="false" android:drawable="@drawable/test"></item>
+</selector>

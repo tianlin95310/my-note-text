@@ -1,0 +1,84 @@
+package com.my;
+
+import java.util.HashMap;
+
+// 享元角色
+abstract class Flyweight
+{
+	// 内部状态，可以有，也可以没有,所有的对象共享
+	private String intrinsic = "Flyweight";
+	
+	// 外不条件，用于区分不同对象，他不能共享
+	protected String extrinsic;
+	// 传递外部环境
+	public Flyweight(String extrinsic)
+	{
+		this.extrinsic = extrinsic;
+	}
+	
+	// 逻辑处理
+	public abstract void doSomething();
+
+	public String getIntrinsic()
+	{
+		return intrinsic;
+	}
+
+	public void setIntrinsic(String intrinsic)
+	{
+		this.intrinsic = intrinsic;
+	}
+	
+}
+
+// 具体享元角色
+class FlyweightA extends Flyweight
+{
+	
+	// 根据外部条件的不同得到不同的对象，放到对象池中
+	public FlyweightA(String key)
+	{
+		super(key);
+	}
+	// 输出内部条件，外部条件
+	@Override
+	public void doSomething()
+	{
+		System.out.println(super.getIntrinsic() + "，" + super.extrinsic);
+	}
+}
+
+class FlyweightFactory
+{
+	// 他的String用于控制，这里的String表示的就是外部条件，与Flyweight的外部条件有一定的
+	// 重复，可以省略换成List也能实现
+	private static HashMap<String, Flyweight> pool = new HashMap<String, Flyweight>();
+	public static Flyweight getFlyweight(String key)
+	{
+		if(pool.containsKey(key))
+			return pool.get(key);
+		else
+		{
+			FlyweightA f = new FlyweightA(key);
+			pool.put(key, f);
+			return f;
+		}
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		// 如果外部条件一样，应该得到同一个对象，外部对象不一样，得到新的对象
+		Flyweight fly1 = FlyweightFactory.getFlyweight("s");
+		fly1.doSomething();
+		
+		Flyweight fly2 = FlyweightFactory.getFlyweight("s");
+		fly2.doSomething();
+		
+		Flyweight fly3 = FlyweightFactory.getFlyweight("sss");
+		fly3.doSomething();
+	}
+
+}

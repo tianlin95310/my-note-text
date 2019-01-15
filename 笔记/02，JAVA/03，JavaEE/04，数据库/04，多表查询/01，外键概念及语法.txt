@@ -1,0 +1,18 @@
+1,外键概念
+	A表的主码是cId，是B表的某列属性，
+	B有他自己的主码。B的cId属性的值只能在A表的cId里面选择某个值
+	这就是外键约束
+
+2，操作方法
+alter table B add foreign key(cId) REFERENCES A(cId);
+
+3，外键约束
+  删除，更新操作时，有4中约束关系
+	1，RESTRICT	删除，更新不允许
+	2，CASCADE	删除，更新A表的aId的某个列，B表关于aId的记
+			录都会被删除
+	3，NO ACTION	不做任何改变
+	4，SET NULL	删除，更新A表的aId的某个列，B表关于aId的记
+			录都会被设为空
+	
+	

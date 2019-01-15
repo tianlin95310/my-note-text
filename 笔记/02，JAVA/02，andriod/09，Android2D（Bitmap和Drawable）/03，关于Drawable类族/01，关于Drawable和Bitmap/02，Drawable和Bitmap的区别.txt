@@ -1,0 +1,13 @@
+对比项    显示清晰度    占用内存    支持缩放    支持色相色差调整    支持旋转    支持透明色    绘制速度    支持像素操作
+
+Bitmap    相同            大           是             是               是           是            慢           是
+Drawable  相同            小           是             否               是           是            快           否
+
+Drawable在内存占用和绘制速度这两个非常关键的点上胜过Bitmap
+
+1，Drawablw主要以作为View的背景
+
+2，Bitmap也可以作为View的背景，但之前内部先将Bitmap转化为Drawable了
+	这就是为什么android:src="@drawable/main"
+
+3，Bitmap主要的优势是能进行像素的操作

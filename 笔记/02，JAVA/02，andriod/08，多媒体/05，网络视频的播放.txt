@@ -1,0 +1,174 @@
+package com.example.netvideoandsong;
+
+import java.io.IOException;
+
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+
+public class MainActivity extends ActionBarActivity
+{
+	
+	SurfaceView sfv;
+	
+	SeekBar sb;
+	
+	MediaPlayer mp;
+	
+	int percent;
+	
+	Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			if(msg.what == 0)
+			{
+				int current = 100 * mp.getCurrentPosition() / mp.getDuration();
+				sb.setProgress(current);
+				
+				sb.setSecondaryProgress(percent);
+			}
+			
+		};
+		
+	};
+	
+	Runnable r = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			handler.sendEmptyMessage(0);
+			handler.postDelayed(r, 500);
+		}
+	};
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		sfv = (SurfaceView) findViewById(R.id.sfv);
+		sb = (SeekBar) findViewById(R.id.sb);
+		
+		// hold是sfv的监听器
+		sfv.getHolder().addCallback(new Callback()
+		{
+			
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder)
+			{
+				
+			}
+			
+			@Override
+			public void surfaceCreated(SurfaceHolder holder)
+			{
+				try
+				{
+					mp = new MediaPlayer();
+					// 将mp与sfv结合起来
+					mp.setDisplay(sfv.getHolder());
+					mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					// 设置媒体资源
+					mp.setDataSource("http://10.181.17.52:8080/003%20filedownload/pp.mp4");
+					
+					mp.setOnBufferingUpdateListener(new MyBufferedUpdateListener());
+					mp.setOnPreparedListener(new MyPreparedListener());
+				
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width,
+					int height)
+			{
+				
+			}
+		});
+		
+		
+		sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+				mp.seekTo(sb.getProgress() * mp.getDuration() / 100);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser)
+			{
+				
+			}
+		});
+	}
+	
+	
+	public void start(View v)
+	{
+		try
+		{
+			mp.prepare();
+			
+			handler.post(r);
+			
+		} catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	class MyBufferedUpdateListener implements OnBufferingUpdateListener
+	{
+
+		@Override
+		public void onBufferingUpdate(MediaPlayer mp, int percent)
+		{
+			MainActivity.this.percent = percent;
+			
+			// 得到当前播放百分比
+			int current = 100 * mp.getCurrentPosition() / mp.getDuration();
+			// percent为目前缓冲百分比
+			Log.e(current + "% play", percent + "% buffer");
+		}
+		
+	}
+	
+	class MyPreparedListener implements OnPreparedListener
+	{
+
+		@Override
+		public void onPrepared(MediaPlayer mp)
+		{
+			if(mp.getVideoHeight() != 0 && mp.getVideoWidth() != 0)
+			{
+				mp.start();
+			}
+		}
+		
+	}
+
+}

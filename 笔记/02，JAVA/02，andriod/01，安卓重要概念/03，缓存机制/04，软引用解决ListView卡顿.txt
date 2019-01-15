@@ -1,0 +1,168 @@
+package com.example.softref;
+
+import java.io.File;
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+// 单纯的使用软引用加载时，第一次加载有点卡，因为还没有放入缓存中，当图片加入缓存中时，滑动起来就不卡，但占用的RAM过大
+
+public class MainActivity extends ActionBarActivity
+{
+	ListView lv;
+	
+	Point point;
+	
+	ArrayList<File> imgs = new ArrayList<File>();
+	
+	private Map<String, SoftReference<Bitmap>> imgCache = new HashMap<String, SoftReference<Bitmap>>();
+	
+	public Bitmap getBmp(String filename)
+	{
+		SoftReference<Bitmap> ref = imgCache.get(filename);
+		
+		if(ref != null)
+		{
+			if(ref.get() != null)
+			{
+				Toast.makeText(this, "成功取得", 0).show();
+				return ref.get();
+			}
+		}
+		return null;
+		
+		
+	}
+	
+	public void putBmp(String filename, Bitmap bmp)
+	{
+		Bitmap bmp1 = getBmp(filename);
+		
+		if(bmp1 != null)
+		{
+			Toast.makeText(this, "已存在", 0).show();
+			return;
+		}
+		
+		imgCache.put(filename, new SoftReference<Bitmap>(bmp));
+		Toast.makeText(this, "成功放入缓存", 0).show();
+	}
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		point = new Point();
+		
+		this.getWindowManager().getDefaultDisplay().getSize(point);
+		Cursor rs = getContentResolver().query(Media.EXTERNAL_CONTENT_URI, new String[]{Media.DATA}, null, null, null);
+		lv = (ListView) findViewById(R.id.lv);
+		
+		while(rs.moveToNext())
+		{
+			imgs.add(new File(rs.getString(0)));
+		}
+		rs.close();
+		
+		Toast.makeText(this, imgs.toString(), Toast.LENGTH_LONG).show();
+		
+		lv.setAdapter(new MyAdapter());
+	}
+	
+	class MyAdapter extends BaseAdapter
+	{
+
+		@Override
+		public int getCount()
+		{
+			return imgs.size();
+		}
+
+		@Override
+		public Object getItem(int position)
+		{
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position)
+		{
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			View view = View.inflate(MainActivity.this, R.layout.lv_item, null);
+			
+			ImageView img = (ImageView) view.findViewById(R.id.iv_img);
+			
+			Bitmap bmp = getBmp(imgs.get(position).getName());
+			
+			if(bmp == null)
+			{
+				bmp = scale(imgs.get(position).getAbsolutePath(), (int)(point.x * 0.5), (int)(point.y * 0.5));
+				
+				putBmp(imgs.get(position).getName(), bmp);
+			}
+			
+			img.setImageBitmap(bmp);
+			return view;
+		}
+		
+	}
+	
+	public Bitmap scale(String path, int x, int y)
+	{
+		BitmapFactory.Options ops = new Options();
+		ops.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, ops);
+		
+		int srcX = ops.outWidth;
+		int srcY = ops.outHeight;
+		
+		int rateX = srcX / x;
+		int rateY = srcY / y;
+		
+		int rate = 0;
+		
+		// 注意函数的写法不能随便乱改，上次就是改错了这个东西，导致奇怪的错误
+		if(rateX > 1 && rateX >= rateY)
+			rate = rateX;
+		if(rateY > 1 && rateY >= rateX)
+			rate = rateY;
+		ops.inSampleSize = rate;
+		ops.inJustDecodeBounds = false;
+		
+		Bitmap obj = BitmapFactory.decodeFile(path, ops);
+		
+		if(obj.getWidth() > (int)(obj.getHeight() * 1.5f))
+		{
+			// 通过Bitmap的带有matrix的createBitmap来实现图像的旋转,二不是用canvas来画图，画的东西在内存中不便处理
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90, obj.getWidth() / 2, obj.getHeight() / 2);
+			return Bitmap.createBitmap(obj, 0 , 0, obj.getWidth() , obj.getHeight(), matrix, false);
+		}
+		return obj;
+	}
+	
+
+}

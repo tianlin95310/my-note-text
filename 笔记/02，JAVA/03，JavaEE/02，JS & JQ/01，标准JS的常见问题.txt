@@ -1,0 +1,9 @@
+1，parentNode和parentElement的区别，（previoussibling，previouselementsibling）获取前一个兄弟
+parentElement是获取父元素节点 
+parentNode获取的父节点，不仅仅是元素节点，包括文本节点
+
+2，Element与Node
+Node是Element的父类
+只有nodeType为1的节点才是元素Element节点
+
+3,1/2整除问题跟其他语言不同,js里1/2等于0.5，在Java里是1

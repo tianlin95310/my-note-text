@@ -1,0 +1,108 @@
+
+import java.io.*;
+
+public class file
+{
+	public static boolean fenge(String respath,String obpath)
+	{
+		File file = new File(respath);
+		if(!file.exists())
+		{
+			return false;
+		}
+		long totalSize = file.length();//求文件的长度
+		long perFileSize = 20 * 1024L;//每个文件的大小
+		
+		long yushu = totalSize % perFileSize;
+		long total = totalSize / perFileSize;
+		total = ( ( yushu == 0) ? total : total + 1 );//总的文件个数
+		
+		byte bytes[] = new byte[4 * 1024];//每次读的字节数
+		int len = -1;
+	
+		try
+		{
+			InputStream in = new FileInputStream(respath);
+			BufferedInputStream bis = new BufferedInputStream(in);
+			
+			for(int i = 0;i < total;i++)
+			{
+				String obp = obpath + file.getName() + "-" + i + ".lin";//目标文件名
+				OutputStream out = new FileOutputStream(obp);
+				BufferedOutputStream bos = new BufferedOutputStream(out);
+				
+				long perSize = 0L;//控制每个文件的大小
+				while( (len = bis.read(bytes)) != -1)
+				{
+					bos.write(bytes, 0, len);
+					bos.flush();
+					
+					perSize += 4;
+					if(perSize >= 20)
+						break;
+				}
+				bos.close();
+				out.close();
+			}
+			bis.close();
+			in.close();
+			
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return true;
+	}
+	public static void hebing(String obpath,String respath)
+	{
+		File file = new File(respath);
+		if(file == null)
+			return;
+		File files[] = file.listFiles();//得到文件数组，有序排列
+		if(files == null)
+			return;
+		
+		int num = files.length;
+		
+		try
+		{
+			OutputStream out = new FileOutputStream(obpath);
+			BufferedOutputStream bos = new BufferedOutputStream(out);
+			
+			for(int i = 0;i < num ; i++)
+			{
+				InputStream in = new FileInputStream(files[i]);
+				BufferedInputStream bis = new BufferedInputStream(in);
+				byte bytes[] = new byte[4 * 1024];//每次读4个字节
+				
+				int len = 1;
+				while( (len = bis.read(bytes)) != -1)
+				{
+					bos.write(bytes, 0, len);
+					bos.flush();
+				}
+			}
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args)
+	{
+		/*
+		String respath = "C:\\Users\\Administrator\\Desktop\\1.jpg";
+		String obpath = "C:\\Users\\Administrator\\Desktop\\1\\";
+		fenge(respath,obpath);
+		*/
+		String respath = "C:\\Users\\Administrator\\Desktop\\1";
+		String obpath = "C:\\Users\\Administrator\\Desktop\\2.jpg";
+		hebing(obpath,respath);
+		System.out.println("success");
+	}
+}

@@ -1,0 +1,14 @@
+1，select count(takec.cId)from takec, course	
+两表直接连接，得到笛卡尔积记录为N1 * N2
+
+2，内接连简便写法
+select takec.cId,takec.sId,takec.tId,course.cName from takec, course
+where takec.cId = course.cId;
+
+3，内连接的标准写法
+select tc.cId,tc.sId, tc.tId, c.cId, c.cName from takec tc
+INNER JOIN course c ON
+tc.cId = c.cId;
+
+4，左连接与右连接还是有很大作用的，比如需要以某个表为基准显示，某列为空时，并且是以该列相关联，
+那么就需要左连接

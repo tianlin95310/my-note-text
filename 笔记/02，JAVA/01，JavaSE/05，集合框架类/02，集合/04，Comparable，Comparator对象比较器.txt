@@ -1,0 +1,22 @@
+对象比较器，主要用于TreeSet，TreeMap以及对象数组的排序。
+
+
+
+1，Comparable接口，相当于c语言的操作符重载（类的成员函数）
+	1，只有实现了Comparable接口的类的对象才能进行比较、排序操作。
+
+	2，自定义类可能有很多对象，需要选择由哪一个属性作为比较的依据
+    类定义:class c1 implement Comparable<T>
+    T的类型一般是c1，或者不用写，同种类型比较才有意义
+    需要实现compareto（c1 t1）函数
+
+
+2，Comparator接口，（相当于重载c语言的顶层函数）
+函数定义：class c1 implements Comparator<c2>
+c1：实现比较的类
+c2：需要比较的类
+
+需要实现Comparator的compare（c2 t1 ,c2 t2）函数
+排序函数的使用
+
+它们的返回值为负数 ，0,正数分别表示比较的结果。

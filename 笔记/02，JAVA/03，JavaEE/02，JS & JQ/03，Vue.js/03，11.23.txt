@@ -1,0 +1,14 @@
+/*eslint-disable*/	忽略进行语法检查
+
+通过require可以运行导入或运行js文件
+
+vuex存放公共全局变量
+mapGetters从vuex引入得来
+...mapGetters用于查找全局数据，查找到的数据会被加入到当前组件的data里面
+
+this.$nextTrick 在数据更新后会调用此方法，前提是在这句话之前有响应式的数据更新
+
+	
+Vue.component注册组件
+
+keep-aline让组件保持存活

@@ -1,0 +1,14 @@
+首先，总的过程是View树的递归遍历，
+		VP1
+
+	VP2		V1
+
+V2 	V3	MVP3
+
+	    V4  V5   V6
+
+1，每一层的ViewPager只会并且有义务管他的孩子，像系统已经实现了的布局，如LinearLayout，RelativeLayout
+他们重写了onMeasure用来测量孩子的大小，重写了onLayout来指定孩子的位置，至于dispatchDraw通知孩子去画自己，
+这个已经由ViewGroup实现了，我们不用重写，包括LinearLayout他也没有重写dispatchDraw，使用继承的就可以了
+
+2，所以我们自定义ViewPager时，也需要重写onMeasure，onLayout，这样才能保证递归能继续下去

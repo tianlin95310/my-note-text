@@ -1,0 +1,26 @@
+1，该列表视图仅支持单个控件，也就是在ListView里面的每一个单元只能有一个控件。
+
+2，ArrayAdapter< String> aa = new ArrayAdapter<String>
+		 (this, 	//当前的MainActivity对象
+		R.layout.array, //副布局资源ID
+		R.id.tv, 	//副布局中那个唯一的控件的ID，它只支持一个控件，并且需要告诉该类他们的关联关系
+		strs);		//初始化列表的相应控件的显示值，所以需要告诉该类，控件的ID，如果控件没有ID，那么基本上没有什么意义
+
+3，使用举例
+
+	 lv1 = (ListView) findViewById(R.id.lv1);	//获取主布局的ListView控件对象
+        
+        StudentDao sd = new StudentDao(this);		
+        
+    	list = sd.queryall();
+    	
+    	String [] strs = new String[list.size()];
+    	
+    	for(int i = 0; i < strs.length ; i++)		
+    	{
+    		strs[i] = list.get(i).toString();	//为列表显示的数据，即控件的text属性赋值
+    	}
+    	ArrayAdapter< String> aa = new ArrayAdapter<String> (this, R.layout.array, R.id.tv, strs);
+    							//构造Adapter对象
+    	lv1.setAdapter(aa);			//设置Adapter对象，一些函数系统已经实现好了。
+    	

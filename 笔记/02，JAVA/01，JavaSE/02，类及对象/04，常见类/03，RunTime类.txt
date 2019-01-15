@@ -1,0 +1,25 @@
+通过getRuntime() 返回对象，不必new
+
+
+1，返回CPU核心数
+availableProcessors()
+
+2，一下三个方法得到是jvm的堆内存，堆内存只是运行总内存的一部分
+System.out.println(r.maxMemory());
+
+System.out.println(r.freeMemory());
+
+System.out.println(r.totalMemory());
+
+3，运行命令行程序
+try
+	{
+		r.exec("notepad");
+	} catch (IOException e)
+	{
+		e.printStackTrace();
+	}
+
+6，loadLibrary()，加载动态库
+
+7,gc(),与System的gc相同,通知垃圾回收器回收垃圾对象

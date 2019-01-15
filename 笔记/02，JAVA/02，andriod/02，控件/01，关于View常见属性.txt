@@ -1,0 +1,61 @@
+1,tag
+  可以用来保存数据
+但建议使用id，它支持编译时类型检查，速度更快
+
+2，soundEffectsEnabled
+  点击时是否有声音
+
+3，scrollbars
+  设置滚动条显示，none,竖直，水平
+
+4，scrollbarTrackVertical，scrollbarTrackHorizontal
+  设置滚动条轨迹，drawable
+
+5，scrollbarThumbVertical，scrollbarThumbHorizontal
+  设置滚动条的drawable
+
+6，saveEnabled
+窗口冻结时是否自动保存View的数据
+
+7，nextFocusDown，Left等等
+  下一个焦点的位置
+
+8，keepScreenOn
+  保持屏幕唤醒
+
+9，focusableInTouchMode
+  在Touch模式下能否获取焦点，处于touch模式，不一定处于focus模式，所以需要该属性
+  touch对应touch事件，focus对应于click事件
+  
+
+10，focusable
+  某控件如果requestFocus没有效果的话，需要将View的focusableInTouchMode设为true
+	如果是由于加载布局需要时间的原因，可以在onWindowFocusChange里做，而不是onCreate
+	让控件获取焦点
+		bt.setFocusable(true);			默认问true
+                bt.setFocusableInTouchMode(true);	触摸时也能获取焦点
+                bt.requestFocus();
+                bt.requestFocusFromTouch();
+
+11，fadingEdge，fadingEdgeLength
+  滚动时，边框渐变的方向和长度
+
+12，drawingCacheQuality
+绘图时的半透明质量
+
+13，android:fitsSystemWindows
+正常情况，contentview可用的空间是去除了actionbar,title,底部按键的空间后剩余的可用区域；
+这个属性设置为true,则忽略，false则不忽略
+
+14, android:overScrollMode="never"
+去掉RecyclerView滑动到顶部时的高亮动画效果
+
+15，android:splitMotionEvents="false"，
+限制不能两个子空间同时点击，即不能多点点击，同理android:windowEnableSplitTouch他是一个全局样式的控制
+
+16，fillViewport=”true”
+fillViewport用于ScrollView， 
+当ScrollView里面的空间高度大于ScrollView的时候，这个属性无足轻重，设置成true也没意义； 
+当子控件高度低于的时候，该属性就起了作用，子控件想实现”match_parent”的效果，没有同时加上：fillViewport=”true”的话是不会有效果的。
+
+

@@ -1,0 +1,164 @@
+package com.my2;
+
+import java.util.ArrayList;
+
+abstract class Component
+{
+	public abstract void doSomethind();
+
+	public abstract void add(Component component);
+
+	public abstract void remove(Component component);
+	// 这里是标准的树节点结构，存的是下一组的地址
+	public abstract ArrayList<Component> getList();
+}
+
+class Leaf extends Component
+{
+	private String name;
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	@Override
+	public void doSomethind()
+	{
+		System.out.println("我是" + name);
+	}
+
+	@Override
+	public void add(Component component)
+	{
+		try
+		{
+			throw new Exception("请不要调用");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void remove(Component component)
+	{
+		try
+		{
+			throw new Exception("请不要调用");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	// 因为Component也有getList方法，所以遍历的参数可以直接用Component
+	// 不需要向下强转
+	@Override
+	public ArrayList<Component> getList()
+	{
+		try
+		{
+			throw new Exception("请不要调用");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
+
+class Composite extends Component
+{
+
+	private ArrayList<Component> list;
+	private String name;
+	public Composite()
+	{
+		list = new ArrayList<Component>();
+	}
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	@Override
+	public void doSomethind()
+	{
+		System.out.println("我是" + name);
+	}
+
+	@Override
+	public void add(Component component)
+	{
+		list.add(component);
+	}
+
+	@Override
+	public void remove(Component component)
+	{
+		list.remove(component);
+	}
+
+	@Override
+	public ArrayList<Component> getList()
+	{
+		return list;
+	}
+	
+}
+public class Test2
+{
+
+	// 因为Component也有getList方法，所以遍历的参数可以直接用Component
+	// 不需要向下强转
+	public static void print(Component component)
+	{
+		for(Component c : component.getList())
+		{
+			if(c instanceof Leaf)
+				c.doSomethind();
+			else
+				print(c);
+		}
+	}
+	public static void main(String[] args)
+	{
+		Composite root = new Composite();
+		root.setName("跟");
+		root.doSomethind();
+		
+		Leaf leaf1 = new Leaf();
+		leaf1.setName("树叶1");
+		Leaf leaf2 = new Leaf();
+		leaf2.setName("树叶2");
+		
+		Composite branch1 = new Composite();
+		branch1.setName("我是树枝1");
+		branch1.doSomethind();
+		
+		Leaf leaf3 = new Leaf();
+		leaf3.setName("树叶3");
+		Leaf leaf4 = new Leaf();
+		leaf4.setName("树叶4");
+		
+		branch1.add(leaf3);
+		branch1.add(leaf4);
+		
+		root.add(leaf1);
+		root.add(leaf2);
+		root.add(branch1);
+		
+		print(root);
+	}
+
+}

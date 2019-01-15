@@ -1,0 +1,11 @@
+1，
+if 
+else
+if不满足，就一定会走else，跟判断的条件源没有关系
+
+2,
+if 
+else if
+else if
+else
+所有的if都没有满足，一定会走else

@@ -1,0 +1,14 @@
+android.Manifest.permission;		系统的所有权限类
+
+
+
+android.R;	系统已经定义好的资源文件
+android.包名;	系统的类
+
+常见类包
+android.app;
+android.os;
+android.provider;
+
+1,获取当前的SDK版本
+android.os.Build.VERSION.SDK_INT

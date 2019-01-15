@@ -1,0 +1,38 @@
+1，该类的作用相当于Windows的配置文件、注册表的作用，它默认的格式为xml，文件存在于一个系统自动创建的文
+	件夹shared_prefs下，生成的xml文件格式在一个<map>标签下，跟windows配置文件一样是用键值对的形式。
+	
+2，他跟前面的openFileInput，Output一样，是通过Context类获取的，生成的文件位于当前应用内。
+
+3，读写方式，用Editor类的putString，putInt等等一些函数来操作，采用的是键值对的模式，生成的是是XML文件。
+	最终要调用一个commit函数，提交任务。
+
+4，使用方法
+
+class btok implements OnClickListener {
+		public void onClick(View v) {
+
+			UserVo user = new UserVo();
+			user.setName(et_username.getText().toString().trim());
+			user.setPassword(et_password.getText().toString().trim());
+			user.setNumber(et_number.getText().toString().trim());
+			user.setSex(rg1.getCheckedRadioButtonId() == R.id.rb_nan ? "男"
+					: "女");
+
+				// 1，通过Context对象获取SharedPreferences对象
+				// 2，第一个参数为文件名，不用带扩展名，后面的参数包括文件的权限，是否追加等等。
+
+			SharedPreferences spf = MainActivity.this.getSharedPreferences(
+					"userinfo", Context.MODE_PRIVATE);
+
+				// 4，获取一个编辑对象，用于文件的读写	
+			Editor edit = spf.edit();		
+			edit.putString("username", user.getName());
+			edit.putString("password", user.getPassword());
+			edit.putString("number", user.getNumber());
+			edit.putString("sex", user.getSex());
+				// 5，提交任务，有点类似与数据库的事务的概念，不提高的话，写的东西并没有真正的写进去。
+			edit.commit();
+
+			Toast.makeText(MainActivity.this, "注册成功！", 0).show();
+		}
+	}

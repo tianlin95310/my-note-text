@@ -1,0 +1,72 @@
+定义：基类引用能调用大部分的子类成员，父类对象出现的地方一定可以换为子类，因为继承了所有的东西
+	子类对象出现的地方，不一定能换成父类，因为子类有自己的一些东西，父类无法调用
+
+该原则定义了继承的规范：
+1，子类必须完全实现父类的方法。
+2，子类可以扩充。
+3，实现父类方法时，输入参数可以放大，这里是重载的范围。并不是真正的重写，重写要求参数列表
+	相同。
+4，重写方法时，返回值类型可以变小，这也是多态的一大特点。
+
+// 3的举例
+interface People
+{
+	public void getSomething(ArrayList<String> list);
+}
+
+class Parent implements People
+{
+	// 重写要求参数列表完全一致
+	@Override
+	public void getSomething(ArrayList<String> list)
+	{
+		System.out.println("parent");
+	}
+}
+
+class Child extends Parent
+{
+	public void getSomething(List<String> list)
+	{
+		System.out.println("parent");
+	}
+}
+
+public class Test
+{
+	public static void main(String[] args)
+	{
+		People parent = new Parent();
+		ArrayList<String> list = null;
+		parent.getSomething(list);
+		
+		// 父类出现的地方可以用子类替换，若想增大形参的类型，只能通过重载的形式了
+		People child = new Child();
+		child.getSomething(list);
+		
+	}
+	
+}
+
+
+// 4的举例
+	interface People
+	{
+		public List<String> getSomething();
+	}
+	class Parent implements People
+	{
+		public List<String> getSomething()
+		{
+			return null;
+		}
+	}
+	
+	class Child extends Parent
+	{
+		// 子类重写的函数的返回类型小于父类的类型，这本身也是多态的一大特点
+		public ArrayList<String> getSomething()
+		{
+			return null;
+		}
+	}

@@ -1,0 +1,145 @@
+定义：讲一个复杂对象的创建于他的表示分离，使得同样的构建过程可以创建不同的表示
+
+优点
+1，封装性好，客户端不必知道对象的创建细节
+2，创建者易于扩展，因为他们彼此独立
+3，便于控制细节风险，因为具体的创建者是彼此独立的，不对其他模块产生任何影响
+
+// 外部类实现举例
+package com.my;
+
+// 产品类
+class Product
+{
+	private String name;
+	private String type;
+	private float price;
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+	public float getPrice()
+	{
+		return price;
+	}
+	public void setPrice(float price)
+	{
+		this.price = price;
+	}
+	public Product()
+	{
+		super();
+	}
+	public Product(String name, String type, float price)
+	{
+		super();
+		this.name = name;
+		this.type = type;
+		this.price = price;
+	}
+	public String toString()
+	{
+		return "[name=" + name + ", size=" + type + ", price=" + price + "]";
+	}
+}
+// 创建者基类
+abstract class Builder 
+{
+	public abstract void setName(String name);
+	public abstract void setType(String type);
+	public abstract void setPrice(float price);
+	public abstract Product getProduct();
+}
+
+// 具体的某一个创建者，生成具有某些属性的一类产品，根据参数的不同，创建出的产品也不同
+class ProduceABuilder extends Builder
+{
+	private String name;
+	private String type;
+	private float price;
+	@Override
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+	@Override
+	public void setPrice(float price)
+	{
+		this.price = price;
+	}
+	@Override
+	public Product getProduct()
+	{
+		return new Product(this.name, this.type, this.price);
+	}
+}
+
+// 该类无多大用途，主要是负责创建的时序，可以去掉不用
+// 该类得到某一种固定的产品，相当于是产品定制
+class Director1
+{
+	private ProduceABuilder builder = new ProduceABuilder();
+	
+	// 设置产品的相关属性
+	public void setProperties()
+	{
+		builder.setName("ProductA");
+		builder.setPrice(50.5f);
+		builder.setType("AAAA");
+	}
+	public Product getProduct()
+	{
+		return builder.getProduct();
+	}
+}
+
+class Director2
+{
+	private ProduceABuilder builder = new ProduceABuilder();
+	
+	// 设置产品的相关属性
+	public void setProperties()
+	{
+		builder.setName("ProductB");
+		builder.setPrice(799.5f);
+		builder.setType("BBBB");
+	}
+	public Product getProduct()
+	{
+		return builder.getProduct();
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Director1 d1 = new Director1();
+		d1.setProperties();
+		Product p1 = d1.getProduct();
+		System.out.println(p1);	
+		
+		Director2 d2 = new Director2();
+		d2.setProperties();
+		Product p2 = d2.getProduct();
+		System.out.println(p2);	
+	}
+
+}

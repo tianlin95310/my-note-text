@@ -1,0 +1,1 @@
+1，他与ViewGroup一样，实现了ViewManager接口，能添加view，删除view，更新view

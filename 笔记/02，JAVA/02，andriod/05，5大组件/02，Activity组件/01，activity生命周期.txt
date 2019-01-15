@@ -1,0 +1,41 @@
+onCreate	应用启动时调用，通常在该方法里实例化对象，实例化对象，虽然控件的长宽都为0，并且
+		控件都还没有onAttachedToWindow，但对控件对象的操作还是有效的，如注册的事件等等
+
+onStart		当界面可见时调用
+
+onResume	activity进入运行状态，此时还不能获取控件的宽高，控件都还没有onAttachedToWindow，测量工作还没有开始
+		
+onPause		界面可见或部分可见，但失去焦点，
+
+onStop		界面完全不可见，由onPause到onStop
+
+onDestory	退出应用
+
+onRestart	回到当前应用，由onStop开始
+
+
+// 其他重要毁掉方法回调方法
+1，onSaveInstanceState	
+	当Activity界面信息需要被保存时，该方法才会被调用，如回到主界面，处于onStop状态时，横竖屏切换。
+	能保存的数据是Bundle类型的，限制比较大
+	在onPause和onStop之间调用
+
+2，onRestoreInstanceState
+	当activity被系统关闭，而非人为关闭时，再次启动activity时，系统会自动调用该方法
+	能获取的数据是Bundle类型的，限制比较大
+	在onStart和onResume之间调用
+
+3，旧版本横竖屏切换的API
+onRetainNonConfigurationInstance	
+	横竖屏切换在第一次onDestroy之前调用，可以将需要保存的值放在该函数的返回值里，可以是任何类型
+	保存后重新启动时可以取出其中的值用于显示
+getLastNonConfigurationInstance		
+	Activity启动时或者横竖屏切换重新启动Activity时在onCreate前调用，我们可以在onCreate里调用该方法获取上次保存的值
+
+
+4，新版本横竖屏切换的API
+onRetainCustomNonConfigurationInstance
+	横竖屏切换在第一次onDestroy之前调用，可以将需要保存的值放在该函数的返回值里，可以是任何类型
+	保存后重新启动Activity时可以取出其中的值用于显示
+getLastCustomNonConfigurationInstance
+	Activity启动时或者横竖屏切换重新启动Activity时在onCreate前调用，我们可以在onCreate里调用该方法获取上次保存的值

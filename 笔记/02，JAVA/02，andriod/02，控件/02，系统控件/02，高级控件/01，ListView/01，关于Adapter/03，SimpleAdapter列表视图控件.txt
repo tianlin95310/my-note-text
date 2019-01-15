@@ -1,0 +1,56 @@
+1，与ArrayAdapter相比的特点是，功能更强大，每一个单元可以放置多个控件，而ArrayAdapter只能放一个控件
+	实际上所有的功能都能用自定义的Adapter来完成，只不过SimpleAdapter更方便
+	与前面的一样，需要设置Adapter。内部封装了一个inflate函数。
+
+2，他的data参数是核心，结构为List<Map<T，V>>，
+	1，List接口直接表示ListView他有多少行，
+
+	2，内部的Map<T,V>表示每一个单元，他的元素个数就决定了每一单元的控件的个数，key值关联的是控件要输出的内容
+		最后通过String[],int[]数组又将key与控件相关联，最终的结果就是控件与要输出的内容相关联。
+
+	3，一般情况下，将有变化的值放入data中，一些不变化的都是一样的，就不需要放入data中了，所以一些不需要改变的
+		控件ID都不需要设置，这样每一个单元的该控件的值都是一样的。
+
+	4，后面的String数组，int数组，是要将一些有ID的控件与Map里的Key值进行相关联的两个数组，他们的相对位置
+		要保持一致，同理，如果控件本身不需要改变显示的东西，就不必设置关联了。
+
+* * * * 5，特殊：当控件是ImageView时，map里的value是图片的ID，那么图片就能正常显示。不需要setImageBitmap了
+3，
+构造函数的介绍
+SimpleAdapter sa = new SimpleAdapter
+			(this, 		//表示当前的MainActivity对象
+			data, 		//需要动态显示的控件对应的变化值，与key值的集合，用一个List<Map<T，V>>来接受
+			R.layout.simple, //子布局的资源ID
+			key, 		//表示Map<T,V>中的key，也就是每个单元内部不同控件的key值，因为它支持多个控件，所以
+					//key值有多个，用于表示不同的控件
+			keyToId);	//表示每个单元内部的控件的ID值，他必须要与key值一一对应，告诉系统在相应的key值表示的
+					//控件上显示指定控件的内容	
+
+4，使用举例
+List<Map<String,Object>> data = new ArrayList<Map<String,Object>>();	// 1，构造Data对象
+    	Map<String,Object> item = null;				// 2，内部单元对象
+    	
+    	for(int i = 0 ; i < list.size() ; i++)
+    	{
+				// 3，因为有4个属性的值是变化的，所以设置4个key值，每个Map对象含有4个元素
+				//	表示每个单元的有4个内容变化的控件，还有一个图片控件每个单元都是一样的，所以不需要设置ID
+				//也不需要放入data中
+
+    		item = new HashMap<String,Object>();
+    		item.put("sNo", "学号：" + list.get(i).getsNo());
+    		item.put("sName", "姓名：" + list.get(i).getsName());
+    		item.put("sex", "性别：" + list.get(i).getSex());
+    		item.put("sAge", "年龄：" + list.get(i).getsAge());
+    					
+    		data.add(item);
+    	}
+    	// 将控件与key一一对应，key又与输出相对应，所以控件与输出相对应
+    	String[] key = new String[]{"sNo", "sName","sex","sAge"};
+    	int [] keyToId = new int[]{R.id.tv_no, R.id.tv_name, R.id.tv_sex, R.id.tv_age};
+    	
+    	SimpleAdapter sa = new SimpleAdapter(this, data, R.layout.simple, key, keyToId);
+    
+    	lv1.setAdapter(sa);
+    	
+    	
+	

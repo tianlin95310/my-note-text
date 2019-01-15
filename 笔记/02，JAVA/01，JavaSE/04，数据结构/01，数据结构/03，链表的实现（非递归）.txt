@@ -1,0 +1,172 @@
+package com.itjob;
+
+import java.io.Console;
+
+public class  Test
+{
+	public static void main(String[] args) 
+	{
+		List list = new List();
+		list.tailInsert(2);
+		list.tailInsert(1);
+		list.tailInsert(2);
+		list.tailInsert(3);
+		list.tailInsert(5);
+		list.tailInsert(5);
+		list.tailInsert(7);
+		list.tailInsert(7);
+		
+		list.tailDelete(7);
+		list.tailDelete(7);
+		list.print();
+		list.tailInsert(7);
+		list.tailInsert(7);
+		list.print();
+	}
+}
+class List
+{
+	private Type head;
+	private Type p = head;//顺序插入记录最后一个元素的位置。免得每次插入都要遍历，铲除时需要维护他的位置
+	public boolean print()
+	{
+		Type p = head;
+		while(p != null)
+		{
+			p.print();
+			p = p.next;
+		}
+		return true;
+	}
+	public boolean sortInsert(int e)	//有序插入，实现的是倒序
+	{
+		if(head == null)
+		{
+			head = new Type();
+			head.data = e;
+			return true;
+		}
+		else
+		{
+			Type q = head;	//从head开始遍历
+			while(q != null)
+			{
+				if(e <= q.data)	//新插入的比之前的小就插到后面去,加等号后允许重复，不加等号不能重复
+				{
+					Type temp = new Type();
+					temp.data = e;
+					if(q.next == null)
+					{
+						q.next = temp;
+						return true;
+					}
+					else
+					{
+						temp.next = q.next;
+						q.next = temp;
+						return true;
+					}
+				}
+				q = q.next;
+			}
+
+			if(q == null)			//若新插入的比之前的都大，则插入到第一个去
+			{
+				Type temp = new Type();
+				temp.data = e;
+				temp.next = head;
+				head = temp;
+				return true;
+			}
+		}
+		return true;
+	}
+	public boolean tailInsert(int e)	//尾插法
+	{
+		if(head == null)
+		{
+			head = new Type();
+			head.data = e;
+			p = head;	//记录最后一个元素的位置
+			return true;
+		}
+		else
+		{
+			Type temp = new Type();
+			temp.data = e;
+			p.next = temp;	//每次都插到p后面
+			p = temp;		//记录最后一个元素的位置
+			return true;
+		}
+	}
+	public boolean tailDelete(int e)
+	{
+		if(head == null)
+			return false;
+		if(head.data == e)
+		{
+			head = head.next;
+			return true;
+		}
+		else
+		{
+			Type p1 = head;
+			Type p2 = p1.next;
+			
+			while(p2 != null)
+			{
+				if(p2.data == e)
+				{
+					if(p2.next == null)
+					{
+						p1.next = null;
+						p = p1;		//尾部标记需要修改
+						return true;
+					}
+					else
+					{
+						p1.next = p2.next;
+						return true;
+					}
+				}
+				p1 = p1.next;
+				p2 = p1.next;
+			}
+		}
+		return true;
+	}
+ 	public boolean headInsert(int e)	//头插法
+	{
+		if(head == null)
+		{
+			head = new Type();
+			head.data = e;
+			return true;
+		}
+		else if(head.next == null)
+		{
+			Type temp = new Type();
+			temp.data = e;
+			head.next = temp;
+			return true;
+		}
+		else
+		{
+			Type temp = new Type();
+			temp.data = e;
+			temp.next = head.next;
+			head.next = temp;
+			return true;
+		}
+	}
+}
+class Type
+{	
+	public int data;
+	public Type next;
+	public void print()
+	{
+		System.out.println(data+ " ");
+	}
+}
+

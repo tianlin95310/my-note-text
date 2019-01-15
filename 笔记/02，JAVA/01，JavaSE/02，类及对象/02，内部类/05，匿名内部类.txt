@@ -1,0 +1,73 @@
+1，匿名内部类（没有名字的内部类）
+
+    1，不能有构造方法，只能有一个匿名实例。
+
+    2，不能定义任何静态成员。但可以定义普通的非静态带有修饰符（4种）的成员
+
+    3，一定是在new的后面，用其隐含的实现一个类或者是一个接口。
+
+    4，匿名内部类与普通的成员内部类的共同点
+	1，能直接访问外部类的成员，
+	2，能用外部类.this表示外部类对象，用于消除内部类自己内部的this的二义性
+	3，可以使用this
+
+    5，匿名内部类与方法内部类的共同点
+	1，能直接访问外部类的成员，
+	2，只能访问所在方法内的常量
+
+2，匿名内部类的分类
+
+	2，接口式的匿名内部类：
+	   
+    public class MainActivity extends Activity {
+    
+    private boolean isshow = false;
+	
+    protected void onCreate(Bundle savedInstanceState) {
+      
+        bt1.setOnClickListener(new OnClickListener() {
+			
+        	public int a;
+		public void onClick(View v) {
+				
+			if(isshow == true)		//跟普通内部类一样，能直接访问外部类的成员，他在类内部
+				{
+					tv.setVisibility(View.VISIBLE);
+					bt1.setText("paly");
+				}
+				else
+				{
+					tv.setVisibility(View.INVISIBLE);
+					bt1.setText("pause");
+				}
+				isshow = !isshow;
+			}
+		});
+    }
+
+
+	   
+	1，继承式的匿名内部类，基类可以是抽象类，也可以不是抽象类。
+	public class ti
+	{
+	    public static void main(String[] args)
+	    {
+		a c1 = new a()
+		{			//实例化的时候如果要写函数fun，必须是重写a的函数。
+					//不能写新的函数
+			public void fun()
+			{
+			    System.out.println("shabi");
+			}
+		};
+		c1.fun();
+	     }
+	}
+	class a{
+	    public void fun()
+	    {
+		System.out.println("doubi");
+	    }
+	}
+
+

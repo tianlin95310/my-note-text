@@ -1,0 +1,46 @@
+1，将多个线程放在一起管理，线程执行完毕不会立即关闭，
+	线程池在系统启动时即创建大量空闲的线程，程序将一个Runnable对象传给线程池，
+	线程池就会启动一条线程来执行该对象的run方法，当run方法执行结束以后，该线程
+	并不会死亡，而是再次返回线程池中成为空闲状态，等待执行下一个Runnable对象的Run方法。
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+
+class MyThread implements Runnable
+{
+
+	@Override
+	public void run()
+	{
+		System.out.println(Thread.currentThread().getName() + " running");
+	}
+	
+}
+public class ThreadPools
+{
+	public static void main(String []args)
+	{
+		//用Executors工厂类产生线程池对象。
+		ExecutorService es = Executors.newCachedThreadPool();
+		
+		MyThread t = new MyThread();
+		//提交自己的任务
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		es.submit(t);
+		
+		//启动一次顺序关闭，执行以前提交的任务，但不接受新任务。
+		es.shutdown();	
+		//试图停止所有正在执行的活动任务，暂停处理正在等待的任务，并返回等待执行的任务列表。
+		es.shutdownNow();
+		
+	}
+}

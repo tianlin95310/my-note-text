@@ -1,0 +1,264 @@
+#include<iostream>
+#include<windows.h>
+#include<stdio.h>
+#include <conio.h>
+#include<time.h>
+using namespace std;
+//extern  up();extern  right();extern  down();extern  left();
+
+int  m=1;
+int  sum=0;// 分数
+int  b[17][29];
+ typedef  struct  line   //一字形，竖着
+{
+    int x,y;  //coordinates
+}line ,*l;
+void gotoxy(int a,int b)   //获取光标位置
+{
+   COORD pos;
+   HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+   pos.X=a;
+   pos.Y=b;
+   SetConsoleCursorPosition(hOut, pos);
+}
+void hidden()//隐藏光标
+{
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cci;
+    GetConsoleCursorInfo(hOut,&cci);
+    cci.bVisible=0;//赋1为显示，赋0为隐藏
+    SetConsoleCursorInfo(hOut,&cci);
+}
+
+void create_window()
+{
+    gotoxy(0,0);
+  //printf("01234567890123456789012345678901\n");
+	printf("╔══════╗\n");
+	printf("║            ║\n");
+	printf("╠══════╣\n");
+        printf("║            ║\n");//29,3-16
+        printf("║            ║\n");
+        printf("║            ║\n");
+        printf("║            ║\n");
+        printf("║            ║\n");
+        printf("║            ║\n");
+        printf("║            ║\n");
+	printf("║            ║\n");
+	printf("║            ║\n");
+        printf("║            ║\n");
+	printf("║            ║\n");
+        printf("║            ║\n");
+        printf("║            ║\n");
+        printf("║            ║\n");
+ 	printf("╚══════╝\n");   
+	gotoxy(3,1);cout<<"分数:";
+}
+
+void  print(l &s)
+{
+    for(int i=0;i<4;i++)	    
+	{
+		gotoxy(s[i].x,s[i].y);
+		cout<<'a';
+	}
+}
+
+void  clear(l &s)
+{
+    for(int i=0;i<4;i++)	    
+	{
+		gotoxy(s[i].x,s[i].y);
+		cout<<' ';
+	}
+}
+
+void exportacross(int x,int y,l &s)         //处理横着1的函数
+{
+    s[0].x=x;s[0].y=y;
+	for(int i=1;i<4;i++)
+	{
+		s[i].x=s[i-1].x+1;
+		s[i].y=y;
+	}
+}
+
+void exportdown(int x,int y,l &a)   //处理竖着1的函数
+{
+    a[0].x=x;a[0].y=y;
+	for(int i=1;i<4;i++)
+	{
+		a[i].y=a[i-1].y-1;
+		a[i].x=x;
+	}
+}
+
+
+int judgement(l &s)    //  b[16][29]   //3-16 1-23
+{
+      int n=0;
+	  if(s[0].y==17||s[0].x<=1||s[3].x>=14||b[s[0].y][s[0].x]||b[s[1].y][s[1].x]||b[s[2].y][s[2].x]||b[s[3].y][s[3].x])   
+		  n=1;
+	  return n;
+}
+
+
+int  gameover(l &s)
+{
+	int i=0;
+	if(s[3].y<=2)      i=1;
+	return i;
+}
+
+ void   getscore()
+{
+    int i,j,n=0,a[4],c=0,d;   
+	for(j=0;j<=3;j++)   a[j]=0;
+	for(i=3;i<=16;i++)   //行
+	{
+            n=0;
+			for(j=2;j<=13;j++)  //列
+			   if(b[i][j]!=1) {n=1; break;}
+			   if(!n)  a[c++]=i;
+	}
+    for(i=0;i<=3;i++)
+	{
+		if(a[i])      
+		{
+			for(j=2;j<=13;j++)  {b[a[i]][j]=0;gotoxy(j,a[i]);cout<<' ';}  //把这一行清零，再把这一行上面的全部往下面移一位
+			for(j=a[i]-1;j>=3;j--)   
+				for(d=2;d<=13;d++)
+					if(b[j][d])   {b[j+1][d]=1;b[j][d]=0;gotoxy(d,j);cout<<' ';}
+		}
+	}
+	for(i=3;i<=16;i++)  
+		for(j=2;j<=13;j++)
+			if(b[i][j]) {gotoxy(j,i);cout<<'a';}
+	
+	switch(c)
+	{
+	  
+	  case 1: gotoxy(11,1);sum+=1; cout<<sum;break;
+	  case 2: gotoxy(11,1);sum+=4;cout<<sum;break;
+	  case 3: gotoxy(11,1);sum+=6;cout<<sum;break;
+	  case 4: gotoxy(11,1);sum+=10;cout<<sum;break;
+	}
+	Sleep(100);
+  
+}
+
+
+void main()    //输出函数全部要重新写
+{
+   char k,n1,i=1,c,j=1;
+   create_window();
+   hidden();
+   l  s=(l)malloc (4*sizeof(line));
+   while(j)
+   { 
+   i=1;
+   n1=rand()%2;
+   k='s';
+   if(n1)  exportdown(5,6,s); 
+   else    exportacross(5,3,s);
+   print(s);
+   while(i)
+   {
+	   
+	   if(n1)
+	   {
+		   switch(k)
+		   {
+	       // case 's':s[1].y++;break; 
+	          case 'd':clear(s); //将左边的清空
+				       s[0].x++; exportdown(s[0].x,s[0].y,s);  
+				       if(judgement(s))     s[0].x--;
+					   exportdown(s[0].x,s[0].y,s);    print(s); //清掉左边的1，令尾的横坐标加一，输出往右移一位的1
+					   break;   
+	          case 'a':clear(s); 
+				       s[0].x--; exportdown(s[0].x,s[0].y,s); 
+				       if(judgement(s))    s[0].x++;
+					   exportdown(s[0].x,s[0].y,s);    print(s); 
+					   break; 
+	          case 'w':clear(s); 
+				       exportacross(s[1].x-1,s[1].y,s);  
+				       if(judgement(s))         {exportdown(s[1].x,s[1].y+1,s);    print(s);}  //没变形成功，没空间
+					   else   {print(s); n1=0; }          //  从1变一,变形成功
+					   break; 
+		   }  
+		   Sleep(100);
+	   }//if(n2)
+	   else 
+	   {
+		   switch(k)
+		   {
+		     case 'd':clear(s);
+				      s[0].x++;         exportacross(s[0].x,s[0].y,s);
+				      if(judgement(s))  s[0].x--;
+				      exportacross(s[0].x,s[0].y,s);  print(s);
+					  break; 
+	         case 'a':clear(s);
+				      s[0].x--;          exportacross(s[0].x,s[0].y,s);
+				      if(judgement(s))   s[0].x++; 
+				      exportacross(s[0].x,s[0].y,s);  print(s);
+					  break; 
+	         case 'w':clear(s);
+				      exportdown(s[1].x,s[1].y+1,s);  
+                      if(judgement(s))         { exportacross(s[1].x-1,s[1].y,s);    print(s);}  //没变形成功，没空间
+					  else                     { print(s); n1=1; }          // 从一变1 变形成功  
+					  break;
+		   }
+		   Sleep(100);
+	   }
+	   while(!kbhit())
+	   {   k='s';		   
+	      // judgement(s);
+		  // if(!m)   break;
+		   if(n1)
+		   {
+			   gotoxy(s[3].x,s[3].y); cout<<' ';
+		       s[0].y++;
+		       exportdown(s[0].x,s[0].y,s); 
+			   if(judgement(s))   
+			   {
+				   s[0].y--;
+				   exportdown(s[0].x,s[0].y,s);
+				   i=0;
+				   for( c=0;c<4;c++)          //把新的出来的方块放入格中
+	                 b[s[c].y][s[c].x]=1;
+				   print(s);
+				   if(gameover(s))  j=0;
+				   getscore(); 
+				   break;
+			   }   //什么时候停止运动
+			   
+			   print(s);
+		   }
+		   else
+		   {   
+			   
+			   exportacross(s[0].x,s[0].y,s);
+			   clear(s);
+		       s[0].y++;
+		       exportacross(s[0].x,s[0].y,s);
+			   if(judgement(s))   
+			   {
+				   s[0].y--;
+				   exportacross(s[0].x,s[0].y,s);
+				   i=0;
+				   for( c=0;c<4;c++)
+	                 b[s[c].y][s[c].x]=1;
+				   print(s);
+				   getscore(); 	   
+				   if(gameover(s))  j=0;
+				   break;
+			   }   //什么时候停止运动
+			  
+			  print(s);
+		   } 
+	       Sleep(500);
+	   } //while(!kbhit())                         // if(!m)   break;
+	 if(i) k=getch();
+   }//while(i)
+  }//while(1)
+}

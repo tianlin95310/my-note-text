@@ -1,0 +1,4 @@
+1,系统内部的照相机和图库采用了内容提供者的机制，
+其中内容提供者是MediaStore类，他有很多相关的常量定义
+
+2,系统图库的内容提供者Uri为content://media/external/images/media/123

@@ -1,0 +1,81 @@
+1，泛型类作为泛型变量的值，相当于让一个类的对象成为另外一个类的成员
+class A<T>
+{
+	private T a;
+	public T getA()
+	{
+		return a;
+	}
+	public void setA(T a)
+	{
+		this.a = a;
+	}
+}
+
+class B<V>
+{
+	private V b;
+	public V getB()
+	{
+		return b;
+	}
+	public void setB(V b)
+	{
+		this.b = b;
+	}
+	
+}
+public class Test
+{
+	public static void main(String [] srgs)
+	{
+		
+		A<String> p1 = new A<String>();
+			//p1是一个类型为String的a<String>类的泛型类对象
+		p1.setA("tianlin");
+			//设置p1的a的成员为
+		System.out.println(p1);
+			//输出p1的地址
+		System.out.println(p1.getA());
+			//输出p1的a
+		
+		B< A<String> > p3 = new B< A<String>>();
+			//p3是一个类型为a<String>的b< a<String> >的泛型类对象
+		p3.setB(p1);
+			//让p1成为p3的成员
+		System.out.println(p3);
+			//输出p3的地址
+		System.out.println(p3.getB());
+			//输出p3的成员也就是p1的地址
+		System.out.println(p3.getB().getA());
+			//输出p3的成员p1的成员a的值
+	}
+}
+
+
+2，通配符，并没有什么用
+public static void main(String [] srgs)
+	{
+		A <String> p1 = new A<String>();
+		p1.setA("asd");
+		
+		fun(p1);
+	}
+	public static void fun(A<?>a)
+	{
+		//不能对对象做set操作
+		System.out.println(a);
+	}
+
+3，上下限
+
+  1，class A<T extends Number>		//在类定义是只能指定上限，不能指定下限
+	A <Long> p1 = new A<Long>();	//实例化的时候可不用再指定上限，且实际类型必须 <= Number
+
+  2，A <? extends Number> p1 = new A<Long>();//指定上限,此时实际类型由后面控制，必须 <= Number
+
+  3，A <? super Number> p1 = new A<Number>();//指定下限,实际类型必须 >= Number
+
+另外：2，3两种还可以作为形参
+
+

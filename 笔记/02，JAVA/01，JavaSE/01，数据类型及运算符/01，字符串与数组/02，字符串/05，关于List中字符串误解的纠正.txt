@@ -1,0 +1,12 @@
+1，
+对于List中的泛型如果是String的话，用get得到的是String的引用
+对String str = list.get(p);
+如果对str = "abc";
+这个时候相当于new String();会让str去指向新的String对象，它位于常来哪个区
+但是他并没有改变之前的对象的内容，只是获取了他的引用但又立即让他指向别的对象
+
+而如果是我们自定义的对象，MyClass clazz = list.get(p);
+我们通常都是通过public函数来修改属性，并没有创建新的对象
+
+2，与String[] strs;不同的是strs[i]就是对象本身strs是这块堆内存的首地址，str[i]就是地址上的内容
+str[i] = "newString";就是直接修改对象本身的内容

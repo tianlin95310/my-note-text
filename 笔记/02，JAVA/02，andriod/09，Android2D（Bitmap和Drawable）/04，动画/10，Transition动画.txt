@@ -1,0 +1,15 @@
+译注:
+
+
+Exit Transition:可以理解为activity进入后台的过渡动画
+
+Enter Transition:可以理解为创建activity并显示时的过渡动画
+
+Return Transition:可以理解为销毁activity时的过渡动画
+
+Reenter Transition:可以理解为activity从后台进入前台时的过渡动画
+要使这些过渡动画生效，
+
+我们需要调用startActivity(intent，bundle)方法来启动activity。bundle需要通过ActivityOptionsCompat.makeSceneTransitionAnimation().toBundle()的方式来生成
+
+作者：

@@ -1,0 +1,9 @@
+Property动画抓住三个核心概念
+1，ValueAnimator	(自定义轨迹)
+2，ObjectAnimator	（简单的对View进行设置属性动画）
+3，ViewPropertyAnimator（封装ObjectAnimator，提供链式操作）,
+4，ViewPropertyAnimatorCompat（封装ObjectAnimator，提供链式操作，由ViewCompat.animate(view)得到）
+
+然后在ValueAnimator中抓住一下两个概念
+1.TypeEvaluator
+2.TimeInterpolator

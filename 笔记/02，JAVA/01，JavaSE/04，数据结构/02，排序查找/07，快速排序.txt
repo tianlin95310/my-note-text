@@ -1,0 +1,68 @@
+1，从两边开始往中间循环，知道两下表相同
+
+
+package com.itjob;
+
+import java.util.Arrays;
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		int a[] = { 11, 13, 92, 21, 37, 8, 32, 3, 43, 53 };
+		sort(a, 0, a.length - 1);
+
+		System.out.println(Arrays.toString(a));
+	}
+
+	public static int getPosition(int a[], int min, int max)
+	{
+		int key = a[min];
+		int i = min;
+		int j = max;
+		do
+		{
+			//由后向前找到第一个比nKey小的元素, 并与a[i]交换
+			while (a[j] >= key && i < j)
+				j--;
+			//if (i < j)	结束条件有可能是i >= j，所以需要判断一下
+				a[i] = (a[i]+a[j]) - (a[j]=a[i]);
+
+
+
+
+			//由前向后找到第一个比nKey大的元素, 并与a[j]交换
+			while (a[i] <= key && i < j)
+				i++;
+			//if (i < j)
+				a[i] = (a[i]+a[j]) - (a[j]=a[i]);
+		} while (i < j);
+		return i;
+	}
+
+	public static void sort(int a[], int min, int max)
+	{
+		if (min > max)
+			return;
+		if (min + 1 == max)
+		{
+			if (a[min] > a[max])
+			{
+				int temp = a[min];
+				a[min] = a[max];
+				a[max] = temp;
+			}
+			return;
+		}
+
+		int pos = getPosition(a, min, max);
+		sort(a, min, pos - 1);
+		sort(a, pos + 1, max);
+	}
+
+}
+
+
+
+

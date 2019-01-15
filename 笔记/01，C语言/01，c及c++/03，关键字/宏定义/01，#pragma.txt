@@ -1,0 +1,8 @@
+
+1,#paragam once  		//防止重复定义的简便方法
+
+2,#paragam package(1) 	 //结构体采用紧密结构
+
+3,#pragma message("doubi")
+
+4,#pragma warning(disable : 4244) 可以让系统不提示4244警告

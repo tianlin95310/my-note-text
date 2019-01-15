@@ -1,0 +1,139 @@
+1，静态的Fragment的通信是通过FragmentManager通过Fragment的id得到
+Fragment对象，然后在调用对象的方法，就能实现同一activity上Fragment之间的
+通信。
+
+2，动态的Fragment的通信需要借助BroadcastReceiver来实现，一边发送，一边通过Fragment内部类接受。
+因为如果是外部类的话，那么与Fragment就没有联系了。
+
+
+3，使用举例
+// 主activity
+public class MainActivity extends ActionBarActivity implements OnClickListener
+{
+	private Button bt1,bt2;
+	private FragmentManager fm;
+	// fragment对象，相当于listview
+	Frag1 f1;
+	Frag2 f2;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		// 得到Fragment管理对象
+		fm = getFragmentManager();
+		
+		bt1 = (Button) findViewById(R.id.bt1);
+		bt2 = (Button) findViewById(R.id.bt2);
+		
+		bt1.setOnClickListener(this);
+		bt2.setOnClickListener(this);
+	}
+	@Override
+	public void onClick(View v)
+	{
+		// 得到Fragment显示隐藏管理对象，并且蕴含事务机制，需要commit提交才行
+		FragmentTransaction ft = fm.beginTransaction();
+		closeAll(ft);
+		if (v.getId() == R.id.bt1)
+		{
+			if(f1 == null)
+			{
+				f1 = new Frag1();
+				ft.add(R.id.frame, f1);
+			}
+			else
+				ft.show(f1);
+
+		} else if (v.getId() == R.id.bt2)
+		{
+			if(f2 == null)
+			{
+				f2 = new Frag2();
+				ft.add(R.id.frame, f2);
+			}
+			else
+				ft.show(f2);
+		}
+		ft.commit();
+	}
+	public void closeAll(FragmentTransaction ft)
+	{
+		if(f1 != null)
+			ft.hide(f1);
+		if(f2 != null)
+			ft.hide(f2);
+	}
+}
+
+// Fragment类1
+public class Frag1 extends Fragment
+{
+	
+	private EditText et;
+	private Button bt;
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
+	{
+		// 将某个布局放缩到Fragment上
+		View v = inflater.inflate(R.layout.flag1, null);
+		
+		// 得到Fragment上的控件
+		et = (EditText) v.findViewById(R.id.et);
+		bt = (Button) v.findViewById(R.id.bt);
+		
+		bt.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				String text = et.getText().toString().trim();
+				// 发送广播并携带数据
+				Intent intent = new Intent();
+				intent.putExtra("text", text);
+				intent.setAction("aaa.bbb");
+				// 发送不需要权限的广播
+				Frag1.this.getActivity().sendBroadcast(intent);
+				
+			}
+		});
+		// 最后需要返回view才行
+		return v;
+	}
+}
+
+
+Fragment类2
+public class Frag2 extends Fragment
+{
+	
+	private TextView tv;
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
+	{
+		View v = inflater.inflate(R.layout.flag2, null);
+		tv = (TextView) v.findViewById(R.id.tv);
+		
+		// 先要为MyReceiver注册，BroadcastReceiver他能在代码里注册
+		IntentFilter filter = new IntentFilter();
+		// 设置action,需要与发送的action相同才能接受，在请当文件里注册时也需要在IntentFilter里加上action属性
+		filter.addAction("aaa.bbb");
+		getActivity().registerReceiver(new MyReceiver(), filter);
+		
+		return v;
+	}
+	
+	class MyReceiver extends BroadcastReceiver
+	{
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			String text = intent.getStringExtra("text");
+			tv.setText(text);
+		}
+		
+	}
+}

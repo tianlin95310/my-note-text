@@ -1,0 +1,15 @@
+1,
+public static void arraycopy(Object src,
+                             int srcPos,
+                             Object dest,	//目标数组
+                             int destPos,
+                             int length)	//长度	
+
+2，Arrays.copyOf()，可变数组的实现方法
+改变数组的长度
+
+3，Arrays.sort()
+让数组排序
+
+4，Arrays.binarySearch();
+二分查找算法，需先排序

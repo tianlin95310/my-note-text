@@ -1,0 +1,107 @@
+总结：
+1，若接口有泛型参数，相应的类，子类最好也带上泛型参数，保持一致性，有助于多态的使用。
+2，实现接口时，接口尽量带参数，虽然不带默认为Object，但不好
+3，带参数尽量不要带确定的参数，否则类只能用一种特定的情况
+4，若想支持Object类型，那就都传Object类型
+	如：List<Object> list = ArrayList<Object>();
+
+
+一，用类实现确定类型的泛型接口，此种写法不好，尽量不要确定，实现Comparable接口除外
+此时类的泛型可不写，若该类自己也想用泛型，则可以加入泛型参数。
+interface i1<T>
+{
+	public abstract void fun1(T a);
+	public abstract T fun2();
+}
+class c1 implements i1<Integer>	
+//这里的Integer可以省略，默认不写的话是Object，但尽量不要这样做
+//这里的Integer为一个临时类型，相当于是一个类型初始值，最终类型取决于调用时给的类型
+{
+	@Override
+	public void fun1(Object a)
+	{
+		System.out.println("fun1");
+	}
+
+	@Override
+	public Object fun2()
+	{
+		return null;
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		i1<Object> p = new c1();	//多态形式
+		p.fun1(12);
+		
+		c1 p2 = new c1();
+		p2.fun1("asd");
+		
+		//i1<Long> p3 = new c1();
+		//以最终给定的类型为准，c1实现的是Object类型，但i1是Long类型的，所以有错误。
+		//实现的函数不匹配，所以这种写法不好。
+		
+	}
+
+}
+
+二，用类实现带有泛型参数的接口，这种是比较常用的
+interface i1<T>
+{
+	public abstract void fun1(T a);
+	public abstract T fun2();
+}
+
+class c1<V> implements i1<V>	//这是一种通常的写法，如List<T>,ArrayList<T>,就是这样的。
+//若接口带有一个泛型参数，那么类也要带有泛型参数，因为c1要实现i1的方法，所以他必须也要有
+{
+	@Override
+	public void fun1(V a)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	// 这是一个正规的写法，因为复写的方法要与父类的方法一样，所以这样写
+	// 下面的这种情况很特殊
+	/* ************************
+	@Override
+	public void fun1(Object a)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	*/ 
+	// 这两个fun1是一样的，这就是特殊的地方，因为此时V的类型是未知的，只有在定义的时候才能确定，所以就是Object
+	// 但fun2的返回值为V或者Object就不会这样，因为函数重载并不管返回值类型
+	@Override
+	public V fun2()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
+	public static void main(String[] args)
+	{
+		i1<Long> p = new c1<Long>();//多态形式
+		p.fun1(123L);
+		
+		c1<Long> p2 = new c1<Long>();
+		p2.fun1(123l);
+		
+	}
+
+3，若用c2来继承上述的c1，与c1实现i1的情况类似。也有多种情况
+class c2<T> extends c1<T>
+{
+	
+}
+public static void main(String[] args)
+	{
+		c2<Integer> p2 = new c2<Integer>();
+		p2.fun1(123);
+		
+		i1<Integer> p3 = new c2<Integer>();
+		p3.fun1(12);
+	}

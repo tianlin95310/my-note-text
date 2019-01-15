@@ -1,0 +1,73 @@
+1.  ContactsContract.Contacts.TIMES_CONTACTED= "times_contacted"           (int)     
+    联系人被联系的次数
+
+2.  ContactsContract.Contacts.CONTACT_STATUS= "contact_status"             (string)      
+   联系人最新的状态
+
+3.  ContactsContract.Contacts.CUSTOM_RINGTONE= "custom_ringtone"         (string uri) 
+   自定义的联系人的铃声，如果没有定义该属性，则使用系统默认的铃声
+
+4.  ContactsContract.Contacts.HAS_PHONE_NUMBER= "has_phone_number"      (0 or1)
+    如果值为1，则该联系人至少有一个电话号码；如果值为0，则该联系人没有电话号码
+
+5.  ContactsContract.Contacts.PHONETIC_NAME= "phonetic_name"
+Pronunciation of the full name in the phonetic alphabet specified byPHONETIC_NAME_STYLE.
+
+6.  ContactsContract.Contacts.PHONETIC_NAME_STYLE= "phonetic_name_style"
+The phonetic alphabet used to represent the PHONETIC_NAME. SeePhoneticNameStyle.
+
+7.  ContactsContract.Contacts.CONTACT_STATUS_LABEL= "contact_status_label"     (long)
+    联系人状态标签的ID号
+
+8.  ContactsContract.Contacts.LOOKUP_KEY= "lookup"     (string)
+    联系人的查询键 
+
+9.  ContactsContract.Contacts.CONTACT_STATUS_ICON= "contact_status_icon"       (long)
+    联系人状态图标的ID号
+
+10. ContactsContract.Contacts.LAST_TIME_CONTACTED= "last_time_contacted"     (long)
+    联系人最近被联系的时间
+
+11. ContactsContract.Contacts.DISPLAY_NAME= "display_name"    (string)
+    联系人的姓名
+
+12. ContactsContract.Contacts.SORT_KEY_ALTERNATIVE= "sort_key_alt"
+
+Sort key based on the alternative representation of the full name,DISPLAY_NAME_ALTERNATIVE. Thus for Western names, it is the one using the"family name first" format.
+
+13. ContactsContract.Contacts.IN_VISIBLE_GROUP= "in_visible_group"
+
+Lookup value that reflects the GROUP_VISIBLE state of anyContactsContract.CommonDataKinds.GroupMembership for this contact.
+
+14. ContactsContract.Contacts._ID ="_id"       (long)
+    联系人的id 
+
+15. ContactsContract.Contacts.STARRED= "starred"     (int, 0/1)
+    1表示该联系人是用星号标记的，即favorite的联系人；0表示没有用星号标记 
+
+16. ContactsContract.Contacts.SORT_KEY_PRIMARY= "sort_key"
+
+Sort key that takes into account locale-based traditions for sortingnames in address books.
+
+17. ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE= "display_name_alt"
+
+An alternative representation of the display name, such as"family name first" instead of "given name first" forWestern names. If an alternative is not available, the values should be thesame as DISPLAY_NAME_PRIMARY
+
+18. ContactsContract.Contacts.CONTACT_PRESENCE= "contact_presence"
+联系人呈现出来的状态，如离线、在线、忙碌等状态
+
+19. ContactsContract.Contacts.DISPLAY_NAME_SOURCE= "display_name_source"
+The kind of data that is used as the display name for the contact,such as structured name or email address. See DisplayNameSources. TODO: convertDisplayNameSources to a link after it is un-hidden
+
+20. ContactsContract.Contacts.CONTACT_STATUS_RES_PACKAGE= "contact_status_res_package"
+The package containing resources for this status: label and icon.
+
+21. ContactsContract.Contacts.CONTACT_STATUS_TIMESTAMP= "contact_status_ts"
+The absolute time in milliseconds when the latest status wasinserted/updated.
+
+22. ContactsContract.Contacts.PHOTO_ID= "photo_id"    (long)
+    联系人头像id   
+
+23. ContactsContract.Contacts.SEND_TO_VOICEMAIL= "send_to_voicemail"  (int,0/1)
+
+    如果值为1，则该联系人应该总是被发送到vociemail中，默认值为0

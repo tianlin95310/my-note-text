@@ -1,0 +1,151 @@
+1,定义：
+    1，客户端不应该依赖他不需要的接口
+    2，类间的依赖关系，应该建立在最小的接口上，职责尽量单一
+
+接口设计原则
+1，接口要尽量小
+2，接口要高内聚，即接口，类，对象之间的调用效率高，依赖尽量少，减少中间过程
+
+问题，接口设计不能过于庞大，否则实现类需要实现的函数过多，不易维护
+	但接口太多的话，又不易于管理，所以接口的大小需要结合具体情况来看
+
+// 举例
+package com.my;
+
+// 大的接口，美女定义如下，长相，身材，气质都好才算是
+// 但有时不同的人会有不同的看法，有人认为长相，身材好就行，有人认为气质好就行，而不一定要3者都具有
+// 所以接口过大，应该进行拆分
+interface PrettyGirl
+{
+	void goodLooking();
+	void goodFigure();
+	
+	void goodTemperament();
+}
+
+// 应该将接口一分为2，这样就能适应不同的变化
+interface OutterPretty
+{
+	void goodLooking();
+	void goodFigure();
+}
+interface InnerPretty
+{
+	void goodTemperament();
+}
+
+// 同时具有3个属性是美女
+class GirlA implements OutterPretty, InnerPretty
+{
+	private String name;
+	
+	public GirlA(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	public void goodTemperament()
+	{
+		System.out.println("有气质的");
+	}
+	@Override
+	public void goodLooking()
+	{
+		System.out.println("长相好的");
+	}
+
+	@Override
+	public void goodFigure()
+	{
+		System.out.println("身材好的");
+	}
+}
+
+// 只具有气质的也可以称为美女
+class GirlB implements InnerPretty
+{
+	private String name;
+	
+	public GirlB(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	public void goodTemperament()
+	{
+		System.out.println("有气质的");
+	}
+	
+}
+
+interface ChargeMen
+{
+	void charge();
+}
+
+class MenA implements ChargeMen
+{
+	private String name;
+	
+	private GirlB girl;
+	public void setGirl(GirlB girl)
+	{
+		this.girl = girl;
+	}
+
+	public MenA(String name)
+	{
+		this.name = name;
+	}
+	@Override
+	public void charge()
+	{
+		girl.goodTemperament();
+		System.out.println("我认为有气质的 才是真正的美女");
+	}
+}
+
+class MenB implements ChargeMen
+{
+	private String name;
+	
+	private GirlA girl;
+	public MenB(String name)
+	{
+		this.name = name;
+	}
+	
+	public void setGirl(GirlA girl)
+	{
+		this.girl = girl;
+	}
+
+	@Override
+	public void charge()
+	{
+		girl.goodTemperament();
+		girl.goodFigure();
+		girl.goodLooking();
+		
+		System.out.println("美女是内在与外在都兼具的");
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		GirlA girla = new GirlA("aaa");
+		GirlB girlB = new GirlB("bbb");
+		
+		MenA mena = new MenA("111");
+		MenB menb = new MenB("222");
+		
+		mena.setGirl(girlB);
+		menb.setGirl(girla);
+		
+		mena.charge();
+		menb.charge();
+	}
+
+}

@@ -1,0 +1,24 @@
+
+// 存储过程 in page int, in pagesize int, out totalcount int
+// 对于输出类型的参数，我们需要使用用户变量，因为他的生命周期较长，再一次连接Connection中，跨sql语句	是可以访问到的
+BEGIN
+	#Routine body goes here...
+
+	declare startindex int ;
+
+	set startindex = (page - 1) * pagesize;
+	
+	select count(*) into totalcount from leaveinfo;
+
+	select * from leaveinfo limit startindex, pagesize;
+	
+END
+
+// 调用过程
+
+// 先定义用户变量并赋初值
+set @totalcount = 0;
+// 保证查询用户变量之前保证存储过程先要被调用
+call testDividePage(2, 5, @totalcount);
+// 获取在存储过程里被赋值的总记录条数
+select @totalcount;

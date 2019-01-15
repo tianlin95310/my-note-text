@@ -1,0 +1,12 @@
+1,
+真正的随机数的产生
+#define RAND() (srand((unsigned int)GetCpuCycle()), rand())精确的随机数产生
+
+__declspec (naked) unsigned __int64 GetCpuCycle()获取cpu时间
+{
+	_asm
+	{
+		rdtsc
+			ret
+	}
+}

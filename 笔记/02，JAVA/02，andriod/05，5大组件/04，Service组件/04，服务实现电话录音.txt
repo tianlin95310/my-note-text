@@ -1,0 +1,88 @@
+
+public class PhoneRecoder extends Service
+{
+
+	public IBinder onBind(Intent intent)
+	{
+		return null;
+	}
+
+	// 该函数最先调用
+	public void onCreate()
+	{
+		super.onCreate();
+	}
+
+	// start方式启动会调用该函数
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		// 获取系统电话服务
+		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+		// 添加监听器，是之前的广播接收的一种简单方式
+		tm.listen(new MyListener(), PhoneStateListener.LISTEN_CALL_STATE);
+
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	class MyListener extends PhoneStateListener
+	{
+		// 录音对象
+		private MediaRecorder recorder;
+		public void onCallStateChanged(int state, String incomingNumber)
+		{
+			switch (state)
+			{
+			// 电话空闲状态，挂机状态
+			case TelephonyManager.CALL_STATE_IDLE:
+				if (recorder != null)
+				{
+					// 停止录音
+					recorder.stop();
+					// 重置设置
+					recorder.reset();
+					// 释放资源
+					recorder.release();
+					// 关闭自己
+					stopSelf();
+				}
+				break;
+
+				// 接听状态
+			case TelephonyManager.CALL_STATE_OFFHOOK:
+
+				// 得到内存卡路径
+				File f = Environment.getExternalStorageDirectory();
+				// 得到录音对象
+				recorder = new MediaRecorder();
+				// 设置声音为mic
+				recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+				// 设置输出的音频格式为3GP
+				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+				// 设置音频的编码为ARM
+				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+				// 设置输出的文件
+				recorder.setOutputFile(f.getPath() + "/recoder.3gp");
+				try
+				{
+					// 准备
+					recorder.prepare();
+					// 开始录音
+					recorder.start();
+				} catch (IllegalStateException e)
+				{
+					e.printStackTrace();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+				break;
+			case TelephonyManager.CALL_STATE_RINGING:
+				break;
+			}
+			super.onCallStateChanged(state, incomingNumber);
+		}
+	}
+
+
+}

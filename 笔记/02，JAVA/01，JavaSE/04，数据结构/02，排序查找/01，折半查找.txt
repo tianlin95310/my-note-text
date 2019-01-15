@@ -1,0 +1,26 @@
+1，问题，没有找到的话，min，max的值，mid的值会怎样。
+
+public static int select(int [] a ,int n)
+	{
+		int min = 0;
+		int max = a.length - 1;
+		
+		while(min <= max )
+		{
+			int mid = (min + max) / 2;
+			
+			if(n == a[mid])
+				return mid;
+			
+			else if(n > a[mid])
+			{
+				min = mid + 1;
+			}
+			
+			else if(n < a[mid])
+			{
+				max = mid - 1;
+			}
+		}
+		return -1;
+	}

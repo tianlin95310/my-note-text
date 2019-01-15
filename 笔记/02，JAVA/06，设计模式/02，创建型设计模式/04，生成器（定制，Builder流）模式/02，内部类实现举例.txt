@@ -1,0 +1,81 @@
+android里的对话框AlertDialog的创建采用的就是内部类Builder来实现创建者模式
+
+// 举例
+// 内部类导包
+package com.my2;
+
+import com.my2.CreatePerson.BuilderA;
+
+class Person
+{
+	private String name;
+	private int age;
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	public int getAge()
+	{
+		return age;
+	}
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+	@Override
+	public String toString()
+	{
+		return "[name=" + name + ", age=" + age + "]";
+	}
+}
+
+interface Builder
+{
+	public BuilderA setName(String name);
+	public BuilderA setAge(int age);
+	public Person getPerson();
+}
+class CreatePerson
+{
+	
+	public static class BuilderA implements Builder
+	{
+		private Person p = new Person();
+		@Override
+		public BuilderA setName(String name)
+		{
+			p.setName(name);
+			return this;
+		}
+		@Override
+		public BuilderA setAge(int age)
+		{
+			p.setAge(age);
+			return this;
+		}
+		@Override
+		public Person getPerson()
+		{
+			return p;
+		}
+	}
+}
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		CreatePerson.BuilderA builder1 = new BuilderA();
+		
+		builder1.setAge(20)
+				.setName("tianlin");
+		
+		Person p1 = builder1.getPerson();
+		System.out.println(p1);
+	}
+}

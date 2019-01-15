@@ -1,0 +1,51 @@
+原理：由一个工厂根据参数要求来产生特定的产品
+
+特点
+1，一个工厂产生所有的产品
+2，根据参数决定每次产生哪一个产品
+
+interface Product
+{
+	public abstract void getName();
+}
+
+class ProductA implements Product
+{
+	public void getName()
+	{
+		System.out.println("i'm productA");
+	}
+}
+class ProductB implements Product
+{
+	public void getName()
+	{
+		System.out.println("i'm productB");
+	}
+}
+
+class ProductFactory
+{
+	public static Product getProduct(String name)
+	{
+		if(name.equals("A"))
+			return new ProductA();
+		if(name.equals("B"))
+			return new ProductB();
+		else
+			return null;
+	}
+}
+public class TL
+{
+	public static void main(String[] args)
+	{
+		Product pa = ProductFactory.getProduct("A");
+		pa.getName();
+		
+		Product pb = ProductFactory.getProduct("B");
+		pb.getName();
+	}
+	
+	
+}

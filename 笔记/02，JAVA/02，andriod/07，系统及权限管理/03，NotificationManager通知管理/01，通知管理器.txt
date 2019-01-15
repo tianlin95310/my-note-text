@@ -1,0 +1,58 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	// 通知管理器
+	NotificationManager notify;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		// 获取系统管理器对象
+		notify = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	}
+
+	public void send1(View v)
+	{
+		// 低版本使用方法，得到通知对象
+		Notification notification = new Notification(R.drawable.ic_launcher,"aaaaa",System.currentTimeMillis());
+		// 设置通知点击的相应活动
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_PICK_ACTIVITY);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 10, intent, PendingIntent.FLAG_ONE_SHOT);
+		// 点击后自动取消
+		notification.flags = Notification.FLAG_AUTO_CANCEL;
+		// 设置通知的内容，以及通知的响应活动
+		notification.setLatestEventInfo(this, "bbbbb", "ccccc", contentIntent);
+		
+		// 发出通知
+		notify.notify(1, notification);
+	}
+	
+	public void send2(View v)
+	{
+		// 使用内部类来创建通知对象
+		Notification.Builder builder = new  Notification.Builder(this);
+		// 设置大图标
+		builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+		// 设置小图标,注意小图标是必须要设置的
+		builder.setSmallIcon(R.drawable.ic_launcher);
+		// 设置提示栏标题
+		builder.setTicker("aaaaa");
+		// 设置通知标题
+		builder.setContentTitle("bbbbb");
+		// 设置通知的内容
+		builder.setContentText("ccccc");
+		// 设置自动取消
+		builder.setAutoCancel(true);
+		// 设置通知点击意图
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_DIAL);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 11, intent, PendingIntent.FLAG_ONE_SHOT);
+		builder.setContentIntent(contentIntent);
+		// 得到通知对象
+		Notification notification = builder.build();
+		// 发出通知
+		notify.notify(2, notification);
+	}
+}

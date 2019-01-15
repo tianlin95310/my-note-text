@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+	window.onload = function() {
+
+		// 所有的节点都有nodeType, nodeName,nodeValue属性
+		var nodeBj = document.getElementById("bj");
+		alert(nodeBj.nodeType); // 为1表示元素节点
+		alert(nodeBj.nodeName); // 节点类型为li
+		alert(nodeBj.nodeValue); // 对于元素节点，nodeValue为null
+		
+		var nameAttr = nodeBj.getAttributeNode("name");
+		alert(nameAttr.nodeType); // 为2表示属性节点
+		alert(nameAttr.nodeName); // 类型为name
+		alert(nameAttr.nodeValue); // 对于属性节点，nodeValue为属性对应的值
+		
+		var textNode = nodeBj.firstChild;
+		alert(textNode.nodeType); // 为3表示属性节点
+		alert(textNode.nodeName); // 类型为#text
+		alert(textNode.nodeValue); // 对于文本节点，nodeValue为文字内容
+
+		// nodeType, nodeName是只读的，nodeValue是可写的，主要用在文本节点的读写
+	}
+</script>
+</head>
+<body>
+
+	<p>你喜欢哪个城市?</p>
+	<ul id="city">
+		<li id="bj" name="BeiJing">北京</li>
+		<li>上海</li>
+		<li>东京</li>
+		<li>首尔</li>
+	</ul>
+
+	<br>
+	<br>
+	<p>你喜欢哪款单机游戏?</p>
+	<ul id="game">
+		<li id="rl">红警</li>
+		<li>实况</li>
+		<li>极品飞车</li>
+		<li>魔兽</li>
+	</ul>
+
+	<br>
+	<br> gender:
+	<input type="radio" name="gender" value="male" />Male
+	<input type="radio" name="gender" value="female" />
+</body>
+</html>

@@ -1,0 +1,73 @@
+package com.my;
+
+abstract class Handler
+{
+	private Handler nextHandler;
+	private String name;
+	
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public Handler getNextHandler()
+	{
+		return nextHandler;
+	}
+
+	public void setNextHandler(Handler nextHandler)
+	{
+		this.nextHandler = nextHandler;
+	}
+	
+	public abstract void handlerMessage();
+	
+}
+
+class ConcreteHandler1 extends Handler
+{
+
+	@Override
+	public void handlerMessage()
+	{
+		if(this.getNextHandler() != null)
+		{
+			// 有后记处理器是就用后继处理器处理
+			this.getNextHandler().handlerMessage();
+		}
+		else
+		{
+			// 没有后记处理器是就用当前处理器处理
+			System.out.println(this.getName() + "处理器处理");
+		}
+	}
+}
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		// 不为handler1设置后置处理器
+//		ConcreteHandler1 handler1 = new ConcreteHandler1();
+//		ConcreteHandler1 handler2 = new ConcreteHandler1();
+//		handler1.setName("handler1");
+//		handler2.setName("handler2");
+//		handler1.handlerMessage();
+		
+		// 为handler1设置处理器，将有后置处理器处理
+		ConcreteHandler1 handler1 = new ConcreteHandler1();
+		ConcreteHandler1 handler2 = new ConcreteHandler1();
+		handler1.setName("handler1");
+		handler2.setName("handler2");
+		// 为当前处理器设置后置处理器
+		handler1.setNextHandler(handler2);
+		handler1.handlerMessage();
+	}
+
+}

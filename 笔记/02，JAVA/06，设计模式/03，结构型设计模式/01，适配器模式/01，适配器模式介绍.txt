@@ -1,0 +1,44 @@
+适配器模式（Adapter）：将一个类的接口转换成客户希望的另外一个接口。适配器
+模式使得原本 由于接口不兼容而不能一起工作的哪些类可以一起工作。
+
+应用举例
+
+public class Test
+{
+	public static void main(String[] args)
+	{
+		i1 inter2 = new a(new b());
+		
+		inter2.fun1();
+
+	}
+}
+interface i1
+{
+	void fun1();
+}
+
+class a implements i1 // 通过a将i1与i2连接
+{
+	private i2 inter; // 接口，抽象类只能定义对象，但不能实例化
+
+	public a(i2 inter)	//接受b的对象实例
+	{
+		this.inter = inter;
+	}
+	public void fun1()	//a类的fun1实际上是b的fun2
+	{
+		inter.fun2();
+	}
+}
+interface i2
+{
+	void fun2();
+}
+class b implements i2
+{
+	public void fun2()
+	{
+		System.out.println("b,i2,fun2");
+	}
+}

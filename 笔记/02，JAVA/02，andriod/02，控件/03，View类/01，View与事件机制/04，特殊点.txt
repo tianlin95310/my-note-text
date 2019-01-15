@@ -1,0 +1,14 @@
+1,
+对于ViewGroup，默认的onTouchEvent返回false
+对于ImageView，默认的onTouchEvent返回false
+对于Button。默认的onTouchEvent返回true
+
+对于普通的TextView，为他设置的onClickListerner能消费事件，也就是为控件设置onClickListerner后父容器无法获取到事件了，因为已经被消费了
+
+2，对于dispatchTouchEvent，我们可以主动的调用，将某个事件传递给他，让他去响应。
+例如在屏幕上的滑动不在空间范围内，我们可以将事件传给他，然后他也能响应事件
+
+3,
+正常情况下，目标视图如果在DOWN事件的时候没有消费，后面的MOVE，UP事件不会再发到目标视图了
+但当我用WindowManager添加的view他就不吃这一套，我为根布局设置的onTouchEvent，OnTouchListener全都返回false
+后面的MOVE，UP照样能够接收，可以因为他没有activity，与Activity的机制不一样吧！

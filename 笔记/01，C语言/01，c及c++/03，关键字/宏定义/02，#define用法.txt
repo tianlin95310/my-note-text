@@ -1,0 +1,63 @@
+1,#define
+#define    YES   	1
+#define     NO     0
+#define     PI      3.1415926
+#define     OUT     printf(“Hello,World”);
+#define f(a)	(a+a)
+
+2,undef
+#undef可终止宏名作用域
+     格式：   #undef     宏名
+例如：
+#define YES 
+#undef YES
+
+#ifndef YES
+#define fun printf("test\n");
+#endif
+void main()
+{
+	fun;
+}
+
+3，条件编译1
+
+#define A
+
+#ifdef A
+#define B 10
+#else
+#define B 15
+#endif
+void main()
+{
+
+	cout<<B<<endl;
+}
+4，条件编译2
+#ifndef _a
+#define _a
+头文件
+#endif	//宏定义的第三种用法,防止重复定义
+
+5，实例消息映射宏的实现
+#include <iostream>
+using namespace std;
+void fun(int,int);
+#define BEGIN_FUN(a,b)\
+fun(a,b);\
+{\
+
+#define END_FUN \
+}\
+
+void main()
+{
+	BEGIN_FUN(1,1);
+	END_FUN;
+}
+void fun(int a,int b)
+{
+	cout<<"doubi\n";
+	cout<<(a+b)<<"\n";
+}

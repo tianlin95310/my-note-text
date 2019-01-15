@@ -1,0 +1,253 @@
+public class VideoActivity extends Activity implements OnClickListener
+{
+	// 用于记录媒体文件的编号
+	private int number;
+	// 播放对象
+	MediaPlayer mp;
+	// 用于播放视频的控件，音乐不需要这个，因为他不用界面
+	private SurfaceView sv_video;
+	private ImageButton bt_video_play;
+	private Button bt_video_next;
+	// 进度条
+	private SeekBar sb_video;
+	// 按钮切换
+	private boolean bool = true;
+	// 控制器显示隐藏
+	private boolean show_hide = true;
+	// 控制器布局
+	private LinearLayout linear;
+	// 定时器，用于更新seekbar
+	Timer timer;
+	// 播放的位置，用于恢复
+	private int position;
+	Handler handler = new Handler()
+	{
+		public void handleMessage(android.os.Message msg)
+		{
+			if (msg.what == 1)
+			{
+				int p = (Integer) msg.obj;
+				sb_video.setProgress(p);
+			}
+		};
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		setContentView(R.layout.video_play_view);
+		super.onCreate(savedInstanceState);
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		sv_video = (SurfaceView) findViewById(R.id.sv_video);
+		bt_video_play = (ImageButton) findViewById(R.id.bt_video_play);
+		bt_video_next = (Button) findViewById(R.id.bt_video_next);
+		sb_video = (SeekBar) findViewById(R.id.sb_video);
+		linear = (LinearLayout) findViewById(R.id.linear);
+		
+		// 得到媒体的下标号
+		number = getIntent().getIntExtra("position", -1);
+		if (number == -1)
+			return;
+
+		bt_video_play.setOnClickListener(this);
+		bt_video_next.setOnClickListener(this);
+
+		// 设置拖动条拖动事件
+		sb_video.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+				// 移动到指定位置，开始播放
+				int p = seekBar.getProgress();
+				play(p);
+			}
+
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser)
+			{
+			}
+		});
+
+		// 设置surfaceView触摸事件
+		sv_video.setOnTouchListener(new OnTouchListener()
+		{
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				// 控制控件的显示
+				if (event.getAction() == MotionEvent.ACTION_DOWN)
+				{
+					if (show_hide == true)
+					{
+						linear.setVisibility(View.VISIBLE);
+					}
+
+					else
+					{
+						linear.setVisibility(View.GONE);
+					}
+				}
+				show_hide = !show_hide;
+				return true;
+			}
+		});
+		// 添加surfaceView回调函数 
+		sv_video.getHolder().addCallback(new Callback()
+		{
+			// activity处于stop时，也会调用该方法，他与activity的destroy不同，activity不可见
+			// SurfaceView会被destroy，但activity不会
+			public void surfaceDestroyed(SurfaceHolder holder)
+			{
+				// 销毁时记录播放位置
+				if (mp != null)
+					position = mp.getCurrentPosition();
+
+				System.out.println("surfaceDestroyed");
+			}
+
+			// 第一次创建调用
+			public void surfaceCreated(SurfaceHolder holder)
+			{
+				// 当activitystop后重新resume时，该方法会被调用，activity不会destroy，
+				// 成员变量仍然保留，但mp里的设置信息，可能已经没有了，如mp.setDisplay(sv_video.getHolder());
+				// 因为surfaceView已经destroy了
+				System.out.println(mp);
+				System.out.println(position);
+				System.out.println(number);
+				// 第一次时启动activity时不会执行if，因为mp == null
+				if (mp != null)
+				{
+					// 清空所有的设置信息
+					onDestroy();
+					bt_video_play.setImageResource(R.drawable.pause);
+					String path = (String) WelcomeActivity.videoData
+							.get(number).get("path");
+					// 重新准备
+					prepare(path);
+					// 从上个位置开始播放
+					play(position);
+				}
+				System.out.println("surfaceCreated");
+			}
+
+			// 改变时
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height)
+			{
+				System.out.println("surfaceChanged");
+			}
+		});
+	}
+
+	public void prepare(String path)
+	{
+		if (mp == null)
+		{
+			try
+			{
+				// 创建对象
+				mp = new MediaPlayer();
+				mp.setDataSource(path);
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				// 注意事项：在控件sv_video还没有加载时，不能调用该函数，否则会抛异常
+				mp.setDisplay(sv_video.getHolder());
+				mp.prepare();
+
+				// 为拖动条设置最大值
+				sb_video.setMax(mp.getDuration());
+
+				if (timer == null)
+					timer = new Timer();
+
+				// 更新拖动条
+				timer.schedule(new TimerTask()
+				{
+					public void run()
+					{
+						Message msg = handler.obtainMessage();
+						msg.what = 1;
+						msg.obj = mp.getCurrentPosition();
+						handler.sendMessage(msg);
+					}
+				}, 0, 50);
+
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// 从制定的位置开始播放
+	public void play(int position)
+	{
+		mp.seekTo(position);
+		mp.start();
+	}
+
+	public void onClick(View v)
+	{
+		switch (v.getId())
+		{
+		case R.id.bt_video_play:
+
+			// 按钮点击后准备
+			String path = (String) WelcomeActivity.videoData.get(number).get(
+					"path");
+			prepare(path);
+			
+			if (bool == true)
+			{
+				int p = mp.getCurrentPosition();
+				play(p);
+				bt_video_play.setImageResource(R.drawable.pause);
+			} else
+			{
+				mp.pause();
+				bt_video_play.setImageResource(R.drawable.play);
+			}
+
+			bool = !bool;
+			break;
+
+		case R.id.bt_video_next:
+			onDestroy();
+			// 得到下一曲的路径
+			number++;
+			int p = number % WelcomeActivity.videoData.size();
+			Map<String, Object> map = WelcomeActivity.videoData.get(p);
+			String path_next = (String) map.get("path");
+
+			prepare(path_next);
+			play(mp.getCurrentPosition());
+
+			// 更新按钮图标
+			bt_video_play.setImageResource(R.drawable.pause);
+			break;
+		}
+	}
+
+	// 退出时，销毁mp和timer
+	protected void onDestroy()
+	{
+
+		System.out.println("onDestroy");
+		if (timer != null)
+		{
+			timer.cancel();
+			timer = null;
+		}
+		if (mp != null)
+		{
+			mp.stop();
+			mp.reset();
+			mp.release();
+			mp = null;
+		}
+		super.onDestroy();
+	}
+
+}

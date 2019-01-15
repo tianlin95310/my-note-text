@@ -1,0 +1,150 @@
+#include<stdio.h>
+#include<windows.h>
+#include<conio.h>
+
+typedef void(*FXN)(); 
+
+void shang();
+void zuo();
+void you();
+void xia();
+
+#define RAND() (srand((unsigned int)GetCpuCycle()), rand())
+
+__declspec (naked) unsigned __int64 GetCpuCycle()
+{
+	_asm
+	{
+		rdtsc
+			ret
+	}
+}
+void color(int b)
+{
+    HANDLE hConsole = GetStdHandle((STD_OUTPUT_HANDLE)) ; 
+    SetConsoleTextAttribute(hConsole,b) ;
+}
+int a[3][3] = {1,2,3,4,5,6,7,8,9};
+static int i=2,j=2;
+int temp;
+void showind()
+{
+	system("cls");
+	color(14);
+	printf("╔═╦═╦═╗\n");
+	printf("║%d ║ %d║ %d║\n",a[0][0],a[0][1],a[0][2]);
+	printf("╠═╬═╬═╣\n");
+	printf("║%d ║ %d║ %d║\n",a[1][0],a[1][1],a[1][2]);
+	printf("╠═╬═╬═╣\n");
+	printf("║%d ║ %d║ %d║\n",a[2][0],a[2][1],a[2][2]);
+	printf("╚═╩═╩═╝\n");
+	printf("you can move %d:\n",a[i][j]);
+	printf("please input （↑←↓→）to move:");
+
+}
+void initwindow()
+{
+	for(int m = 0;m<50+RAND()%50; m++)
+	{
+		int m = RAND()%4;
+		switch(m)
+		{
+		case 0:
+			shang();
+			break;
+		case 1:
+			xia();
+			break;
+		case 2:
+			zuo();
+			break;
+		case 3:
+			you();
+			break;
+		}
+	}
+	showind();
+}
+
+void main()
+{
+	initwindow();
+	char ch1;
+	char ch2;
+	while(1)
+	{
+		ch1 = getch();
+		if(ch1 == -32)
+		{
+			ch2 = getch();
+			switch(ch2)
+			{	
+			case 72:shang();break;
+			case 75:zuo();break;
+			case 77:you();break;
+			case 80:xia();break;
+			}
+		}
+		if( (a[0][0] == 1)&&(a[0][1] == 2)&&(a[0][2] == 3)&&
+			(a[1][0] == 4)&&(a[1][1] == 5)&&(a[1][2] == 6)&&
+			(a[2][0] == 7)&&(a[2][1] == 8)&&(a[2][2] == 9) )
+		{
+			printf("\n\n恭喜成功完成\n");
+			break;
+		}
+	}	
+	system("pause");
+	
+}
+void shang()
+{
+	if(i<=0)
+		return;
+	else
+	{
+		temp = a[i][j];
+		a[i][j] = a[i-1][j];
+		a[i-1][j] = temp;
+		i = i-1;
+	}
+	showind();
+}
+void zuo()
+{
+	if(j<=0)
+		return;
+	else
+	{
+		temp = a[i][j];
+		a[i][j] = a[i][j-1];
+		a[i][j-1] = temp;
+		j = j-1;
+	}
+	showind();
+}
+void you()
+{
+	if(j>=2)
+		return;
+	else
+	{
+		temp = a[i][j];
+		a[i][j] = a[i][j+1];
+		a[i][j+1] = temp;
+		j = j+1;
+	}
+	showind();
+}
+void xia()
+{
+	if(i>=2)
+		return;
+	else
+	{
+		temp = a[i][j];
+		a[i][j] = a[i+1][j];
+		a[i+1][j] = temp;
+		i = i+1;
+	}
+	showind();
+}

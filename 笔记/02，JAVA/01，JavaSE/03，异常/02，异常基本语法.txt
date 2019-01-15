@@ -1,0 +1,84 @@
+1,
+public class Excep
+{
+	public static void main(String[] args) throws Exception
+	{
+		System.out.println("first");
+		try
+		{
+			fun1();	// 1，若捕获到异常，则try后面的语句不会再执行，但try,catch块之后的语句还是会执行的
+			
+			System.out.println("second");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new Exception("main");
+			// 2，该句用于测试main函数也可抛出异常给JVM
+		}
+		finally
+		{
+			System.out.println("third");	
+			// 3，不管有没有异常，该句都会执行
+		}
+		
+		System.out.println("fouth");
+		// 4，假如非受检异常没有自己捕获，而是让系统捕获，则有异常语句后面的代码都不会执行，程序中断，比如空指针异常
+		// 5，若自己捕获的话，则异常代码块后面的代码会执行
+	}
+	public static int fun1() throws Exception
+	{
+		int a = 10;
+		int b = 0;
+		
+		if(b == 0)
+			throw new Exception("haha");	
+		// 6，throw可随便使用，但抛出受检异常一定要处理，它既可以在本方法中处里，也可抛给调用者
+		// 7，Exception是受检异常一定要自己捕获，或者是通过throws抛给调用者，让调用者捕获
+		
+		return a / b;
+	}
+	public static int fun2()
+	{
+		int a = 10;
+		int b = 0;
+		
+		if(b == 0)
+			throw new ArithmeticException("haha");
+		// 8，非受检异常可不用捕获，相关函数也可不用抛出异常，系统会自动捕获，当然自己也可以捕获
+		
+		return a / b;
+	}
+	
+}
+
+2，将异常块代码提出与不提出效果是一样的
+package com.my.ex5;
+
+public class Test126_try_a_function
+{
+
+	public static void fun() throws RuntimeException 
+	{
+		System.out.println("fun start");
+		int a = 1 / 0; 			
+		System.out.println("fun end");	// 如果前面一定会抛出异常，那么不管有没有捕获都不会执行，与将改代码块下载try里效果是一样的
+		
+	}
+	public static void main(String[] args)
+	{
+
+		try
+		{
+			fun();
+		}
+		catch(RuntimeException e)
+		{
+			System.out.println("RuntimeException");
+		}
+		
+		System.out.println("end");
+	}
+
+}
+函数里抛出的异常没有正确捕获，所以程序在这里崩溃，不会执行，发生异常部分后面的代码不会执行，就算正确的捕获了数组越界异常，
+doSomethingElse也不会执行，跟try里的面的情况相同，哪怕把它变成一个函数

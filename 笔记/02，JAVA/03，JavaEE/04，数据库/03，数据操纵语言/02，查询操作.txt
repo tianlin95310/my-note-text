@@ -1,0 +1,39 @@
+1，//尽量不要用星号*，系统会很耗时
+select name as tianlin	//as设别名
+from game 
+where sid=3;
+
+2，dual虚表
+select 1+1 from dual     //dual虚表
+
+3，判断是否为空is null
+select age
+from game
+where name is not null;	//判断是否为空用is null；
+
+4，并列条件用and
+select *
+from game
+where gender='f' and age<=22;	//并列条件用and
+// A <= X <= B
+ 并列条件的简便写法
+select * from leaveinfo where leavetype='holiday' and lid between 2 and 3;
+
+5，或者条件用or
+select *
+from game
+where gender='f' or age<=22;
+
+6，模糊查询，类似于正则表达式
+select *
+from game
+where name like '%n';	//以n结尾，%通配所有字符
+
+select *
+from game
+where name like 't%';	//以t开头
+
+select *
+from game
+where name like '%i%';	//包含i的
+

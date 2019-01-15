@@ -1,0 +1,21 @@
+1,为了加快查询的速度，特别是大数据，多数据时
+    原则，在条件中的列应创建索引，索引列的值越多不相同的，索引的效果越好
+    数据大，查询多。应建立索引
+
+2，普通索引
+create index nameindex	//索引名
+on tcourse(fId（n）);	//将fId列设索引,对于列为char，varchar类型，n值省略
+
+3，唯一索引
+与普通索引语法基本相同，就加了个 create unique index
+不同的是，唯一索引的列不能重复
+
+4，主键索引
+主键索引是一种特殊的唯一索引，主码不能唯一
+
+5，删除，禁用索引
+drop index 索引名 on 表明；
+
+对于MyISAM引擎的表，应先禁用索引，在打开索引
+alter table 表明 disable keys;
+alter table 表明 enable keys;

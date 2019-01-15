@@ -1,0 +1,39 @@
+MultiAutoCompleteTextView控件与AutoCompleteTextView
+控件用法差不多，只不过MultiAutoCompleteTextView可以提示多次
+如AAA,BBB,CCC
+当我输入一个A时，AAA出来了,接着我输入一个B，BBB就出来了
+
+public class MainActivity extends ActionBarActivity
+{
+
+	MultiAutoCompleteTextView mtv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		mtv = (MultiAutoCompleteTextView) findViewById(R.id.mtv);
+		String[] strs = {"aaa", "bbb", "ccc", "ddd", "哈哈", "呵呵"};
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, strs);
+		mtv.setAdapter(adapter);
+		// 简单的逗号，空格分离标志,每当选择时，他会自动将","或者" "填充起来
+		mtv.setTokenizer(new CommaTokenizer());
+	}
+	
+	public void bt(View v)
+	{
+		Toast.makeText(this, mtv.getText().toString(), 0).show();
+		
+	}
+
+}
+
+ <MultiAutoCompleteTextView 
+       android:id="@+id/mtv"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+// 与AutoCompleteTextView 一样，也可以设置提示的起始字符数
+       android:completionThreshold="1"
+       />

@@ -1,0 +1,148 @@
+主activity
+package com.example.bindwayopenservice;
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+
+import com.example.bindwayopenservice.MyService.MyBinder;
+import com.example.inter.WhatCaoDo;
+
+public class MainActivity extends ActionBarActivity
+{
+	// 用于绑定和解绑，所以需要全局变量，操作的是同一个链接
+	private MyConnection con;
+	// 调用service的方法的接口，它含有服务类的某些方法
+	private WhatCaoDo what;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	public void start(View v)
+	{
+		Intent intent = new Intent(this, MyService.class);
+		startService(intent);
+	}
+	public void stop(View v)
+	{
+		Intent intent = new Intent(this, MyService.class);
+		stopService(intent);
+	}
+
+	// 绑定方式开启服务
+	public void bind(View v)
+	{
+		// 得到服务类
+		Intent intent = new Intent(this, MyService.class);
+		// 得到服务开启后的处理
+		con = new MyConnection();
+		// 绑定开启时，只能开启一次，也只能释放一次
+		bindService(intent, con, Activity.BIND_AUTO_CREATE);
+	}
+
+	class MyConnection implements ServiceConnection
+	{
+		public void onServiceConnected(ComponentName name, IBinder service)
+		{
+			// 内部类可以直接导包，只要可见，MyBinder是IBinder的子类，转型安全，MyBinder也是
+			// WhatCaoDo的子类，副职也安全，所以MyBinder具有了他们所有的函数。转型不同，调用的函数也不同
+			what = (MyBinder) service;
+		}
+
+		public void onServiceDisconnected(ComponentName name)
+		{
+
+		}
+	}
+
+	// 该操作只能做一次，多次解绑会抛异常
+	public void unbind(View v)
+	{
+		unbindService(con);
+	}
+
+	public void change(View v)
+	{
+		what.do1();
+	}
+}
+
+// 服务
+package com.example.bindwayopenservice;
+
+import com.example.inter.WhatCaoDo;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+
+public class MyService extends Service
+{
+
+	// 绑定的方式打开只能绑定一次，解绑也只能一解绑1次，多次解绑程序异常崩溃
+	public IBinder onBind(Intent intent)
+	{
+		// 需要返回一个飞空值，MyConnection才能接受到
+		return new MyBinder();
+	}
+	
+	// Binder是IBinder的子类，采用的是一种适配器的机制可以重写Binder的一些函数
+	// 所以MyBinder既是IBinder的子类，也是WhatCaoDo的子类
+	// 所以在MainActivity里，(MyBinder) service强转没有问题，what = MyBinder对象也是没有问题的
+	// 继承Binder是因为需要传递数据给Connection，继承接口是暴露给客户端使用
+	class MyBinder extends Binder implements WhatCaoDo
+	{
+		public void do1()
+		{
+			System.out.println("do1");
+		}
+		
+		public void do2()
+		{
+			System.out.println("do2");
+		}
+		
+		public void do3()
+		{
+			System.out.println("do3");
+		}
+	}
+	// start方式可以启动多个服务
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		System.out.println("onStartCommand");
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	// 服务启动最先调用的方法
+	public void onCreate()
+	{
+		System.out.println("onCreate");
+		super.onCreate();
+	}
+	// 服务退出调用的方法
+	public void onDestroy()
+	{
+		System.out.println("onDestroy");
+		super.onDestroy();
+	}
+	
+	
+}
+
+// 接口
+public interface WhatCaoDo
+{
+	public void do1();
+}
+

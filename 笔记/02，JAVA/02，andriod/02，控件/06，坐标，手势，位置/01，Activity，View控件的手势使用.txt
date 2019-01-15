@@ -1,0 +1,144 @@
+1，gd.onTouchEvent(event)只在指定的重写函数里返回true，并且是人为返回的，所以他的返回值有可能为true或者false
+所以我们在目标控件里，只是调用一下他gd.onTouchEvent(event)，不要将的返回值作为目标View的onTouchEvent或者setOnTouchListener的返回值，因为两者都返回false的情况下，后面的MOVE，UP事件目标View是接收不到的，导致手势失效了
+// 正确的写法应该如下所示
+
+2，布局文件如下
+<ImageView
+        android:id="@+id/iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+      	android:scaleType="matrix"
+      	android:src="@drawable/m003"
+       />
+
+
+3，代码举例	
+tv.setOnTouchListener(new OnTouchListener()
+	{
+		public boolean onTouch(View v, MotionEvent event)
+		{
+			gd.onTouchEvent(event);
+			return true;
+		}
+	});
+
+
+public class MainActivity extends ActionBarActivity
+{
+
+	GestureDetector gd;
+	
+	private TextView tv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		tv = (TextView) findViewById(R.id.iv);
+		gd = new GestureDetector(this, new MySimpleGesture());
+		
+		// 对于控件的话，需要设置控件的OnTouchListener，并将onTouch里的检测操作交给GestureDetector处理
+//		tv.setOnTouchListener(new OnTouchListener()
+//		{
+//			public boolean onTouch(View v, MotionEvent event)
+//			{
+//				gd.onTouchEvent(event);
+				return true;
+//			}
+//		});
+	}
+	
+	// 将activity的touch事件交由gd来处理
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		
+		gd.onTouchEvent(event);
+		return true;
+	}
+	private class MySimpleGesture extends SimpleOnGestureListener
+	{
+//		// 点下去，就会触发，级别为1
+//		public boolean onDown(MotionEvent e)
+//		{
+//			System.out.println("onDown");
+//			return super.onDown(e);
+//		}
+//		
+//		// 按下去立即放手，级别2
+//		public boolean onSingleTapUp(MotionEvent e)
+//		{
+//			System.out.println("onSingleTapUp");
+//			return super.onSingleTapUp(e);
+//		}
+//
+//		// 按下去立即放手，确认后面不在按了，级别为3
+//		public boolean onSingleTapConfirmed(MotionEvent e)
+//		{
+//			System.out.println("onSingleTapConfirmed");
+//			return super.onSingleTapConfirmed(e);
+//		}
+//		
+//		// 双击
+//		public boolean onDoubleTap(MotionEvent e)
+//		{
+//			System.out.println("onDoubleTap");
+//			return super.onDoubleTap(e);
+//		}
+//		// 双击，延迟与onDoubleTap
+//		public boolean onDoubleTapEvent(MotionEvent e)
+//		{
+//			System.out.println("onDoubleTapEvent");
+//			return super.onDoubleTapEvent(e);
+//		}
+//		
+//		// 长按
+//		public void onShowPress(MotionEvent e)
+//		{
+//			System.out.println("onShowPress");
+//			super.onShowPress(e);
+//		}
+//
+//		// 长按，延迟与onShowPress
+//		public void onLongPress(MotionEvent e)
+//		{
+//			System.out.println("onLongPress");
+//			super.onLongPress(e);
+//		}
+
+		// 滑动，实时的,用于手势的话不好
+		public boolean onScroll(MotionEvent e1, MotionEvent e2,
+				float distanceX, float distanceY)
+		{
+				
+			System.out.println("onScroll");
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+
+		// 滑动，一次触摸仅调用一次，用于判断上下左右滑动
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+				float velocityY)
+		{
+			// velocityX表示x, y移动时的加速度，向左下的话为正的，
+			// 向左上的话为负的。最大值好像是12000.0
+			System.out.println("e1 " + e1.getX() + "," + e1.getY());
+			System.out.println("e2 " + e2.getX() + "," + e2.getY());
+			System.out.println(velocityX + "," + velocityY);
+
+			if(e1.getX() > e2.getX() + 50)
+				System.out.println("左滑");
+			else if(e1.getX() + 50 < e2.getX())
+				System.out.println("右滑");
+			
+			if(e1.getY() > e2.getY() + 50)
+				System.out.println("上滑");
+			else if(e1.getY() + 50 < e2.getY())
+				System.out.println("下滑");
+				
+			System.out.println("onFling");
+			return super.onFling(e1, e2, velocityX, velocityY);
+		}
+
+	}
+
+}

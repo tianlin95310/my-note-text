@@ -1,0 +1,3 @@
+页面（不同Activity之间）正向传参，通过Intent传递data，你想传参通过Native端维护一个CallBack管理，通过调用Js的callBack来传递参数
+
+对于embed传参，我们可以通过自定义wx组件

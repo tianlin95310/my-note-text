@@ -1,0 +1,92 @@
+客户端不负责产品的生产，交给工厂即可只需要调用产品方法即可
+
+特点
+1，一个产品接口，一个工厂接口，包含生产所有产品的方法
+2，可以有多个工厂，他们都能生产所有的产品
+
+// 食物总接口
+interface Food
+{
+	public abstract void getName();
+}
+
+// 某一个具体食物A
+class FoodA implements Food
+{
+	public void getName()
+	{
+		System.out.println("i'm food A");
+	}
+}
+
+// 某一个具体食物B
+class FoodB implements Food
+{
+	public void getName()
+	{
+		System.out.println("i'm food B");
+	}
+}
+
+// 总的工厂类，他能生产A,B两种食物
+interface FoodFactory
+{
+	public abstract Food getFoodA();
+
+	public abstract Food getFoodB();
+}
+
+// 具体的某家工厂类A，产生A,B两种食物
+class FactoryA implements FoodFactory
+{
+	public Food getFoodA()
+	{
+		System.out.println("i'm factory A, product food A");
+		return new FoodA();
+	}
+
+	public Food getFoodB()
+	{
+		System.out.println("i'm factory A, product food B");
+		return new FoodB();
+	}
+}
+
+// 具体的某家工厂类B，产生A,B两种食物
+class FactoryB implements FoodFactory
+{
+	public Food getFoodA()
+	{
+		System.out.println("i'm factory B, product food A");
+		return new FoodA();
+	}
+
+	public Food getFoodB()
+	{
+		System.out.println("i'm factory B, product food B");
+		return new FoodB();
+	}
+}
+
+public class TL
+{
+	public static void main(String[] args)
+	{
+		// 得到工厂A对象
+		FactoryA fa = new FactoryA();
+		// 生产两种食物
+		FoodA foodAa = (FoodA) fa.getFoodA();
+		foodAa.getName();
+		FoodB foodBa = (FoodB) fa.getFoodB();
+		foodBa.getName();
+
+		// 得到工厂A对象
+		FactoryB fb = new FactoryB();
+		// 生产两种食物
+		FoodA foodAb = (FoodA) fb.getFoodA();
+		foodAb.getName();
+		FoodB foodBb = (FoodB) fb.getFoodB();
+		foodBb.getName();
+	}
+
+}

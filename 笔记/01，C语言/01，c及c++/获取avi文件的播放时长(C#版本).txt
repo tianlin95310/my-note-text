@@ -1,0 +1,50 @@
+//需要手工引入Shell32.dll
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace GetAviTime
+{
+    class Program
+    {
+        public static string GetMediaTimeLen(string path)
+        {
+            try
+            {
+                Shell32.Shell shell = new Shell32.ShellClass();
+                Shell32.Folder folder = shell.NameSpace(path.Substring(0, path.LastIndexOf("\\")));
+                Shell32.FolderItem folderitem = folder.ParseName(path.Substring(path.LastIndexOf("\\") + 1));
+                if (Environment.OSVersion.Version.Major >= 6)
+                {
+                    return folder.GetDetailsOf(folderitem, 27);
+                }
+                else
+                {
+                    return folder.GetDetailsOf(folderitem, 21);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            string dirname = @"D:\My Documents\Bandicam\C1";
+            string[] files = System.IO.Directory.GetFiles(dirname, "*.avi", System.IO.SearchOption.AllDirectories);
+            TimeSpan tsTotal = TimeSpan.Zero;
+            foreach (string file in files)
+            {
+                string len = GetMediaTimeLen(file);
+                TimeSpan tsLen = TimeSpan.Parse(len);
+                tsTotal += tsLen;
+                Console.Write(tsLen + "\t" + file + "\n");
+            }
+            Console.WriteLine(dirname + "目录下的视频总时长为: ");
+            Console.WriteLine(tsTotal);
+            Console.WriteLine("");
+        }
+    }
+}

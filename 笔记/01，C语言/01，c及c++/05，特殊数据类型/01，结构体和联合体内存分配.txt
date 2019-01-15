@@ -1,0 +1,42 @@
+01，内存对其
+struct type
+{
+	bool bo;
+	char a;
+	int c;
+	short b;
+	long d;
+	float e;
+	double f;
+};
+0018FF28  [12] [32] CC CC [78 56 34 12]	//bo,a,c,两个cc不够4
+0018FF30  [34   12] CC CC [78 56 34 12]	//b,d
+0018FF38  [CD   CC  4C 40] CC CC CC CC	//e,由于后面不足8个，顾4个会浪费掉
+0018FF40  [AE   47  E1 7A  14 AE 09 40]	//f
+
+有double 类型是很特殊，
+
+对于struct的内存，应将每行设8个值，然后以4为小单位
+
+02,
+
+union type
+{
+	struct bit
+	{
+		bool bo;
+		char a;
+		short b;
+	} c;
+	int d;
+
+};
+	
+	
+	bo	0x12 
+	a	0x34
+	b	0x5678
+	d	0x56783412
+	sizeof(s)	0x00000004
+c,d公用内存，改变c的某个成员即改变d
+最终的内存取决于最大的那个内存。

@@ -1,0 +1,131 @@
+定义：
+1，只与熟悉的类进行交流。
+2，不要让不相关的类之间建立直接联系。
+3，可以建立不相关的类之间的桥梁，即建立中介，从而保持各类的独立性。
+4，是自己的就放在本类中，不是自己的就不要放在本类中，不要对类本身产生负面影响即可。
+
+缺点：
+1，各模块之间的通信效率低
+
+// 举例
+以下示例的情况是，一个老板想做一件事，但他不会做，他也不知道谁会做，但它的
+秘书知道谁会做，秘书找到那个人，让那个人完成这件事，秘书起到了连接老板的那个人的作用
+尽管那个人与老板没有见过面，根本不熟，他们只于彼此相熟的人打交道
+
+interface ThingA
+{
+	void doThingA();
+}
+
+class PersonA implements ThingA
+{
+	String name;
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public PersonA(String name)
+	{
+		super();
+		this.name = name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	@Override
+	public void doThingA()
+	{
+		System.out.println("i'm " + name + "i can do thing a");
+	}
+
+}
+
+class SecretaryA 
+{
+	String name;
+	ThingA person;
+
+	public ThingA getPerson()
+	{
+		return person;
+	}
+
+	public void setPerson(ThingA person)
+	{
+		this.person = person;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	public SecretaryA(String name)
+	{
+		super();
+		this.name = name;
+	}
+	public void doThing()
+	{
+		System.out.println("i can't do thing a, but i know a man who can do it");
+		person.doThingA();
+	}
+}
+
+class Boss
+{
+	String name;
+	SecretaryA secretary;
+
+	public SecretaryA getSecretary()
+	{
+		return secretary;
+	}
+
+	public void setSecretary(SecretaryA secretary)
+	{
+		this.secretary = secretary;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public Boss(String name)
+	{
+		super();
+		this.name = name;
+		System.out.println("i'm boss " + name + ",i want to thing a");
+	}
+}
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		PersonA persona = new PersonA("persona");
+		
+		SecretaryA secretarya = new SecretaryA("secretarya");
+		secretarya.setPerson(persona);
+		
+		Boss bossa = new Boss("bossa");
+		bossa.setSecretary(secretarya);
+		
+		bossa.getSecretary().doThing();
+	}
+
+}

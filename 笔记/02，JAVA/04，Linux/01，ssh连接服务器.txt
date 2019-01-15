@@ -1,0 +1,5 @@
+ssh root@ip
+intput pwd
+
+// 查看Tomcat运行日志
+tail -f logs/catalina.out

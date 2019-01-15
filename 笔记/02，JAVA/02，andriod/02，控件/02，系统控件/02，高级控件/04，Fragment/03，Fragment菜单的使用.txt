@@ -1,0 +1,2 @@
+1，用法与activity一样，但需要设置this.setHasOptionsMenu(true);
+可见Fragment与Activity的关系非常密切

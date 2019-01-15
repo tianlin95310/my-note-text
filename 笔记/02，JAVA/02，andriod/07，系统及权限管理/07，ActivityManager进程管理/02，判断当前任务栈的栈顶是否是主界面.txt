@@ -1,0 +1,10 @@
+private boolean ishome(List<String> names)
+	{
+		// 获取当前正在前台运行的应用
+		ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningTaskInfo> list = am.getRunningTasks(1);
+		
+		String current = list.get(0).topActivity.getPackageName();
+		boolean bool = names.contains(current);
+		return bool;
+	}

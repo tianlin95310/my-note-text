@@ -1,0 +1,82 @@
+package com.teslambda;
+
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+public class TestOperate
+{
+
+	public static void fun(String str)
+	{
+		System.out.print(str + " ");
+	}
+	public static void main(String[] args) throws MalformedURLException
+	{
+		List<String> list = new ArrayList<String>();
+
+		for (int i = 0; i < 20; i++)
+		{
+			list.add("" + (i + 1));
+		}
+
+		// 1，list的1.8新方法
+//		list.forEach((i) -> System.out.print(i));
+//		System.out.println();
+
+		// 2,Stream的使用
+
+		// 2.1 通过list新添加的方法获取stream对象
+		Stream<String> stream = list.stream();
+
+		// 2.2 通过stream遍历，他已经与list绑定,foreach是一个最終操作，结束之后能继续进行操作
+		// stream.forEach((i) -> System.out.print(i));
+
+		// 2.3 使用Predicate接口，用作filter的参数，表示筛选条件
+		Predicate<String> p1 = (String str) -> str.contains("1");
+
+		// 2.4 使用Consumer接口，单个操作,参数与对应的函数
+		Consumer<String> c1 = str -> fun(str);
+
+//		// 2.5 Function的使用
+//		Function<String, Integer> fun1 = Integer::parseInt;
+//		Function<String, Integer> fun2 = (String str) -> Integer.valueOf(str);
+//		System.out.println(fun1.apply("456"));
+//		System.out.println(fun2.apply("456"));
+		
+//		// 2.6 Supplier的使用
+//		Supplier<Integer> sup = () -> 123456;
+//		System.out.println(sup.get());
+		
+		// 2.7 filter是一个中间操作,foreach是一个最終操作
+//		 stream.filter(p1).forEach(c1);
+
+		// 2.8 count是一个最终操作
+//		System.out.println(stream.count());
+		
+		// 2.9 采用默认排序
+//		stream.sorted().forEach(c1);
+		
+		// 3.0 采用自定义排序,采用降序排序
+//		Comparator<String> compare = (String obj1, String obj2) -> obj2.compareTo(obj1);
+//		stream.sorted(compare).forEach(c1);
+		
+		// 3.1 截取前面N个元素
+//		stream.limit(15).forEach(c1);
+		
+		BinaryOperator<String> bo = (String str1, String str2) -> str1;
+		Optional<String> op = stream.reduce(bo);
+		
+		System.out.println(op.get());
+		
+		Map map;
+		map.
+	}
+
+}

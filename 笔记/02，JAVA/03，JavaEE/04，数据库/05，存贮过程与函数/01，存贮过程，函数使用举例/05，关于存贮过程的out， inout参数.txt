@@ -1,0 +1,32 @@
+// 对于out，inout参数，需要用用户变量进行访问
+
+// 1，inout参数
+存储过程 inout a int
+BEGIN
+	#Routine body goes here...
+	set a = a + 5;
+END
+
+
+// 调用时：
+// 先赋初值
+set @a = 5;
+// 调用存储过程，在存储过程中，他是能接受到值的，所以@a的值为5 + 5 = 10
+call testInOut(@a);
+// 查询用户变量a
+select @a;
+
+
+
+// 2，out参数 
+存贮过程 out count int
+BEGIN 
+	#Routine body goes here...
+	set count = 10;
+END
+
+set @count = 2;
+// 不能接受输入，只能单纯的为输出参数赋值，
+call testOut(@count);
+// 用用户变量接受
+select @count;

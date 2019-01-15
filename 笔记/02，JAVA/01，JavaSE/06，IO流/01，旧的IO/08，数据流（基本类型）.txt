@@ -1,0 +1,67 @@
+1，数据流主要用于处理一些基本类型的数据，如int，long，等等，
+
+2，数据流里面的方法不好在于文件结尾会抛出异常，不是返回0，-1，所以通常要借助辅助位，用来做循环判断
+	并且读取顺序要一致。否则会出错。
+
+public class ObjectData
+{
+	public static void write()
+	{
+		try
+		{
+			//为什么能这样写，是因为从里向外一层一层构建对象
+			DataOutputStream dos = new DataOutputStream(new FileOutputStream("C:/Users/LX/Desktop/1.txt"));
+			// 1，写入整型值
+			dos.writeInt(12);
+			// 2，用修改的utf-8格式存贮字符串
+			dos.writeUTF("qwe");
+			// 3，写入double值
+			dos.writeDouble(3.14);
+			// 4，将字符串的每个字节按双字节输出,还要加一个辅助位用于判断结束
+			dos.writeChars("asdasd#");
+			
+			dos.close();
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void read()
+	{
+		try
+		{
+			DataInputStream dis = new DataInputStream(new FileInputStream("C:/Users/LX/Desktop/1.txt"));
+			int n = dis.readInt();
+			
+			//用utf-8格式读取
+			String str = dis.readUTF();
+			
+			double d = dis.readDouble();
+			
+			String info = "";
+			char ch = 0;
+			while((ch = dis.readChar()) != '#')
+			{
+				info += ch;
+			}
+			System.out.println(n + " " + str + " " + d + " " + info);
+			
+			dis.close();
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args)
+	{
+//		write();
+		read();
+	}
+}

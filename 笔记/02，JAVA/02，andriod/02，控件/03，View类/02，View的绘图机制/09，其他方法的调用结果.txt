@@ -1,0 +1,7 @@
+1，removeView会调用onDetachedFromWindow方法
+ViewGroup p = (ViewGroup) mtv.getParent();
+p.removeView(mtv);
+
+2，切回桌面会调用
+computeScroll
+

@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+
+#define dim(x) sizeof(x) / sizeof(x[0])
+
+struct LeQueue
+{
+	int iData;
+	LeQueue *pNext;
+};
+
+void AddQ(LeQueue* &pFront, LeQueue* &pReal, int x)
+{
+	LeQueue *pNew = new LeQueue;
+	pNew->iData = x;
+	pNew->pNext = NULL;
+
+	if (pReal == NULL)
+	{
+		pFront = pNew;
+		pReal = pNew;
+	}
+	else
+	{
+		pReal->pNext = pNew;
+		pReal = pNew;
+	}
+}
+
+void DelQ(LeQueue* &pFront, LeQueue* &pReal)
+{
+	if (!pFront) return;
+
+	LeQueue* pTmp = pFront;
+	pFront = pFront->pNext;
+	delete pTmp
+
+	if (pFront == NULL) pReal = NULL;
+}
+
+void Print(LeQueue *pFront)
+{
+	while (pFront)
+	{
+		printf("%d ", pFront->iData);
+		pFront = pFront->pNext;
+	}
+	printf("\n");
+}
+
+void main()
+{
+	LeQueue *pFront = NULL;
+	LeQueue *pReal = NULL;
+
+	AddQ(pFront, pReal, 11);
+	AddQ(pFront, pReal, 22);
+	AddQ(pFront, pReal, 33);
+	Print(pFront);
+
+	DelQ(pFront, pReal);
+	Print(pFront);
+
+	DelQ(pFront, pReal);
+	Print(pFront);
+
+	DelQ(pFront, pReal);
+	Print(pFront);
+
+	AddQ(pFront, pReal, 44);
+	AddQ(pFront, pReal, 55);
+	Print(pFront);
+
+	DelQ(pFront, pReal);
+	Print(pFront);
+
+	DelQ(pFront, pReal);
+	Print(pFront);
+
+	DelQ(pFront, pReal);
+	Print(pFront);
+}

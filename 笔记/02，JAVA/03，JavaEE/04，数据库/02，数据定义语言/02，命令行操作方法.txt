@@ -1,0 +1,32 @@
+mysq -u root -p
+输入密码，没有密码就不输
+
+show databases; //显示数据库
+
+use tianlin //使用哪个库
+
+show tables //显示表
+
+desc 表明	//表结构
+
+create database tian;//创建数据库
+
+drop database tian;//删除数据库
+
+show global VARIABLES;// 查看全局变量
+
+mysql> use tian
+Database changed
+mysql> create table game(
+    -> sid int primary key auto_increment,
+    -> name varchar(20) not null,
+    -> gender char(1),
+    -> age int(2),
+    -> birth date);
+Query OK, 0 rows affected (0.63 sec)
+
+desc game //查看表结构
+
+drop table game
+
+

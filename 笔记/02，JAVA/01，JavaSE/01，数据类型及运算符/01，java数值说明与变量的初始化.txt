@@ -1,0 +1,106 @@
+1,特殊点
+	java的大部分类型都是有符号的，除了char类型是无符号的其余的都是有符号     
+	的，有符号数的规律与C语言相同。内部都是用补码表示。无符号数的所有位都用来计数。
+
+2，处理方式
+	计算机在处理数字时，先将数值转换为原码，若为正数，原码，反码，补码都一样
+	若为负数，需要按照规则转换，负数的原码为对应的正数把最高位改为1即可。
+如133
+原码	0000 0000 0000 0000 0000 0000 1000 0101
+反吗	0000 0000 0000 0000 0000 0000 1000 0101
+补码	0000 0000 0000 0000 0000 0000 1000 0101
+
+若把他赋值给byte，截取1000 0101，有符号byte最高位是符号位
+1000 0101	补码
+1000 0100	反码
+1111 1011 = -123原码
+
+-1	1000 0000 0000 0000 0000 0000 0000 0001	//原码
+	1111 1111 1111 1111 1111 1111 1111 1110	//反码
+	1111 1111 1111 1111 1111 1111 1111 1111	//补码
+
+****java里比较特殊的地方
+若为char，截取1111 1111 1111 1111，char为无符号数，所有位都计数，为0 - (2 ^ 16-1)
+
+
+
+3，
+与c语言一样，1,2,3等常量被默认为int类型。3.14，被认为是double类型。
+
+4，对于普通的局部变量需要初始化，对于内的成员变量是在构造函数里进行初始化的，没有给出值得以默认值初始化
+通过反编译工具可以看到这一个特性
+
+
+class TestInit
+{
+	byte v1;
+	char v2;	// 默认为空字符' ';
+	short v3;
+	int v4;
+	long v5;
+	float v6;
+	double v7;
+	boolean v8;	// 默认为false
+	
+//	0
+//	0
+//	0
+//	0
+//	0
+//	0.0
+//	0.0
+//	false
+	
+	public TestInit()
+	{
+		System.out.println(v1);
+		System.out.println((int)v2);
+		System.out.println(v3);
+		System.out.println(v4);
+		System.out.println(v5);
+		System.out.println(v6);
+		System.out.println(v7);
+		System.out.println(v8);
+		
+//		0
+//		0
+//		0
+//		0
+//		0
+//		0.0
+//		0.0
+//		false
+	}
+}
+public class Test33
+{
+
+	public static void main(String[] args)
+	{
+		
+		byte v1 = 1;		// 不超过范围才能赋值
+		byte b = (byte) 500;	// 超过范围要强转
+		char v2 = 1;
+		short v3 = 1;
+		int v4 = 1;
+		long v5 = 1;		// 用long来接受int没问题
+		float v6 = 1.0f;
+		double v7 = 1.0;	// 1.0默认为double
+		boolean v8 = false;
+		
+		System.out.println(v1);
+		System.out.println(v2);
+		System.out.println(v3);
+		System.out.println(v4);
+		System.out.println(v5);
+		System.out.println(v6);
+		System.out.println(v7);
+		System.out.println(v8);
+		
+		Long ll = 1L;	// 这里必须要加L，表示long
+		// 自动拆箱，装箱只能针对同类型的，如int -> Integer
+		// long->Long
+
+	}
+
+}

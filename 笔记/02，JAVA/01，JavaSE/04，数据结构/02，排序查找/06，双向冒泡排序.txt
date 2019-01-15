@@ -1,0 +1,48 @@
+1，从两个方向同时进行排序，一个确定最小值，一个确定最大值。总的时间会减少一半。
+
+
+package com.itjob;
+
+import java.util.Arrays;
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		int a[] = { 1, 3, 9, 2, 3, 8 ,2,3,4,5};
+		sort(a);
+
+		System.out.println(Arrays.toString(a));
+	}
+	
+	public static void sort(int a[])
+	{
+		for(int i = 1; i <= a.length / 2 ; i++)		//至少要做 N / 2次
+		{
+			int j = 0;
+			//从第一个开始，到 N - i,N - i是因为末尾选出来的不用再比了
+			
+			for(j = i - 1; j < a.length - i;j++)
+			{
+				if(a[j] > a[j + 1])
+				{
+					int temp = a[j];
+					a[j] = a[j + 1];
+					a[j + 1] = temp;
+				}
+			}
+			//从最后一个数开始，到i，开头已经是最小的，也不用再比了。
+			for(j = a.length - 1; j >= i ; j--)
+			{
+				if(a[j] < a[j - 1])
+				{
+					int temp = a[j];
+					a[j] = a[j - 1];
+					a[j - 1] = temp;
+				}
+			}
+		}
+	}
+
+}

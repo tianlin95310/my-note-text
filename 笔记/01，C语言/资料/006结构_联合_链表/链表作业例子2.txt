@@ -1,0 +1,122 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct STUDENT
+{
+	char sName[20];
+	int nAge;
+	STUDENT *pNext;
+};
+
+void ShowNode(STUDENT *pNode)
+{
+	//链表的遍历
+	STUDENT *pCurr = pNode;
+	while (pCurr)
+	{
+		cout << pCurr->sName << "\t" << pCurr->nAge << endl;
+		pCurr = pCurr->pNext;
+	}
+	cout << endl;
+}
+
+// 1<--2<--3<--4<--5<--6  7
+//                    p1  p2  p3
+void RevNode(STUDENT *&pNode)
+{
+	if (pNode == NULL || pNode->pNext == NULL) return;
+
+	STUDENT *p1 = pNode;
+	STUDENT *p2 = p1->pNext;
+	STUDENT *p3 = NULL;
+
+	if (p2->pNext == NULL)
+	{
+		p1->pNext = NULL;
+		p2->pNext = p1;
+		return;
+	}
+
+	p3 = p2->pNext;
+
+	p1->pNext = NULL;
+
+	while (p3 != NULL)
+	{
+		p2->pNext = p1;	//!!!!!
+
+		p1 = p2;
+		p2 = p3;
+		p3 = p2->pNext;
+	}
+	p2->pNext = p1;
+	pNode = p2;
+}
+
+int main()
+{
+	//链表的创建
+	STUDENT e = {"EE", 20, NULL};
+	STUDENT d = {"DD", 23, &e};
+	STUDENT c = {"CC", 24, &d};
+	STUDENT b = {"BB", 22, &c};
+	STUDENT a = {"AA", 21, &b};
+
+	STUDENT *pHead = &a;
+
+	//链表的遍历
+	ShowNode(pHead);
+
+	//链表的查找
+	STUDENT *pCurr = pHead;
+	while (pCurr)
+	{
+		if (pCurr->nAge == 23)
+		{
+			cout << pCurr->sName << "\t" << pCurr->nAge << endl;
+			break;
+		}
+		pCurr = pCurr->pNext;
+	}
+
+	//链表的删除
+	//A->B->C->D->E
+	cout << endl;
+	pCurr = pHead;
+	STUDENT *pPrev = NULL;
+	while (pCurr)
+	{
+		if (pCurr->nAge == 20)
+		{
+			if (pPrev == NULL)
+			{
+				STUDENT *pTmp = pHead->pNext;
+				pHead->pNext = NULL;
+				pHead = pTmp;
+			}
+			else
+			{
+				pPrev->pNext = pCurr->pNext;
+				pCurr->pNext = NULL;
+			}
+			break;
+		}
+		pPrev = pCurr;
+		pCurr = pCurr->pNext;
+	}
+
+	//delete one node
+	ShowNode(pHead);
+
+	//链表的插入将DD 23插入到CC的后边
+	//见课件
+
+	//反转链表
+	RevNode(pHead);
+	ShowNode(pHead);
+
+	//按照年龄排序链表
+
+	return 0;
+}

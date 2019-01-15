@@ -1,0 +1,34 @@
+1,内连接
+select *
+from tstudent ts
+inner join tcourse tc
+on ts.cId=tc.cId;	//内连接的标准写法
+
+select *
+from tstudent ts,tcourse tc
+where ts.cId=tc.cId;	//此种写法是一种简便写法，常用的写法
+
+2，外连接
+select *
+from tstudent
+(left)right outer join tcourse 
+on tstudent.cId=tcourse.cId;
+    1，左外连接，先列出第1个表，第2个表依次来匹配，为空的也列出来
+    2，右外连接，先列出第2个表，第1个表依次来匹配，为空的也列出来
+
+3，交叉连接
+select *
+from tstudent,tcourse
+  笛卡尔积的概念a(x1,x2,...xm),b(y1,y2,...yn),返回m * n个元素
+
+4，自连接
+select *
+from tcourse t1 join tcourse t2 
+on t1.cId=t2.fId;
+	通过自身表的两个别名来连接，某两列有因果关系
+
+select a.id, a.text, b.id as parent, b.text, c.id as p, c.text 
+from bs_industry_code a 
+join bs_industry_code b on a.parent_id = b.id
+join bs_industry_code c on b.parent_id = c.id
+where a.id = 12		

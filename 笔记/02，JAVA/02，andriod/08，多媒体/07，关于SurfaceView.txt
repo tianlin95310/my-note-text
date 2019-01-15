@@ -1,0 +1,18 @@
+SurfaceView的draw有可能不被调用，这就意味着View的draw有可能不被调用，那么View的onDraw也不会被调用
+
+如果是一个SurfaceView的实例，他的draw和onDraw都可能不被调用
+如果是一个SurfaceView的子类的实例，因为子类的draw是SurfaceView的draw，自然有同样的特性，draw和onDraw
+	也有可能不被调用
+
+// 一下是draw的源码
+@Override
+    public void draw(Canvas canvas) {
+        if (mWindowType != WindowManager.LayoutParams.TYPE_APPLICATION_PANEL) {
+            // draw() is not called when SKIP_DRAW is set
+            if ((mPrivateFlags & PFLAG_SKIP_DRAW) == 0) {
+                // punch a whole in the view-hierarchy below us
+                canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+            }
+        }
+        super.draw(canvas);
+    }

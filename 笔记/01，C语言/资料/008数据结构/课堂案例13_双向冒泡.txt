@@ -1,0 +1,38 @@
+#include <stdio.h>
+#define dim(x) (sizeof(x) / sizeof(x[0]))
+#define swap(x, y) (x = (x + y) - (y = x))
+
+//双向冒泡：从数组2端同时进行冒泡
+
+void BbSort(int a[], int len)
+{
+	int left = 0, right = len-1;
+	while (left < right)
+	{
+		for (int top = left, end = right; top < right; top++, end--)
+		{
+			if (a[top] > a[top+1]) swap(a[top], a[top+1]);
+			if (a[end] < a[end-1]) swap(a[end], a[end-1]);
+		}
+		left++;
+		right--;
+	}
+}
+
+void Show(int a[], int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		printf("%d ",a[i]);
+	}
+
+	printf("\n");
+}
+
+void main()
+{
+	int a[] = {5,8,6,0,7,2,4,3,9,1};
+	BbSort(a, dim(a));
+
+	Show(a, dim(a));
+}

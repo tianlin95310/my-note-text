@@ -1,0 +1,57 @@
+<body bgcolor="#cccccc">
+
+	<!--http://127.0.0.1:8080/001Project/index.jsp-->
+
+	<!-- 表单名用于交互 servlet能找到数据源-->
+	<form name="login" action="LoginControl" method="get">
+		<!-- p占一行 -->
+		<p>
+			<!-- 文本输入 -->
+			用户名: <input type="text" name="username" />
+		</p>
+		<p>
+			<!-- 密码输入 -->
+			密码: <input type="password" name="password" />
+		</p>
+		<p>
+			确认密码: <input type="password" name="repassword" />
+		</p>
+		<p>
+			<!-- 列表项，相当于ComboBox，可以设置初始值 -->
+			省份<select name="pro">
+				<option>湖北</option>
+				<option selected="selected">河南</option>
+				<option>湖南</option>
+				<option>河北</option>
+			</select>
+		</p>
+
+		<p>
+			<!-- 复选框 -->
+			兴趣<input name="like" type="checkbox" />游戏 <input type="checkbox"
+				name="like" />音乐<input name="like" type="checkbox" />电影<input
+				type="checkbox" name="like" />动漫
+		</p>
+		<p>
+			<!-- 单选框 -->
+			性别 <input type="radio" name="sex" />男 <input type="radio" name="sex" />女
+		</p>
+		<!-- 图片资源,png图片使用需要注意 -->
+		<p>
+			<img src="p1.jpg" width="100" height="100" />
+		</p>
+		<!-- 三种按钮的使用 -->
+		<input type="submit" value="提交" /> <input type="reset" value="重置" />
+		<input type="button" value="OK" />
+
+	</form>
+
+	<!-- 链接，href链接地址,title提示的内容 -->
+	<p>
+		<a href="table.jsp" title="qqqqqqqqqqq"> login </a>
+	</p>
+
+	<!-- br换行 -->
+	PPPPPPPPPPPP
+	<br />OOOOOOOOOOO
+</body>

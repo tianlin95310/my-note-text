@@ -1,0 +1,190 @@
+// 主activity
+public class MainActivity extends ActionBarActivity implements OnClickListener
+{
+
+	// 图片按钮
+	private ImageButton imb1, imb2, imb3;
+
+	// 初始状态为true，play状态
+	private boolean change = true;
+
+	// 播放状态
+	public static final int START = 0x01;
+	public static final int PAUSE = 0x02;
+	public static final int STOP = 0x03;
+	public static final int EXIT = 0x03;
+	// 播放状态
+	private int state = 0;
+
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		imb1 = (ImageButton) findViewById(R.id.imb1);
+		imb2 = (ImageButton) findViewById(R.id.imb2);
+		imb3 = (ImageButton) findViewById(R.id.imb3);
+
+		imb1.setOnClickListener(this);
+		imb2.setOnClickListener(this);
+		imb3.setOnClickListener(this);
+
+		// 开启服务
+		Intent intent1 = new Intent(this, MusicService.class);
+		startService(intent1);
+
+	}
+
+	@Override
+	public void onClick(View v)
+	{
+		switch (v.getId())
+		{
+		case R.id.imb1:
+
+			// 设置广播action
+			Intent intent1 = new Intent();
+			intent1.setAction("aaa.bbb.ccc");
+			if (change == true)
+			{
+				imb1.setImageResource(R.drawable.pause);
+				state = START;
+				// 携带数据
+				intent1.putExtra("state", state);
+			} else
+			{
+				imb1.setImageResource(R.drawable.play);
+				state = PAUSE;
+				intent1.putExtra("state", state);
+			}
+
+			change = !change;
+
+			// 发送广播
+			sendBroadcast(intent1);
+			break;
+
+		case R.id.imb2:
+
+			state = STOP;
+			
+			change = true;
+			imb1.setImageResource(R.drawable.play);
+			
+			Intent intent2 = new Intent();
+			intent2.setAction("aaa.bbb.ccc");
+			intent2.putExtra("state", state);
+
+			sendBroadcast(intent2);
+			break;
+		case R.id.imb3:
+			
+			state = EXIT;
+			Intent intent3 = new Intent();
+			intent3.setAction("aaa.bbb.ccc");
+			intent3.putExtra("state", state);
+
+			sendBroadcast(intent3);
+			
+			this.finish();
+			break;
+		}
+	}
+	@Override
+	protected void onDestroy()
+	{
+
+		// 开启播放服务
+		Intent intent = new Intent(this, MusicService.class);
+		stopService(intent);
+		
+		super.onDestroy();
+	}
+
+}
+
+// 服务
+public class MusicService extends Service
+{
+
+	// 媒体播放系统内部已经实现了服务操作，关闭后服务还在运行，所以关闭时应该让mp关闭
+	// 这里用服务是用来不和主activity处在同一线程里
+	private MediaPlayer mp;
+
+	@Override
+	public void onCreate()
+	{
+		// 注册广播，并设置接收频道
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("aaa.bbb.ccc");
+		this.registerReceiver(new MyReceiver(), filter);
+		super.onCreate();
+	}
+
+	class MyReceiver extends BroadcastReceiver
+	{
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			int state = intent.getIntExtra("state", 0x00);
+			if (state == MainActivity.START)
+				start();
+			else if (state == MainActivity.PAUSE)
+				pause();
+			else if (state == MainActivity.STOP)
+				stop();
+			else if (state == MainActivity.EXIT)
+			{
+				mp.stop();
+				mp = null;
+			}
+		}
+	}
+	// start方式启动时会调用该方法
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	public void start()
+	{
+		if (mp == null)
+		{
+			try
+			{
+				mp = new MediaPlayer();
+				AssetManager ass = this.getAssets();
+				AssetFileDescriptor file = ass.openFd("m1.mp3");
+				mp.setDataSource(file.getFileDescriptor(),
+						file.getStartOffset(), file.getLength());
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mp.prepare();
+
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		mp.start();
+	}
+	public void pause()
+	{
+		if (mp != null)
+			mp.pause();
+	}
+
+	public void stop()
+	{
+		if (mp != null)
+		{
+			mp.reset();
+			mp.stop();
+			mp = null;
+		}
+	}
+
+	public IBinder onBind(Intent intent)
+	{
+		return null;
+	}
+}

@@ -1,0 +1,86 @@
+泛型方法：参数的类型是不定的
+
+1，泛型方法的简单使用
+public static <V> V get(V v)	//定义时，写在返回值的前面
+	{
+		return v;
+	}
+	public static void main(String[] args)
+	{
+		System.out.println(get(new Long(12L)));
+		System.out.println(get(new String("asd")));
+	}
+
+2，泛型参数与泛型方法的结合
+class c1<V>
+{
+	private V a;
+	public V getA()
+	{
+		return a;
+	}
+	public String toString()
+	{
+		return "c1 [a=" + a + "]";
+	}
+	public void setA(V a)	//局部泛型函数
+	{
+		this.a = a;
+	}
+}
+public class T 
+{
+	public static <V> c1<V> get(c1<V> v)	
+		//它要求方法里参数的类型，与类里的成员的类型是一致的，这样就将类的成员的参数类型与函数的参数类型相关联起来了，
+		//他不是将V与整个类关联，而是与类的成员的数据类型相关联。
+	{
+		return v;
+	}
+	public static void main(String[] args)
+	{
+		c1<String> p = new c1<String>();
+		p.setA("asd");
+		
+		c1<String> p1 = get(p);
+		System.out.println(p1);
+	}
+}
+
+2，泛型类数组
+
+class a<T>
+{
+	private T i;
+	public T getI()
+	{
+		return i;
+	}
+	public String toString()
+	{
+		return "a [i=" + i + "]";
+	}
+	public void setI(T i)
+	{
+		this.i = i;
+	}
+}
+public class Test
+{
+	
+	public static void main(String [] srgs)
+	{
+		a<String> array[] = new a[3];	//此时a的后面不要加<String>,特殊在这里
+		
+		array[0] = new a<String>();
+		array[1] = new a<String>();
+		array[2] = new a<String>();
+		
+		
+		array[0].setI("sdf");
+		array[1].setI("sdf");
+		array[2].setI("sdf");
+		
+		System.out.println(Arrays.toString(array));
+			
+	}
+}

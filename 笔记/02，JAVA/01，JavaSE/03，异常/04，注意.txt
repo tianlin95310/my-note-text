@@ -1,0 +1,39 @@
+注意：
+1，一些资源的释放的代码写在finally里
+
+2, 如果在catch里加了return，finally也会执行，但try-catch块后面的不会执行
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		try 
+		
+		(
+				// 自动释放资源的写法
+				InputStream is = new FileInputStream(new File(""));
+		)
+		{
+
+		} catch (FileNotFoundException e)
+		{
+			System.out.println("FileNotFoundException");
+			return;
+		} catch (IOException e1)
+		{
+			System.out.println("IOException");
+		}
+		finally 
+		{
+			System.out.println("finally");
+		}
+		
+		System.out.println("end");
+
+	}
+
+}
+
+3，异常信息尽量给出英文，
+

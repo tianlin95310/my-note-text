@@ -1,0 +1,4 @@
+getRawX：	触摸点相对于屏幕的坐标
+getX： 		触摸点相对于控件自身的坐标
+getTop： 	按钮左上角相对于父view（LinerLayout）的y坐标
+getLeft： 	按钮左上角相对于父view（LinerLayout）的x坐标

@@ -1,0 +1,60 @@
+package com.example.shader;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ComposeShader;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
+import android.view.View;
+
+public class MyView extends View
+{
+
+	Bitmap bmp;
+	
+	Paint paint;
+	
+	// 着色器,类似于填充器
+	Shader shader, shader2, shader1, shader3;
+	
+	public MyView(Context context)
+	{
+		super(context);
+		paint = new Paint();
+		bmp = BitmapFactory.decodeResource(getResources(), R.drawable.q7);
+		
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		super.onDraw(canvas);
+		
+		int colors[] = new int[]{Color.RED, Color.BLUE};
+				
+		// 1，用图片填充
+		shader = new BitmapShader(bmp, TileMode.REPEAT, TileMode.MIRROR);
+		
+		// 2，两种颜色线性交互填充
+		shader1 =  new LinearGradient(0, 0, 100, 100, colors, null, TileMode.REPEAT);
+		
+		// 3，两种颜色圆形交互线性
+		shader2 = new RadialGradient(100, 100, 80, colors, null, TileMode.REPEAT);
+		
+		// 4，组合形式
+		shader3 = new ComposeShader(shader1, shader2, PorterDuff.Mode.DARKEN);
+		
+		paint.setShader(shader3);
+		paint.setColor(Color.RED);
+		canvas.drawRect(0, 0, 500, 500, paint);
+	}
+
+}

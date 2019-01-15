@@ -1,0 +1,6 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ingore="MissingTranslation"
+>
+
+消除中文转换错误

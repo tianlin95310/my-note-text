@@ -1,0 +1,96 @@
+package com.my;
+
+// 抽象组件
+interface Component
+{
+	void doSomething();
+}
+// 具体组件
+class ComponentA implements Component
+{
+	@Override
+	public void doSomething()
+	{
+		System.out.println("我是最初的组件");
+	}
+}
+// 抽象的装饰者，不直接使用，它本身也是一个Component
+abstract class Decorator implements Component
+{
+	private Component component;
+	
+	public Decorator(Component component)
+	{
+		this.component = component;
+	}
+	@Override
+	public void doSomething()
+	{
+		component.doSomething();
+	}
+}
+
+// DecoratorA它本身也是Component，修饰最终得到的始终是Component，类没有增加
+class DecoratorA extends Decorator
+{
+	public DecoratorA(Component component)
+	{
+		super(component);
+	}
+	
+	public void DecoratorOperate()
+	{
+		System.out.println("被a修饰");
+	}
+	
+	@Override
+	public void doSomething()
+	{
+		this.DecoratorOperate();
+		// 需要调用父类的方法，因为DecoratorOperate只是修饰而已，对象之前的的属性要保留
+		// 所以通常父类的东西不能丢，他只是修饰而已
+		super.doSomething();
+	}
+	
+}
+
+//DecoratorB它本身也是Component，修饰最终得到的始终是Component，类没有增加
+class DecoratorB extends Decorator
+{
+	public DecoratorB(Component component)
+	{
+		super(component);
+	}
+	
+	public void DecoratorOperate()
+	{
+		System.out.println("被b修饰");
+	}
+	
+	@Override
+	public void doSomething()
+	{
+		this.DecoratorOperate();
+		// 需要调用父类的方法，因为DecoratorOperate只是修饰而已，对象之前的的属性要保留
+		super.doSomething();
+	}
+}
+		
+public class Test
+{
+	public static void main(String[] args)
+	{
+		// 最初的组件，只有一个方法
+		Component component = new ComponentA();
+		component.doSomething();
+		
+		// 经DecoratorA修饰后，他有两个方法
+		Component componentDecoratorByA = new DecoratorA(component);
+		componentDecoratorByA.doSomething();
+		
+		// 用DecoratorB来修饰componentDecoratorByA，相当于component经过了A,B两次修饰
+		// 不管修饰多少次，得到的类都是Component子类
+		Component componentDecoratorByAB = new DecoratorB(componentDecoratorByA);
+		componentDecoratorByAB.doSomething();
+	}
+}

@@ -1,0 +1,325 @@
+#include<iostream>
+#include<windows.h>
+#include<conio.h>
+using namespace std;
+int play();
+void color(int b){
+    HANDLE hConsole = GetStdHandle((STD_OUTPUT_HANDLE)) ; 
+    SetConsoleTextAttribute(hConsole,b) ;
+} 
+void gotoxy(int a,int b){
+	COORD pos;
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	pos.X=a;
+	pos.Y=b;
+	SetConsoleCursorPosition(hOut, pos);
+}
+void hidden(){
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cci;
+    GetConsoleCursorInfo(hOut,&cci);
+    cci.bVisible=0;
+    SetConsoleCursorInfo(hOut,&cci);
+}
+void qimian(){
+	color(10);
+	cout<<"╔═╦═╦═╗\n";
+	cout<<"║7 ║8 ║9 ║\n";
+	cout<<"╠═╬═╬═╣\n";
+	cout<<"║4 ║5 ║6 ║\n";
+	cout<<"╠═╬═╬═╣\n";
+	cout<<"║1 ║2 ║3 ║\n";
+	cout<<"╚═╩═╩═╝\n";
+	gotoxy(16,0);
+	color(29);
+	cout<<"请按键盘上的数字键,与棋盘对应";
+}
+void exit()
+{
+	char c;
+	gotoxy(32,10);
+	cout<<",请输入“0”退出";
+	c=getche();
+	if(c=='0')
+		exit(0);
+}
+int main()
+{
+	for(int i=0;i<10;i++)
+	{
+		play();
+		gotoxy(20,11);
+		cout<<"还有3秒进入下局，请准备\n";
+		Sleep(3000);
+		system("cls");
+	}
+	return 0;
+}
+int play()
+{
+	char c;
+	int i;
+	int a[3][3]={1,1,1,1,1,1,1,1,1};//用于输赢的判断
+	int b[3][3]={1,1,1,1,1,1,1,1,1};//为0表示此处有棋子
+	qimian();
+	hidden();
+	for(i=1;i<=9;i++)
+	{
+		color(15);
+		gotoxy(23,2);//输入的数字位置
+		c=getche();
+		switch(c)
+		{
+		case'7':
+			if(a[0][0]&&b[0][0])//如果已经下了，就不能再下
+			{
+				if(i%2==1)//用于区分两人，用奇偶性
+				{
+					color(12);
+					gotoxy(2,1);//棋子位置
+					cout<<"○";
+					a[0][0]--;
+					gotoxy(0,10);//避免破坏棋盘
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(2,1);
+					cout<<"╳";
+					b[0][0]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;//如果落子失败，保持i的奇偶性
+			break;
+		case'8':
+			if(a[0][1]&&b[0][1])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(6,1);
+					cout<<"○";
+					a[0][1]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(6,1);
+					cout<<"╳";
+					b[0][1]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'9':
+			if(a[0][2]&&b[0][2])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(10,1);
+					cout<<"○";
+					a[0][2]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(10,1);
+					cout<<"╳";
+					b[0][2]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'4':
+			if(a[1][0]&&b[1][0])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(2,3);
+					cout<<"○";
+					a[1][0]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(2,3);
+					cout<<"╳";
+					b[1][0]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'5':
+			if(a[1][1]&&b[1][1])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(6,3);
+					cout<<"○";
+					a[1][1]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(6,3);
+					cout<<"╳";
+					gotoxy(10,10);
+					b[1][1]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'6':
+			if(a[1][2]&&b[1][2])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(10,3);
+					cout<<"○";
+					a[1][2]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(10,3);
+					cout<<"╳";
+					b[1][2]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'1':
+			if(a[2][0]&&b[2][0])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(2,5);
+					cout<<"○";
+					a[2][0]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(2,5);
+					cout<<"╳";
+					b[2][0]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'2':
+			if(a[2][1]&&b[2][1])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(6,5);
+					cout<<"○";
+					a[2][1]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(6,5);
+					cout<<"╳";
+					b[2][1]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		case'3':
+			if(a[2][2]&&b[2][2])
+			{
+				if(i%2==1)
+				{
+					color(12);
+					gotoxy(10,5);
+					cout<<"○";
+					a[2][2]--;
+					gotoxy(0,10);
+				}
+				if(i%2==0)
+				{
+					color(14);
+					gotoxy(10,5);
+					cout<<"╳";
+					b[2][2]--;
+					gotoxy(0,10);
+				}
+			}
+			else
+				i--;
+			break;
+		default://输入失败
+			i--;
+		}
+		if( (a[0][0]==0&&a[0][1]==0&&a[0][2]==0)||//判断呈直线
+			(a[1][0]==0&&a[1][1]==0&&a[1][2]==0)||
+			(a[2][0]==0&&a[2][1]==0&&0==a[2][2])||
+			(a[0][0]==0&&a[1][0]==0&&0==a[2][0])||
+			(a[0][1]==0&&a[1][1]==0&&0==a[2][1])||
+			(a[0][2]==0&&a[1][2]==0&&0==a[2][2])||
+			(a[0][0]==0&&a[1][1]==0&&0==a[2][2])||
+			(a[0][2]==0&&a[1][1]==0&&0==a[2][0]))
+		{
+			color(10);
+			gotoxy(20,10);
+			cout<<"恭喜○方胜利"<<endl;
+			i++;
+			break;
+		}
+		if( (b[0][0]==0&&b[0][1]==0&&b[0][2]==0)||
+			(b[1][0]==0&&b[1][1]==0&&b[1][2]==0)||
+			(b[2][0]==0&&b[2][1]==0&&0==b[2][2])||
+			(b[0][0]==0&&b[1][0]==0&&0==b[2][0])||
+			(b[0][1]==0&&b[1][1]==0&&0==b[2][1])||
+			(b[0][2]==0&&b[1][2]==0&&0==b[2][2])||
+			(b[0][0]==0&&b[1][1]==0&&0==b[2][2])||
+			(b[0][2]==0&&b[1][1]==0&&0==b[2][0]))
+		{
+			color(10);
+			gotoxy(20,10);
+			cout<<"恭喜╳方胜利"<<endl;
+			i++;
+			break;
+		}
+		else
+		{
+			if(i==9)
+			{
+				color(10);
+				gotoxy(20,10);
+				cout<<"两人打成平局";
+			}
+		}
+	}
+	return 0;
+}

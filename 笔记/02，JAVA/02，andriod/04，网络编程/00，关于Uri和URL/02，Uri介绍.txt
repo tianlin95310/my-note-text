@@ -1,0 +1,11 @@
+与URL非常类似：也有三部分组成，协议:// + author + /路径
+用URI的parse方法将字符串转化为URI
+
+1，路径或者资源可以用来表示某个函数名，或者是数据库的某个表的名字
+Uri uri = Uri.parse("content://" + authority + "/query");	该Uri标记了一个内容提供者的query函数
+
+Uri dataUri = Uri.parse("content://com.android.contacts/data");	该uri标记了一个数据库的一个表
+
+2,Uri还可以来自文件
+file:// /sdcard/filename
+Uri uri = Uri.fromFile(new File(path));

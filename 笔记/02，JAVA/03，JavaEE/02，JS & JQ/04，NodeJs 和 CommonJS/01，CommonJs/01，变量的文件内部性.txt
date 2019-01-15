@@ -1,0 +1,56 @@
+1,每个文件就是一个模块，有自己的作用域。在一个文件里面定义的变量、函数、类，都是私有的，对其他文件不可见。
+
+2，实现变量的共享，可以定义成global.warning = true;但不推荐
+
+3，使用module.exports导出属性和方法，加载某个模块，其实是加载该模块的module.exports属性。
+	var x = 5;
+	var addX = function (value) {
+  	return value + x;
+	};
+	module.exports.x = x;
+	module.exports.addX = addX;
+
+4，require加载模块，使用模块变量可以访问方法和属性
+var example = require('./example.js');
+console.log(example.x); // 5
+console.log(example.addX(1)); // 6
+
+5，node运行一个模块
+如果在命令行下调用某个模块，比如node something.js，那么module.parent就是undefined。如果是在脚本之中调用，比如require('./something.js')，那么module.parent就是调用它的模块。利用这一点，可以判断当前模块是否为入口脚本。
+
+（1）如果参数字符串以“/”开头，则表示加载的是一个位于绝对路径的模块文件。比如，require('/home/marco/foo.js')将加载/home/marco/foo.js。
+（2）如果参数字符串以“./”开头，则表示加载的是一个位于相对路径（跟当前执行脚本的位置相比）的模块文件。比如，require('./circle')将加载当前脚本同一目录的circle.js。
+（3）如果参数字符串不以“./“或”/“开头，则表示加载的是一个默认提供的核心模块（位于Node的系统安装目录中），或者一个位于各级node_modules目录的已安装模块（全局安装或局部安装）。
+（4）如果参数字符串不以“./“或”/“开头，而且是一个路径，比如require('example-module/path/to/file')，则将先找到example-module的位置，然后再以它为参数，找到后续路径。
+（5）如果指定的模块文件没有发现，Node会尝试为文件名添加.js、.json、.node后，再去搜索。.js件会以文本格式的JavaScript脚本文件解析，.json文件会以JSON格式的文本文件解析，.node文件会以编译后的二进制文件解析。
+（6）如果想得到require命令加载的确切文件名，使用require.resolve()方法。
+
+6，加载模块
+第一次加载某个模块时，Node会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的module.exports属性。
+
+require('./example.js');
+require('./example.js').message = "hello";
+require('./example.js').message
+// "hello"
+上面代码中，连续三次使用require命令，加载同一个模块。第二次加载的时候，为输出的对象添加了一个message属性。但是第三次加载的时候，这个message属性依然存在，这就证明require命令并没有重新加载模块文件，而是输出了缓存。
+
+如果想要多次执行某个模块，可以让该模块输出一个函数，然后每次require这个模块的时候，重新执行一下输出的函数。
+
+所有缓存的模块保存在require.cache之中，如果想删除模块的缓存，可以像下面这样写。
+
+// 删除指定模块的缓存
+delete require.cache[moduleName];
+
+// 删除所有模块的缓存
+Object.keys(require.cache).forEach(function(key) {
+  delete require.cache[key];
+})
+注意，缓存是根据绝对路径识别模块的，如果同样的模块名，但是保存在不同的路径，require命令还是会重新加载该模块
+
+7，require方法有一个main属性，可以用来判断模块是直接执行，还是被调用执行。
+
+直接执行的时候（node module.js），require.main属性指向模块本身。
+
+require.main === module
+// true
+调用执行的时候（通过require加载该脚本执行），上面的表达式返回false。。

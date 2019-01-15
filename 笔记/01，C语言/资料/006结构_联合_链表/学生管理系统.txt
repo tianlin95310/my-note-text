@@ -1,0 +1,269 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+#define STUDENT_FILE "student.dat"
+
+struct tagSTUDENT
+{
+	int iID;
+	char szName[9];
+	char szSex[3];
+	short nAge;
+	tagSTUDENT *pNext;
+};
+
+void SaveInfo(tagSTUDENT *pNew);
+void LoadInfo();
+
+int ShowMenu();
+void InputInfo();
+void PrintInfo();
+void RemoveByID();
+void QueryByID();
+void QueryByName();
+
+
+tagSTUDENT *pHead = NULL;
+tagSTUDENT *pEnd = NULL;
+
+int main()
+{
+	LoadInfo();
+
+	while (1)
+	{
+		//1. 显示主菜单
+		int iChoose = ShowMenu();
+		switch (iChoose)
+		{
+		case 0:
+			return 0;
+			break;
+		case 1:	//录入学生信息
+			InputInfo();
+			system("pause");
+			break;
+		case 2:	//打印所有学生
+			PrintInfo();
+			system("pause");
+			break;
+		case 3:	//删除一个学生
+			RemoveByID();
+			system("pause");
+			break;
+		case 4:	//按照姓名查询
+			QueryByName();
+			system("pause");
+			break;
+		case 5:	//按照学号查询
+			QueryByID();
+			system("pause");
+			break;
+		default:
+			break;
+		}
+	}
+	return 0;
+}
+
+void LoadInfo()
+{
+	FILE *file = fopen(STUDENT_FILE, "ab+");
+	if (file == NULL)
+	{
+		cout << "打开文件时出错, 请联系开发人员." << endl;
+		return;
+	}
+	fseek(file, 0, SEEK_SET);
+
+	while (1)
+	{
+		tagSTUDENT *pNew = new tagSTUDENT;
+		size_t nRead = fread(pNew, sizeof(tagSTUDENT), 1, file);
+		if (nRead <= 0 || (nRead % sizeof(tagSTUDENT) != 0)) break;
+
+		pNew->pNext = NULL;
+
+		if (pHead == NULL)
+		{
+			pHead = pNew;
+			pEnd = pNew;
+		}
+		else
+		{
+			pEnd->pNext = pNew;
+			pEnd = pNew;
+		}
+	}
+	fclose(file);
+}
+
+void SaveInfo(tagSTUDENT *pNew)
+{
+	FILE *file = fopen(STUDENT_FILE, "ab+");
+	if (file == NULL)
+	{
+		cout << "打开文件时出错, 请联系开发人员." << endl;
+		return;
+	}
+
+	fseek(file, 0, SEEK_END);
+	fwrite(pNew, sizeof(tagSTUDENT), 1, file);
+	fclose(file);
+}
+
+int ShowMenu()
+{
+	system("cls");
+	cout << "******学生管理系统******" << endl;
+	cout << "   1. 录入学生信息" << endl;
+	cout << "   2. 打印所有学生" << endl;
+	cout << "   3. 删除一个学生" << endl;
+	cout << "   4. 按照姓名查询" << endl;
+	cout << "   5. 按照学号查询" << endl;
+	cout << "   0. 退出" << endl;
+	cout << "************************" << endl;
+
+	int iChoose = 0;
+	while (1)
+	{
+		cin.clear();
+		cin.sync();	//fflush(stdin)
+
+		cout << "请选择: ";
+		cin >> iChoose;
+		if (!cin.good()) continue;
+		if (iChoose < 0 || iChoose > 4) continue;
+		break;
+	}
+	return iChoose;
+}
+
+void InputInfo()
+{
+	tagSTUDENT *pNew = new tagSTUDENT;
+
+	cout << "编号: ";
+	cin >> pNew->iID;
+
+	cout << "姓名: ";
+	cin >> pNew->szName;
+
+	cout << "性别(1:男 0:女): ";
+	int iSex = 1;
+	cin >> iSex;
+	strcpy(pNew->szSex, iSex ? "男": "女");
+
+	cout << "年龄: ";
+	cin >> pNew->nAge;
+
+	if (pHead == NULL)
+	{
+		pNew->pNext = NULL;
+		pHead = pNew;
+		pEnd = pNew;
+		SaveInfo(pNew);
+		return;
+	}
+
+	tagSTUDENT *p1 = NULL;	//3
+	tagSTUDENT *p2 = pHead;	//7
+
+	while (p2 != NULL && p2->iID <= pNew->iID)
+	{
+		if (p2->iID == pNew->iID)
+		{
+			cout << "学号重复." << endl;
+			return;
+		}
+		else
+		{
+			p1 = p2;
+			p2 = p2->pNext;
+		}
+	}
+
+	if (p1 == NULL)		//连表中原始只有一个数据, 且新增加的ID < 原ID
+	{
+		pNew->pNext = pHead;
+		pHead = pNew;
+	}
+	else if (p2)		//pNew应该待在原数据的中间.
+	{
+		p1->pNext = pNew;
+		pNew->pNext = p2;
+	}
+	else			//pNew应该待在原数据的最后.
+	{
+		p1->pNext = pNew;
+		pNew->pNext = NULL;
+		pEnd = pNew;
+	}
+
+	SaveInfo(pNew);
+}
+
+void PrintInfo()
+{
+	cout << setw(6) << "编号"
+		 << setw(8) << "姓名"
+		 << setw(6) << "性别"
+		 << setw(6) << "年龄" << endl;
+
+	tagSTUDENT *p = pHead;
+	while (p)
+	{
+		cout << setw(6) << p->iID
+			 << setw(8) << p->szName
+			 << setw(6) << p->szSex
+			 << setw(6) << p->nAge << endl;
+		p = p->pNext;
+	}
+}
+
+void RemoveByID()
+{
+	int iID = -1;
+	cout << "请输入要删除的学号: ";
+	cin >> iID;
+
+	tagSTUDENT *p1 = NULL;
+	tagSTUDENT *p2 = pHead;
+
+	//	NULL, 1, 2
+	//    p1  p2
+	// 1
+
+	while (p2 != NULL && p2->iID != iID)
+	{
+		p1 = p2;
+		p2 = p2->pNext;
+	}
+
+	if (p1 == NULL && p2 == NULL)
+	{
+		cout << "链表是空的." << endl;
+	}
+	else if (p1 == NULL && p2 != NULL)
+	{
+		pHead = p2->pNext;
+	}
+	else if (p1 != NULL && p2 != NULL)
+	{
+		p1->pNext = p2->pNext;
+		p2->pNext = NULL;
+	}
+	else //if (p1 != NULL && p2 == NULL)
+	{
+		cout << "没有发现." << endl;
+	}
+}
+
+void QueryByID()
+{
+}
+
+void QueryByName()
+{
+}

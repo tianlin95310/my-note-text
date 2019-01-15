@@ -1,0 +1,18 @@
+// 1，关于存贮过程与函数的调用
+
+// 直接查询调用，才sql语句里调用
+select testFun(2);
+
+// 通过call调用有参数的，无参的可以不用括号
+call changeIP(13);
+
+// 2,关于存贮过程返回的结果集
+BEGIN
+	#Routine body goes here...
+
+select * from tiezi;
+
+select * from tuser;
+
+#存贮过程会议最后一次查询的结果作为结果集
+END

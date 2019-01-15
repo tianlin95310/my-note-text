@@ -1,0 +1,17 @@
+放在应用内部的图片，如drawable，raw等文件夹里的图片，安装后会放到data/app/package里的apk下面
+他们是在整个apk里面的，所以无法得到里面的文件File对象，包括assets目录
+
+记载内部的图片在执行下面的语句时
+Bitmap man = BitmapFactory.decodeResource(getResources(), R.drawable.man);
+
+会有特殊的情况，图片会以某个比率进行放缩，放缩的比率，不一定等于当前手机的密度，
+我们可以指定option来控制图片以一个什么样的比率进行转化，但也只限应用内的图片，手机内存卡上的图片
+不支持用option来指定以什么的密度来加载
+
+public static Bitmap decodeBmpWithDPI(Context context, int imgID, int densityDPI)
+    {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        // 加载的图片的实际密度，只能对应用内部的图片有效，内存卡内的图片无效
+        options.inTargetDensity = densityDPI;
+        return BitmapFactory.decodeResource(context.getResources(), imgID, options);
+    }

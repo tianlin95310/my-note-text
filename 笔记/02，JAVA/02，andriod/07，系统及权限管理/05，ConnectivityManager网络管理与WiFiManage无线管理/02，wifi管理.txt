@@ -1,0 +1,106 @@
+
+// 用于打开和关闭wifi
+wifiManager.setWifiEnabled(true);
+
+
+public class MainActivity extends ActionBarActivity
+{
+
+	WifiManager wifiManager;
+	WifiInfo wifiInfo;
+	
+	Button bt;
+	TextView tv;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		// wifi 管理对象
+		wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+		
+		tv = (TextView) findViewById(R.id.tv);
+		bt = (Button) findViewById(R.id.bt);
+		
+		bt.setOnClickListener(new OnClickListener(
+				)
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				if(wifiManager.isWifiEnabled())
+				{
+					Toast.makeText(MainActivity.this, "wifi打开！", 0).show();
+					// wifi的详细信息
+					wifiInfo = wifiManager.getConnectionInfo();
+					
+					StringBuffer sb = new StringBuffer();
+					// ip地址，连接速度，mac地址，
+					sb.append("IP:" + ipIntToString(wifiInfo.getIpAddress()) + "\n").append("速度:" + wifiInfo.getLinkSpeed() + "\n")
+					.append("mac:" + wifiInfo.getMacAddress() + "\n");
+				
+					// 得到当前信任wifi列表
+					List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+					
+					for(WifiConfiguration wifi : list)
+					{
+						// ssid信任接入点的wifi名字
+							sb.append(wifi.SSID + "\n");
+						// 多为nukk
+//							sb.append(wifi.BSSID + "\n");
+							// 通常为false
+//							sb.append(wifi.hiddenSSID + "\n");
+							
+					}
+					
+					tv.setText(sb.toString());
+					
+				}
+				else
+					Toast.makeText(MainActivity.this, "wifi关闭！", 0).show();
+				
+			}
+		});
+	}
+
+	// 将int的IP转化为String的IP
+	private String ipIntToString(int ip)
+	{
+		try
+		{
+			byte[] bytes = new byte[4];
+			bytes[0] = (byte) (0xff & ip);
+			bytes[1] = (byte) ((0xff00 & ip) >> 8);
+			bytes[2] = (byte) ((0xff0000 & ip) >> 16);
+			bytes[3] = (byte) ((0xff000000 & ip) >> 24);
+			return Inet4Address.getByAddress(bytes).getHostAddress();
+		}
+		catch (Exception e)
+		{
+			return "";
+		}
+	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings)
+		{
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+}

@@ -1,0 +1,23 @@
+public void getConfiguration() {
+		// 品牌
+		Log.d("my", "BRAND " + Build.BRAND);
+		// cpu
+		Log.d("my", "CPU_ABI " + Build.CPU_ABI);
+		Log.d("my", "CPU_ABI2 " + Build.CPU_ABI2);
+		// 型号
+		Log.d("my", "DEVICE " + Build.DEVICE);
+		Log.d("my", "PRODUCT " + Build.PRODUCT);
+		// 屏幕型号
+		Log.d("my", "DISPLAY " + Build.DISPLAY);
+		// 时间
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM ss");
+		Log.d("my", "TIME" + sdf.format(new Date(Build.TIME)));
+		// 主机
+		Log.d("my", "HOST" + Build.HOST);
+		
+		// android API LEVEL
+		Log.d("my", "HOST" + Build.VERSION.SDK_INT);
+		
+		// android版本
+		Log.d("my", "HOST" + Build.VERSION.RELEASE);
+	}

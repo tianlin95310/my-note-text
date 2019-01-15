@@ -1,0 +1,67 @@
+1，onInterceptTouchEvent，事件拦截，return true；时拦截成功
+	1,拦截成功后，事件不会向目标分发,包括，DOWN，MOVE，UP
+	2,拦截成功后，事件先交给当前布局的MyLayout的OnTouchListener处理，返回true则结束，onTouchEvent不会执行,返回false，则继续执行	onTouchEvent
+	
+
+2，拦截测试
+public boolean onInterceptTouchEvent(MotionEvent ev) {
+	// 默认不拦截
+	boolean bool = super.onInterceptTouchEvent(ev);
+	Log.i("my", "MyLayout onInterceptTouchEvent " + ev.getAction() + "---MyLayout super " + bool);
+		
+	// 1，一旦拦截成功之后，当前以及之后的的事件就不会往下分发，DOWN,MOVE,UP逐步都被拦截
+	
+	// 2，如果放过DOWN事件，拦截MOVE事件，拦截成功时，接下来的MOVE，UP事件也会被拦截，此时目标控件会产生CANCEL事件
+		
+	// 3，如果放过DOWN，MOVE，拦截UP事件，拦截成功。目标控件也会产生CANCEL事件
+	if(ev.getAction() == MotionEvent.ACTION_DOWN)
+		return false;
+	else if(ev.getAction() == MotionEvent.ACTION_MOVE)
+		return false;
+	else if(ev.getAction() == MotionEvent.ACTION_UP)
+		return true;
+	return false;
+	}
+
+3，requestDisallowInterceptTouchEvent	反拦截
+	孩子请求父View不拦截
+	getParent().requestDisallowInterceptTouchEvent(true);
+	是一个递归的过程，非得找到目标父View
+
+4，一般不会再DOWN里拦截，通常会在MOVE事件里拦截，因为MOVE事件比较多，通常拦截部分MOVE事件，比如水平的MOVE和数值的MOVE
+
+5，事件的反拦截
+
+public class MyButton extends ImageView {
+
+	public MyButton(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		Log.e("my", "MyButton dispatchTouchEvent " + ev.getAction());
+		return super.dispatchTouchEvent(ev);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// 1，如果父view放过DOWN，拦截MOVE，UP,如果子View在DOWN就反拦截，那么父View就相当于没有拦截，子View中的DOWN，MOVE，UP事件都能
+		// 接收，如果子View在Down不反拦截，会产生cancel事件
+//		if(event.getAction() == MotionEvent.ACTION_DOWN)
+//			getParent().requestDisallowInterceptTouchEvent(true);
+		
+		// 2，如果放过DOWN，部分MOVE，拦截部分MOVE，UP，子View在MOVE中反拦截，那么MOVE，UP事件子View能够收到，如果没有反拦截，子View
+		// 将会产生cancel事件，并且UP事件没有View会处理
+		
+		// 3，注意MOVE事件一次触摸中会有很多MOVE事件，我们可以根据其滑动的距离，选择那些可以反拦截，那些不用反拦截
+		
+//		if(event.getAction() == MotionEvent.ACTION_MOVE)
+//			getParent().requestDisallowInterceptTouchEvent(true);
+		
+		boolean bool = super.onTouchEvent(event);
+		Log.e("my", "MyButton onTouchEvent " + event.getAction() + ",super.onTouchEvent(event) " + bool);
+		
+		return true;
+	}
+}

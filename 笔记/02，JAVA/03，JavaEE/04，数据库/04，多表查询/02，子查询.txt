@@ -1,0 +1,20 @@
+1,子查询的概念
+	查询的结果为第二次的条件
+select *
+from tstudent
+where cId in 
+(select cId
+from tcourse
+where cName='zxc');//内查询是外查询的条件
+
+select avg(sAge),cId	//分组求平均
+from tstudent
+group by cId;
+
+select sName,sAge	//求大于平均值的记录
+from tstudent
+where sAge > (
+select avg(sAge)
+from tstudent
+);
+ 

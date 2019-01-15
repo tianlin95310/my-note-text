@@ -1,0 +1,17 @@
+BEGIN
+	#Routine body goes here...
+
+loop1:loop
+
+if id % 2 = 0 then 
+	RETURN 0;
+elseIF id % 2 = 1 then
+return 1;
+
+end if;
+
+end loop loop1;
+END
+
+// 形参 int
+// 返回值 0,1 boolean类型

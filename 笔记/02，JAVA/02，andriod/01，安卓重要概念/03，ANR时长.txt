@@ -1,0 +1,5 @@
+1，对于activity的View操作，5秒左右
+
+2，对于BroadcastReceiver，onReceiver的执行时间	10秒左右
+
+3，对于服务里面的操作时间	20秒左右

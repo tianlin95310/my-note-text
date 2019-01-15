@@ -1,0 +1,63 @@
+//与直接插入排序的思想基本相同，不同的是通过另一个函数，来确定要插入的位置
+
+
+
+#include <iostream>
+using namespace std;
+#define swap(x, y) {(x) = (x) + (y); (y) = (x) - (y); (x) = (x) - (y);}
+/*
+x = x + y
+y = x + y - y = x;
+x = x + y - x; = y;
+*/
+int getPosition(int* p,int Cur,int max)
+{
+	for(int i = 0; i <= max;i++)
+	{
+		if(p[i] > Cur)
+			return i;
+	}
+	if(Cur > p[max])
+		return max + 1;
+	return -1;
+}
+void sort(int* p,int n)
+{
+	for(int i = 1 ; i < n;i++)
+	{
+		int temp = p[i];	//存贮该值
+		int index = getPosition(p,temp,i - 1 );	//得到下标
+		
+		for(int j = i ; j > index ;j--)
+		{
+			p[j] = p[j - 1];	//改下表以后的值往后移，知道i为止。
+						//临时数组的当前总长度为i。
+		}
+
+		p[index] = temp;
+	}
+}
+int main()
+{
+	int* a = new int[9];
+	a[0] = 9;
+	a[1] = 8;
+	a[2] = 7;
+	a[3] = 6;
+	a[4] = 5;
+	a[5] = 4;
+	a[6] = 3;
+	a[7] = 2;
+	a[8] = 1;
+	
+	sort(a,9);
+	
+	for(int i = 0; i < 9 ; i++)
+	{
+		cout<<a[i]<<" ";
+	}
+	cout<<endl;
+	//(n - 1)的求和
+	delete a;
+	return 0;
+}

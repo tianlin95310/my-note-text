@@ -1,0 +1,109 @@
+1,动态的Fragment不需要在布局文件里定义，但布局文件需要一个FrameLayout布局
+并且要指定id，用于add函数添加。
+
+2，也需要用inflate来得到视图，在布局文件定义显示的内容
+public class MeView extends Fragment
+{
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
+	{
+		// TODO Auto-generated method stub
+		return inflater.inflate(R.layout.me_view, null);
+	}
+}
+
+3，Fragment管理器
+public class MainActivity extends ActionBarActivity implements OnClickListener
+{
+
+	private Button bt_message,bt_contact,bt_me;
+	
+	// Fragment管理器
+	private FragmentManager fm;
+	// 3个fragment对象用于动态的显示
+	private MessageView msg;
+	private ContactView ct;
+	private MeView me;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		bt_message = (Button) findViewById(R.id.bt_message);
+		bt_contact = (Button) findViewById(R.id.bt_contact);
+		bt_me = (Button) findViewById(R.id.bt_me);
+		
+		bt_message.setOnClickListener(this);
+		bt_contact.setOnClickListener(this);
+		bt_me.setOnClickListener(this);
+		// 得到Fragment管理器
+		fm = getFragmentManager();
+	}
+	@Override
+	public void onClick(View v)
+	{
+		// 得到实际管理对象，他的功能主要是将Frag绑定的布局文件放到指定的FrameLayout上面去，
+		// 与静态的fragment一样与ListView非常类似。
+		FragmentTransaction ft = fm.beginTransaction();
+		
+		// 先隐藏所有，然后在显示指定的Fragment，利用FrameLayout的多层显示，免得需要做大量的关闭操作，
+		hideAll(ft);
+		
+		switch(v.getId())
+		{
+		case R.id.bt_message:
+			
+			if(msg == null)
+			{
+				// 如果为空，说明是第一次创建，add方法让Fragment显示在指定的位置上，
+				// 这里不能直接用show
+				msg = new MessageView();
+				ft.add(R.id.frag, msg);
+			}
+			else
+				// 如果对象已经存在，就直接显示出来就可以了
+				ft.show(msg);
+			
+			break;
+			
+		case R.id.bt_contact:
+			
+			if(ct == null)
+			{
+				ct = new ContactView();
+				ft.add(R.id.frag, ct);
+			}
+			else
+				ft.show(ct);
+			break;
+			
+		case R.id.bt_me:
+			if(me == null)
+			{
+				me = new MeView();
+				ft.add(R.id.frag, me);
+			}
+			else
+				ft.show(me);
+			
+			break;
+		}
+		
+		ft.commit();
+	}
+	
+	public void hideAll(FragmentTransaction ft)
+	{
+		// 如果对象不为空，就隐藏起来
+		if(msg != null)
+			ft.hide(msg);
+		if(ct != null)
+			ft.hide(ct);
+		if(me != null)
+			ft.hide(me);
+	}
+
+}
+

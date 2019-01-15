@@ -1,0 +1,70 @@
+		// 设置初始只有一个小图标
+		holder.online_sv.setIconifiedByDefault(false);
+		// 设置提交按钮是否课件
+		holder.online_sv.setSubmitButtonEnabled(true);
+		
+		// 改变搜索图标，
+//		try
+//		{
+//			Field field = holder.online_sv.getClass().getDeclaredField("mSubmitButton");
+//			
+//			field.setAccessible(true);
+//			
+//			ImageView iv = (ImageView) field.get(holder.online_sv);
+//			iv.setImageResource(R.drawable.sousuo01);
+//		} catch (NoSuchFieldException e)
+//		{
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e)
+//		{
+//			e.printStackTrace();
+//		} catch (IllegalArgumentException e)
+//		{
+//			e.printStackTrace();
+//		}
+
+SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), 
+				android.R.layout.simple_list_item_1, 
+				rs, 
+				new String[]{"value"}, 
+				new int[]{android.R.id.text1}, 
+				CursorAdapter.NO_SELECTION);
+		// 设置提示内容
+		holder.online_sv.setSuggestionsAdapter(adapter);
+		// 当提示内容点击时
+		holder.online_sv.setOnSuggestionListener(new OnSuggestionListener()
+		{
+			@Override
+			public boolean onSuggestionSelect(int position)
+			{
+				return false;
+			}
+			
+			@Override
+			public boolean onSuggestionClick(int position)
+			{
+				
+				Log.d("my", sugs.get(position));
+				return false;
+			}
+		});
+		// 点击搜索按钮或者搜索词发生变化时
+		holder.online_sv.setOnQueryTextListener(new OnQueryTextListener()
+		{
+			@Override
+			public boolean onQueryTextSubmit(String query)
+			{
+				dao.insert(query);
+				sugs.add(query);
+				
+				Toast.makeText(getActivity(), query, 0).show();
+				return false;
+			}
+			
+			@Override
+			public boolean onQueryTextChange(String newText)
+			{
+				Toast.makeText(getActivity(), newText, 0).show();
+				return false;
+			}
+		});

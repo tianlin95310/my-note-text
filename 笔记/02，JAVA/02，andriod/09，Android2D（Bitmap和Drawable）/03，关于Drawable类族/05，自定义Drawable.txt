@@ -1,0 +1,71 @@
+1，Drawable概念    
+    一般情况下，除了直接使用放在Drawable下的图片，其余的Drawable的用法都和xml相关，
+我们可以使用shape、layer-list等标签绘制一些背景，还可以通过selector标签
+定义View的状态的效果等。当然了基本每个标签都对应于一个真正的实体类，每一个实体类都能得到特殊
+的自定义的背景效果，主要用于自定义背景
+
+2，自定义Drawable
+    关于自定义Drawable，可以通过写一个类，然后继承自Drawable ， 类似于自定义View，当然了自定义Drawable的核心方法只有一个，那就是draw。
+
+// 举例
+public class RoundImageDrawable extends Drawable  
+{  
+  
+    private Paint mPaint;  
+    private Bitmap mBitmap;  
+  
+    private RectF rectF;  
+  
+    public RoundImageDrawable(Bitmap bitmap)  
+    {  
+        mBitmap = bitmap;  
+	// 画笔填充器，即着色器
+        BitmapShader bitmapShader = new BitmapShader(bitmap, TileMode.CLAMP,  
+                TileMode.CLAMP);  
+        mPaint = new Paint();  
+        mPaint.setAntiAlias(true);  
+        mPaint.setShader(bitmapShader);  
+    }  
+  
+    @Override  
+    public void setBounds(int left, int top, int right, int bottom)  
+    {  
+        super.setBounds(left, top, right, bottom);  
+        rectF = new RectF(left, top, right, bottom);  
+    }  
+  
+    @Override  
+    public void draw(Canvas canvas)  
+    {  
+        canvas.drawRoundRect(rectF, 30, 30, mPaint);  
+    }  
+  
+    @Override  
+    public int getIntrinsicWidth()  
+    {  
+        return mBitmap.getWidth();  
+    }  
+  
+    @Override  
+    public int getIntrinsicHeight()  
+    {  
+        return mBitmap.getHeight();  
+    }  
+  
+    @Override  
+    public void setAlpha(int alpha)  
+    {  
+        mPaint.setAlpha(alpha);  
+    }  
+  
+    @Override  
+    public void setColorFilter(ColorFilter cf)  
+    {  
+        mPaint.setColorFilter(cf);  
+    }  
+  
+    @Override  
+    public int getOpacity()  
+    {  
+        return PixelFormat.TRANSLUCENT;  
+    }  

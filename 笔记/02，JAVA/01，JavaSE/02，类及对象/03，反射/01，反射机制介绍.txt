@@ -1,0 +1,47 @@
+概念：用于获取未知类的内部成员，Class类是反射机制的入口，需要一个Class类的对象
+
+**(1)**关于类加载器ClassLoader
+类加载器是负责加载类的对象。ClassLoader 类是一个抽象类。如果给定类的二进制名称，
+那么类加载器会试图查找或生成构成类定义的数据。一般策略是将名称转换为某个文件名，
+然后从文件系统读取该名称的“类文件”。
+	URL url = this.getClass().getClassLoader().getResource("com/res/p1.png") 
+	用主类对象得到类加载器可以加载一些资源文件,类文件。
+
+1，获取Class类的对象的四种方法
+		
+		try
+		{
+			//1，这里是还没有加载T，需要加完整的类名
+			Class c1 = ClassLoader.getSystemClassLoader().loadClass("com.itjob.T");
+			System.out.println(c1.getName());
+			
+			//2，这里是还没有加载T，所以需要加完整的类名
+			Class c2 = Class.forName("com.itjob.T");
+			System.out.println(c2.getName());
+			
+			//3，这种方法不常用
+			Class c3 = new T().getClass();
+			System.out.println(c3.getName());
+			
+			//4，class是每个类的类信息属性。
+			Class c4 = T.class;		//这里的T已经先加载，所以不需要完整的类名。
+			Class c5 = com.itjob.T.class;	//当然用完整的类名也没有错
+			System.out.println(c4.getName());
+			
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+2，Java类信息（.class运算符）
+	1，Java里面所有的数据类型都有class属性。包括8中基本数据类型，但研究他们的反射没有意义
+
+	2，8中数据类型包装类的class属性是本类的类属性，TYPE属性则是对应的基本数据类型的信息
+
+		Class c1 = Long.class;	// 获取本类自身的类信息
+		Class c2 = Long.TYPE;	// 获取对应的基本类型的信息
+		Class c3 = void.class;	// 获取基本类型的信息,void也是一种类型
+
+		System.out.println(c1.getName());	//java.lang.Long
+		System.out.println(c2.getName());	//long
+		System.out.println(c3.getName());	//void

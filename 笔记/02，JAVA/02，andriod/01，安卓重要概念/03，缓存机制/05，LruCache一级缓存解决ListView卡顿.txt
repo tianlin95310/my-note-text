@@ -1,0 +1,196 @@
+package com.example.lrucache;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
+import android.support.v4.util.LruCache;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+public class MainActivity extends ActionBarActivity
+{
+
+	ArrayList<File> imgs = new ArrayList<File>();
+	ListView lv;
+
+	Point point;
+	
+	// 缓存大小为堆内存的1 / 8
+	private final long MAX_MEMORY = Runtime.getRuntime().maxMemory();
+	private final int CACHE_SIZE = (int)(MAX_MEMORY / 8);
+	
+	private LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(CACHE_SIZE)
+	{
+		@Override
+		protected int sizeOf(String key, Bitmap value)
+		{
+			return value.getByteCount();
+		}
+		
+	};
+	
+	public void clearCache()
+	{
+		if(cache != null)
+		{
+			if(cache.size() > 0)
+			{
+				cache.evictAll();
+			}
+			
+			cache = null;
+		}
+	}
+	
+	public synchronized void putBmp(String key, Bitmap bmp)
+	{
+		if(cache.get(key) == null)
+		{
+				cache.put(key, bmp);
+		}
+		else
+			Toast.makeText(this, "已存在！", 0).show();
+	}
+	
+	public synchronized Bitmap getBmp(String key)
+	{
+		Log.d("my", "cahce size:" + cache.size());
+		if(cache != null)
+		{
+			Bitmap bmp = cache.get(key);
+			
+			if(bmp != null)
+				return bmp;
+		}
+		return null;
+	}
+	
+	public synchronized void remove(String key)
+	{
+		if(cache != null)
+		{
+			Bitmap bmp = cache.remove(key);
+			
+			if(bmp != null)
+				bmp.recycle();
+		}
+	}
+	
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		point = new Point();
+
+		this.getWindowManager().getDefaultDisplay().getSize(point);
+
+		Cursor rs = getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
+				new String[] { Media.DATA }, null, null, null);
+		lv = (ListView) findViewById(R.id.lv);
+
+		while (rs.moveToNext())
+		{
+			imgs.add(new File(rs.getString(0)));
+		}
+		rs.close();
+		
+		Toast.makeText(this, "" + MAX_MEMORY + ":"+ CACHE_SIZE, 0).show();
+		
+		Log.d("my", "" + MAX_MEMORY  +  ":"+ CACHE_SIZE);
+		lv.setAdapter(new MyAdapter());
+	}
+	
+	class MyAdapter extends BaseAdapter
+	{
+
+		@Override
+		public int getCount()
+		{
+			return imgs.size();
+		}
+
+		@Override
+		public Object getItem(int position)
+		{
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position)
+		{
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			View view = View.inflate(MainActivity.this, R.layout.lv_item, null);
+			
+			ImageView img = (ImageView) view.findViewById(R.id.iv_img);
+			
+			Bitmap bmp = getBmp(imgs.get(position).getName());
+			
+			if(bmp == null)
+			{
+				// 不管怎么缓存，对图片的大小还是有限制的
+				bmp = scale(imgs.get(position).getAbsolutePath(), point.x  , point.y );
+				
+				putBmp(imgs.get(position).getName(), bmp);
+			}
+			
+			img.setImageBitmap(bmp);
+			return view;
+		}
+		
+	}
+	public Bitmap scale(String path, int x, int y)
+	{
+		BitmapFactory.Options ops = new Options();
+		ops.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, ops);
+		
+		int srcX = ops.outWidth;
+		int srcY = ops.outHeight;
+		
+		int rateX = srcX / x;
+		int rateY = srcY / y;
+		
+		int rate = 0;
+		
+		// 注意函数的写法不能随便乱改，上次就是改错了这个东西，导致奇怪的错误
+		if(rateX > 1 && rateX >= rateY)
+			rate = rateX;
+		if(rateY > 1 && rateY >= rateX)
+			rate = rateY;
+		ops.inSampleSize = rate;
+		ops.inJustDecodeBounds = false;
+		
+		Bitmap obj = BitmapFactory.decodeFile(path, ops);
+		
+		if(obj.getWidth() > (int)(obj.getHeight() * 1.5f))
+		{
+			// 通过Bitmap的带有matrix的createBitmap来实现图像的旋转,二不是用canvas来画图，画的东西在内存中不便处理
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90, obj.getWidth() / 2, obj.getHeight() / 2);
+			return Bitmap.createBitmap(obj, 0 , 0, obj.getWidth() , obj.getHeight(), matrix, false);
+		}
+		return obj;
+	}
+
+}

@@ -1,0 +1,149 @@
+package com.example.netmusic;
+
+import java.io.IOException;
+
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Process;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+
+public class MainActivity extends ActionBarActivity implements OnBufferingUpdateListener, OnPreparedListener
+{
+
+	MediaPlayer mp;
+	SeekBar sb;
+	
+	int precent;
+	
+	Handler handler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			if(msg.what == 0)
+			{
+				// 更新滑动条
+				sb.setProgress(100 * mp.getCurrentPosition() / mp.getDuration());
+				// 更新二级进度，即缓存进度
+				sb.setSecondaryProgress(precent);
+			}
+		};
+	};
+	
+	Runnable r = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			handler.sendEmptyMessage(0);
+			
+			handler.postDelayed(r, 500);
+		}
+	};
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		sb = (SeekBar) findViewById(R.id.sb);
+		mp = new MediaPlayer();
+		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		
+		mp.setOnBufferingUpdateListener(this);
+		mp.setOnPreparedListener(this);
+		
+		sb.setOnSeekBarChangeListener(new MySeekBarChangeListener());
+		
+		// 注意：sb的最大值在没有设置的情况下是100
+		Log.d("my", "" + sb.getMax());
+		
+	}
+
+	
+	class MySeekBarChangeListener implements OnSeekBarChangeListener
+	{
+		@Override
+		public void onProgressChanged(SeekBar seekBar, int progress,
+				boolean fromUser)
+		{
+		}
+		@Override
+		public void onStartTrackingTouch(SeekBar seekBar)
+		{
+		}
+		@Override
+		public void onStopTrackingTouch(SeekBar seekBar)
+		{
+			// 更新播放位置
+			mp.seekTo(sb.getProgress() * mp.getDuration() / 100);
+		}
+		
+	}
+	
+	public void start(View v)
+	{
+		play();
+	}
+	
+	public void play()
+	{
+		try
+		{
+			mp.reset();
+			mp.setDataSource("http://10.181.17.52:8080/003%20filedownload/jingzhongren.mp3");
+			
+			// 播放在线缓存音乐，需要使用prepare，并重写onPrepare方法
+			// 当系统缓存完成后，会自动调用onPrepare方法，只需在onPrepare中添加实现start方法即可
+			mp.prepare();
+			
+			// 开启更新sb线程
+			handler.post(r);
+			
+		} catch (IllegalArgumentException e)
+		{
+			e.printStackTrace();
+		} catch (SecurityException e)
+		{
+			e.printStackTrace();
+		} catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void onBufferingUpdate(MediaPlayer mp, int percent)
+	{
+		
+		this.precent = percent;
+		
+		// 得到当前播放百分比
+		int current = 100 * mp.getCurrentPosition() / mp.getDuration();
+		// percent为目前缓冲百分比
+		Log.e(current + "% play", percent + "% buffer");
+	}
+
+	@Override
+	public void onPrepared(MediaPlayer mp)
+	{
+		mp.start();
+	}
+	@Override
+	protected void onDestroy()
+	{
+		mp.release();
+		
+		handler.removeCallbacks(r);
+		
+		Process.killProcess(Process.myPid());
+	}
+}

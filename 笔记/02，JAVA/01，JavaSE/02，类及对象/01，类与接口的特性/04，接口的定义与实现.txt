@@ -1,0 +1,87 @@
+2，接口是一种特殊的抽象类，它支持多继承，是一种局部的抽象
+
+接口的特性
+1，接口可继承多个接口(从这也可看出接口是类类型)，多继承
+2，一个类可以实现多个接口，多继承
+3，抽象类实现接口可以不实现所有方法，所以他还是抽象类
+4，接口中的所有方法都是	public abstract方法,不能用static修饰(1.8后可以)
+5，接口中属性都是	public static final常量（常量名通常用大写）
+6，接口没有构造函数。
+
+	原因，因为接口无可变属性，那么构造方法无任何意义。抽象类，普通的类为什么有构造方法
+	因为继承，继承时必须有调用基类的某一个构造方法，用于子类对象成员的初始化，其实通过
+	继承的set,get方法也可以实现初始化，但构造方法提供了一种规范，并且也很方便。继承基类
+	的public方法（显示调用基类的构造方法等）让基类的private成员在子类中能得到有效的访问
+	控制，并且提高的代码重用率，和结构的稳定性。
+
+3，使用举例
+public class ti
+{
+	public static void main(String[] args){
+		a c1 = new a();
+		b c2 = new b();
+		d c3 = new d();
+		c1.fun1();
+		c1.fun2();
+		c2.fun1();
+		c2.fun2();
+		c3.fun1();
+	}
+}
+interface ia//所有成员为public
+{
+	int a = 5;//属性为public static final
+	public void fun1();//抽象方法，属性为public abstract
+}
+interface ib
+{
+	public void fun2();
+}
+interface ic extends ia,ib//接口可继承多个接口
+{
+}
+class a implements ia,ib//类可实现多个接口
+{
+	public void fun1()
+	{
+		System.out.println("ia的fun1");
+	}
+	public void fun2(){
+		System.out.println("ib的fun2");
+	}
+}
+class b implements ic
+{
+	public void fun1()
+	{
+		System.out.println("ic的fun1");
+	}
+	public void fun2(){
+		System.out.println("ic的fun2");
+	}
+}
+abstract class c implements ia		//抽象类实现接口可以不实现方法，抽象方法由继承他的子类来实现
+{
+}
+class d extends c
+{
+	public void fun1()
+	{
+		System.out.println("d的fun1");
+	}
+
+4，特殊情况,fun因为是抽象的，没有具体的实现，所以只有一个版本，无二义性
+interface a
+{
+	void fun();
+}
+interface b
+{
+	void fun();
+}
+
+interface c extends a,b
+{
+	
+}
+

@@ -1,0 +1,15 @@
+会话系统变量, 主要用于在当前客户端连接的生命周期内.它的变量值是全局变量的一份拷贝.
+如果连接断开, 对当前会话变量所做修改都会被重置.
+
+// 访问session变量
+show session VARIABLES;
+
+auto_increment_increment
+auto_increment_offset
+autocommit
+automatic_sp_privileges
+avoid_temporal_upgrade
+back_log
+basedir
+big_tables
+等等

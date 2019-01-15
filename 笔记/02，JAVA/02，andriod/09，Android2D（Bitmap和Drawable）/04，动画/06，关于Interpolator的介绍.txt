@@ -1,0 +1,9 @@
+介绍：被用来修饰动画，定义动画的变化率
+
+1，@android:anim/linear_interpolator		线性变化，能解决循环播放停顿问题
+
+2，@android:anim/accelerate_interpolator	加速变化
+
+3，@android:anim/decelerate_interpolator	减速变化
+
+4，@android:anim/cycle_interpolator		循环变化

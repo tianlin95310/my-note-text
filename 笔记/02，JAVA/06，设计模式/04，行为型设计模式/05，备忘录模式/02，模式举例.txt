@@ -1,0 +1,103 @@
+package com.my;
+
+class Originator
+{
+	private String state;
+
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(String state)
+	{
+		this.state = state;
+	}
+	
+	public Memento createMemento()
+	{
+		return new Memento(getState());
+	}
+	
+	public void restoreMemento(Memento memento)
+	{
+		setState(memento.getState());
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Originator [state=" + state + "]";
+	}
+	
+	
+}
+
+class Memento
+{
+	private String state = "";
+	
+	public Memento(String state)
+	{
+		this.state = state;
+	}
+
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(String state)
+	{
+		this.state = state;
+	}
+	
+}
+
+class Creataker
+{
+	private Memento memento;
+
+	public Memento getMemento()
+	{
+		return memento;
+	}
+
+	public void setMemento(Memento memento)
+	{
+		this.memento = memento;
+	}
+	
+	
+}
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Originator ori = new Originator();
+		Creataker create = new Creataker();
+		
+		// 第一次设置属性
+		ori.setState("tianlin");
+		
+		System.out.println(ori);
+		
+		// 创建备忘录，其仍然在内存中
+		Memento memSave = ori.createMemento();
+		// 设置保存备忘录在内存中
+		create.setMemento(memSave);
+		
+		// 第二次设置属性
+		ori.setState("haha");
+		System.out.println(ori);
+		
+		//得到之前的Memento信息
+		Memento memOpen = create.getMemento();
+		// 将Memento更新至ori中，得到之前的信息
+		ori.restoreMemento(memOpen);
+		System.out.println(ori);
+	}
+
+}

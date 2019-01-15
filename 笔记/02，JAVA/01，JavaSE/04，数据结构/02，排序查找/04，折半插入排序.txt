@@ -1,0 +1,99 @@
+1，与直接插入排序类似，只不过从第二个开始插入时，求出要插入的位置。
+	有多种方法可以求得位置。
+
+2，这种特殊的二分法可用来向有序表中添加一个元素，因为大多不会存在，所以min > max在来判断
+	在哪个位置。
+
+package com.itjob;
+
+import java.util.Arrays;
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		int a[] = { 1, 3, 9, 2, 3, 8 };
+		sort(a);
+
+		System.out.println(Arrays.toString(a));
+	}
+	public static int findPlace3(int a[], int n, int min, int max)
+	{
+		
+		for(int i = min; i <= max ;i++)
+		{
+			if(a[i] >= n)
+				return i;
+		}
+		
+		if(n >= a[max])
+			return max + 1;
+		
+		return -1;
+	}
+	//递归实现，能不用，尽量不用
+	public static int findPlace2(int a[], int n, int min, int max)
+	{
+		
+  		if (n < a[min]) // 插入的比最小值小，应插在最左端，
+			return min;
+		
+		if (n > a[max]) // 插入的值比最大的大，应插在最右端
+			return max + 1;
+			
+		int mid = (min + max) / 2;
+		if (n < a[mid])
+			return findPlace2(a, n, min, mid - 1);
+		if (n > a[mid])
+			return findPlace2(a, n, mid + 1, max);
+		return mid;
+	}
+	//循环实现
+	public static int findPlace1(int a[], int n, int min, int max)
+	{
+		// 浓缩到最后min >= max，假设为i，浓缩到了一个i这个点，
+		//或者是min > max
+		// 若小于i就插到i的位置，大于i就插到i的后面
+
+		int mid = 0;
+		while (min <= max)
+		{
+			if (min >= max)
+			{
+				if (n < a[min]) // 插入的比最小值小，应插在最左端，
+					return min;
+
+				if (n > a[max]) // 插入的值比最大的大，应插在最右端
+					return max + 1;
+			}
+			mid = (min + max) / 2;
+
+			if (n < a[mid])
+				max = mid - 1;
+
+			if (n >= a[mid])	//需要包含等号
+				min = mid + 1;
+		}
+		return mid;
+	}
+
+	public static void sort(int a[])
+	{
+
+		for (int i = 1; i < a.length; i++) // 第一个元素不用排
+		{
+			int temp = a[i]; 			// 记录当前插入的值
+			int index = findPlace3(a, temp, 0, i - 1); // 查找应插在哪里
+
+			for (int j = i; j > index; j--)
+			{
+				a[j] = a[j - 1]; // 将要插入的位置的后面的位置后移
+			}
+
+			a[index] = temp; // 将要插入的数放到指定的位置。
+
+		}
+	}
+
+}

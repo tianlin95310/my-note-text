@@ -1,0 +1,8 @@
+第一步：测量控件的大小measure,onMesure
+
+第二部：得到控件位置layout,onLayout
+
+第三部：draw,onDraw
+
+过程调用是对View树的分发，逐层绘画
+

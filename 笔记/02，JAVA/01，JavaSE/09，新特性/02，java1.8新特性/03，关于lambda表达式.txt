@@ -1,0 +1,41 @@
+1，lambda表达式是对匿名内部类的一种简化，具有匿名内部类的基本特征，采用了c语言的指针的调用操作符
+	能使用lambda表达式的条件是接口有且只有一个普通抽象函数
+
+（）-> {}
+
+	1，没有参数时，用()
+	2，参数可以加类型，也可以省略类型
+	3，只有一个参数时，可以省略（）
+	4，语句块只有一句时，可不用大括号，有返回值的可以省略return
+
+		Java8<String> java1 = (param) -> Integer.parseInt(param);
+		Java8<String> java1 = param -> Integer.parseInt(param);
+		Java8<String> java2 = (param) -> { return Integer.parseInt(param);};
+		Java8<String> java3 = (String param) -> { return Integer.parseInt(param);};
+
+2，作用域
+与匿名内部类类似，可以访问方法里的常量，外部类的成员
+interface TestLambda
+{
+	void fun();
+}
+class My1
+{
+	private int a = 10;
+	
+	public void fun()
+	{
+		final int b = 5;
+		TestLambda test = () -> System.out.println(a + ":" + b);
+		test.fun();
+	}
+}
+
+public class TestScope
+{
+	public static void main(String[] args)
+	{
+		new My1().fun();
+	}
+
+}

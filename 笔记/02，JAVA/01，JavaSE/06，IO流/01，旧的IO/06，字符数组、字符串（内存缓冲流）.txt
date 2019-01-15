@@ -1,0 +1,81 @@
+1，这两种流缓冲在内存里，不需要与文件或者其他流相关联，关闭流是无效的。
+
+2，两种流中，写入流有无参构造函数，读出流需要带有参数，要指定读出的是内存上的那块缓冲流，
+	通常输入流是从输出流里读，如ByteArrayOutputStream。StringReader
+
+3，ByteArrayOutputStream相当于字节流，StringReader相当于字符流
+
+public class DiskBuffer
+{
+	public static ByteArrayOutputStream writeByteArray()
+	{
+		// 1,该流不需要关联其他流,缓冲区保存在内存里,整个操作都是在内存里完成的
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try
+		{
+			//操作的是字节数组
+			baos.write("qweqweqweqweqwe".getBytes());
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return baos;
+	}
+	
+	//接受一个流，并做一些操作
+	public static void readByteArray(ByteArrayOutputStream baos)
+	{
+		//读出时，需要用构造函数指定要读那个内容
+		//baos.toByteArray是将缓冲区的内容打包成一个字节数组
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		
+		byte bs[] = new byte[10];
+		int len = -1;
+		try
+		{
+			while( (len = bais.read(bs)) != -1)
+			{
+				System.out.println(new String(bs,0,len));
+			}
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static StringWriter writeString()
+	{
+		//与ByteArrayOutputStream一样。不需要关联其他的流，构造函数不要参数
+		StringWriter sw = new StringWriter();
+		//能直接写入字符串，相当于字符流，字符流基本都支持写入字符串的操作
+		sw.write("123456789 987654321");
+		
+		return sw;
+	}
+	
+	public static void readString(StringWriter sw)
+	{
+		//与ByteArrayInputStream一样，需要制定从哪里读
+		//sw.toString()是将缓冲区里的内容打包成字符串
+		StringReader sr = new StringReader(sw.toString());
+		char chs[] = new char[10];
+		int len = -1;
+		
+		try
+		{
+			//操作对象是字符数组，相当于字符流
+			while( (len = sr.read(chs)) != -1)
+			{
+				System.out.println(new String(chs,0,len));
+			}
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args)
+	{
+		//readByteArray(writeByteArray());
+		readString(writeString());
+	}
+}

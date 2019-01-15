@@ -1,0 +1,17 @@
+public void onClick(View v)
+			{
+				// 需要注意的是WIFI会覆盖3G，就是当有WIFI时，网络会用wifi的，不用流量的
+				// 还有就是ConnectivityManager包含了所有的网络连接，包括WIFI，3G
+				ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo net = cm.getActiveNetworkInfo();
+				
+				if(net == null )
+				{
+					createDialog("网络没有打开，是否需要进行网络设置？");
+					return;
+				}
+				if("mobile".equals(net.getTypeName()))
+				{
+					createDialog("当前网络环境为流量，是否需要进行网络设置？");
+					return;
+				}

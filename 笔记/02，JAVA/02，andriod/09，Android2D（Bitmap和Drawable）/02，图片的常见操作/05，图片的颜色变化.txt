@@ -1,0 +1,165 @@
+图片的各个颜色分量的范围为 0 - 255
+
+由paint来控制，通过setColorFilter来设置
+最终由ColorMatrix 4 * 5矩阵来控制
+
+A 0 0 0 0
+0 B 0 0 0
+0 0 C 0 0
+0 0 0 D 0
+ABCD风别表示RGBA
+
+public class MainActivity extends ActionBarActivity
+{
+
+	private SeekBar sb_red, sb_green, sb_blue, sb_alpha;
+
+	ImageView iv;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		// 得到红绿蓝灰度调节控件
+		sb_red = (SeekBar) findViewById(R.id.sb_red);
+		sb_green = (SeekBar) findViewById(R.id.sb_green);
+		sb_blue = (SeekBar) findViewById(R.id.sb_blue);
+		sb_alpha = (SeekBar) findViewById(R.id.sb_alpha);
+		iv = (ImageView) findViewById(R.id.iv);
+		
+		// 设置最大值为255
+		sb_red.setMax(255);
+		sb_green.setMax(255);
+		sb_blue.setMax(255);
+		sb_alpha.setMax(255);
+		// 得到图片对象
+		final Bitmap bmp = BitmapFactory.decodeResource(getResources(),
+				R.drawable.a1);
+		// 画图图纸
+		final Bitmap draw = Bitmap.createBitmap(bmp.getWidth(),
+				bmp.getHeight(), Config.ARGB_8888);
+		// 得到画板
+		final Canvas canvas = new Canvas(draw);
+
+		final Matrix matrix = new Matrix();
+
+		final Paint paint = new Paint();
+		final ColorMatrix cm = new ColorMatrix();
+		cm.set(new float[] { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+				0, 1, 0 });
+		ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(cm);
+		// 颜色由paint通过setColorFilter来控制
+		paint.setColorFilter(cmcf);
+
+		canvas.drawBitmap(bmp, matrix, paint);
+		iv.setImageBitmap(draw);
+
+		// 添加seekbar事件
+		sb_red.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			// 停止移动
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+			}
+			// 开始移动
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+			}
+			// 移动中
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser)
+			{
+				int p = seekBar.getProgress();
+				cm.set(new float[] { p/256.0f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+						0, 1, 0, 0, 0, 0, 0, 1, 0 });
+
+				ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(cm);
+				paint.setColorFilter(cmcf);
+				canvas.drawBitmap(bmp, matrix, paint);
+				iv.setImageBitmap(draw);
+			}
+		});
+		
+		sb_green.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser)
+			{
+				int p = seekBar.getProgress();
+
+				cm.set(new float[] { 
+						1, 0, 0, 0, 0,
+						0, 1, 0, 0, 0, 
+						0, 0, p/128.0f, 0, 0, 
+						0, 0, 0, 1, 0 });
+
+				ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(cm);
+				paint.setColorFilter(cmcf);
+				canvas.drawBitmap(bmp, matrix, paint);
+				iv.setImageBitmap(draw);
+			}
+		});
+		
+		sb_blue.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser)
+			{
+				int p = seekBar.getProgress();
+
+				cm.set(new float[] { 
+						1, 0, 0, 0, 0,
+						0, 1 , 0, 0, 0,
+						0, 0, p/128.0f, 0, 0, 
+						0, 0, 0, 1, 0 });
+
+				ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(cm);
+				paint.setColorFilter(cmcf);
+				canvas.drawBitmap(bmp, matrix, paint);
+				iv.setImageBitmap(draw);
+			}
+		});
+		
+		sb_alpha.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+			}
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser)
+			{
+				int p = seekBar.getProgress();
+
+				cm.set(new float[] { 
+						1, 0, 0, 0, 0,
+						0, 1, 0, 0, 0, 
+						0, 0, 1, 0, 0, 
+						0, 0, 0, p/128.0f, 0 });
+
+				ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(cm);
+				paint.setColorFilter(cmcf);
+				canvas.drawBitmap(bmp, matrix, paint);
+				iv.setImageBitmap(draw);
+			}
+		});
+		
+	}
+
+}

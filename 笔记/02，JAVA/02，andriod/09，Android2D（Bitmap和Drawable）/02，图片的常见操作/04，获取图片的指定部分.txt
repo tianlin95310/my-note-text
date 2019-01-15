@@ -1,0 +1,8 @@
+for(int i = 0; i < 3 ; i ++)
+	{
+		for(int j = 0 ; j < 3 ; j++)
+		{
+			Bitmap bmp = Bitmap.createBitmap(raw_bmp, j * perX, i * perY, perX, perY);
+			patrs[i][j].setImageBitmap(bmp);
+		}
+	}

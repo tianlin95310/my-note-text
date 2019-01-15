@@ -1,0 +1,4 @@
+在使用DiskLruCache之前，我们需要对缓存的目录进行下配置，DiskLruCache并不需要限定缓存保存的位置，
+但一般情况下，我们的缓存都保存在缓存目录下： /sdcard/Android/data/package name/cache。
+当然，如果没有sdcard，那么我们就使用内置存储的缓存区域/data/data/package name/cache。
+使用不同的函数可以分别得到这两个目录

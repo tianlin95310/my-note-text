@@ -1,0 +1,27 @@
+1,user全局的用户对所有数据库都有权限
+
+2，设值权限
+grant all on test.*	//表示test库的所有表，*.*表示所有库的所有表
+to 'username'@'%' 	//表示所有的地点都可登录，@'localhost'仅限本地登录
+identfied by 'username';
+
+3,删除权限
+revoke delete on database.* from username;
+
+4,修改主用户密码
+SET PASSWORD FOR user = PASSWORD('MyNewPassword');
+
+update user set password=password('newpwd') where user='root';	//修改root的密码
+	其中passeword是一个函数，采用BD5加密
+
+5，加密函数
+	1，password
+	2，MD5
+	3，ENCODE
+6，解密
+	1，DECODE
+
+7,加密解密实现。
+insert into user(uId,uPwd,uName) values('qwe',ENCODE('1111','bb'),'qwe');
+select DECODE(uPwd,'bb') from user where uId='qwe';
+update user set uPwd=ENCODE('1234','bb') where uId='qwe';

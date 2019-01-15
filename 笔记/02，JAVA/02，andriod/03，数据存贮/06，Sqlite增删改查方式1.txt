@@ -1,0 +1,170 @@
+必须要用SqlLite类得到数据库操作对象SQLiteDatabase sdb来进行操作，
+
+1， 核心功能(dao)，他与MySQL的dao有些不同，因为SqlLite的参数里Context，必须要关联一个上下文，所以他要有相应的
+	构造函数来传递该参数，又因为视图(V)的函数没有返回值，所以就没有控制器无法接受参数，就存在了
+
+2，通配符特点，不管是String[]{},还是Object[]{}，本质上与MySQL的PrePareStatement接口差不多。
+
+3，Cursor有可能返回null，这与JDBC是不一样的。
+
+public class UserDao {
+	
+	private SqlLite sql;
+	
+	public UserDao(Context context) {	//因为每一个都要用到SqlLite ，所以将他作为成员变量
+		super();
+		this.sql = new SqlLite(context, "tianlin", null, 1);
+	}
+
+	public boolean add(UserVo user)
+	{
+			// 1，获取数据库的操作对象，类似于MySQL的Connection
+		SQLiteDatabase sdb = sql.getWritableDatabase();
+
+			// 2，采用通配符的方式，类似于MySQL的PrepareStatement接口，该函数没有返回值
+
+		sdb.execSQL("insert into user values(?,?,?,?)", 
+			new Object[]{user.getName(),user.getPassword(),user.getNumber(),user.getSex()});
+		sdb.close();	//需要释放资源	
+		return true;
+	}
+	public boolean del(String name)
+
+	{	// 1，获取数据库的操作对象，类似于MySQL的Connection
+		SQLiteDatabase sdb = sql.getWritableDatabase();
+		// 2，采用通配符的方式，类似于MySQL的PrepareStatement接口，该函数没有返回值
+		sdb.execSQL("delete from user where uName=?", new Object[]{name});
+		sdb.close();
+		return true;
+	}
+	public boolean mod(UserVo user)
+	{	// 1，获取数据库的操作对象，类似于MySQL的Connection
+		SQLiteDatabase sdb = sql.getWritableDatabase();
+		// 2，采用通配符的方式，类似于MySQL的PrepareStatement接口，该函数没有返回值
+		sdb.execSQL("update user set uPwd=?,uTel=?,sex=? where uName=?", 
+			new Object[]{user.getPassword(),user.getNumber(),user.getSex(),user.getName()});
+		sdb.close();
+		return true;
+	}
+	public UserVo query(String name)
+	{
+		// 1，获取数据库的操作对象，类似于MySQL的Connection
+		SQLiteDatabase sdb = sql.getReadableDatabase();
+
+		// 2，由于execSQL没有返回值，所以用rawQuery专门用来查询，这里也是通配符，只不过元素类型为String
+			返回的结果类似于ResultSet，本质上是一样的
+
+		Cursor rs = sdb.rawQuery("select * from user where uName=?", new String[]{name});
+			UserVo user = new UserVo();
+
+		// 3，对结果集进行处理，ResultSet有rs.next函数，作用类似
+		while(rs.moveToNext())
+		{
+			user.setName(name);
+
+			//4，这里封装的函数，没有MySQL好，MySQL对getString做了重载，但这里还要间接的用getColumnIndex
+				来获取对应码的索引
+			user.setPassword(rs.getString(rs.getColumnIndex("uPwd")));
+			user.setNumber(rs.getString(rs.getColumnIndex("uTel")));
+			user.setSex(rs.getString(rs.getColumnIndex("sex")));
+		}
+		sdb.close();
+		return user;
+	}
+
+	public ArrayList<UserVo> queryall()
+	{
+		// 1，获取数据库的操作对象，类似于MySQL的Connection
+		SQLiteDatabase sdb = sql.getReadableDatabase();
+
+		// 2，由于execSQL没有返回值，所以用rawQuery专门用来查询，这里也是通配符，只不过元素类型为String
+			返回的结果类似于ResultSet，本质上是一样的
+		Cursor rs = sdb.rawQuery("select * from user",null);
+		
+		UserVo user = new UserVo();
+		ArrayList<UserVo> list = new ArrayList<UserVo>();
+		
+		// 3，对结果集进行处理，ResultSet有rs.next函数，作用类似
+		while(rs.moveToNext())
+		{
+
+			//4，这里封装的函数，没有MySQL好，MySQL对getString做了重载，但这里还要间接的用getColumnIndex
+				来获取对应码的索引
+			user.setName(rs.getString(rs.getColumnIndex("uName")));
+			user.setPassword(rs.getString(rs.getColumnIndex("uPwd")));
+			user.setNumber(rs.getString(rs.getColumnIndex("uTel")));
+			user.setSex(rs.getString(rs.getColumnIndex("sex")));
+			
+			list.add(user);
+		}
+		sdb.close();
+		return list;
+	}
+
+2，视图部分(V)，由于视图没有返回值，所以就没有控制器。控制器和视图写在一起了。因为事件处理函数没有返回值的特殊性。
+
+public void add(View v) {
+		UserVo user = new UserVo();
+
+		user.setName(et_username.getText().toString());
+		user.setPassword(et_password.getText().toString());
+		user.setNumber(et_number.getText().toString());
+		user.setSex(rg1.getCheckedRadioButtonId() == R.id.rb_nan ? "男" : "女");
+
+		UserDao ud = new UserDao(this);		1，视图获取的参数直接传给dao
+
+		ud.add(user);
+
+		Toast.makeText(this, "success", 0).show();
+	}
+
+	public void del(View v) {
+		String name = et_username.getText().toString();
+
+		UserDao ud = new UserDao(this);
+		ud.del(name);				2，视图获取的参数直接传给dao
+
+		Toast.makeText(this, "success", 0).show();
+	}
+
+	public void mod(View v) {
+		UserVo user = new UserVo();
+
+		user.setName(et_username.getText().toString());
+		user.setPassword(et_password.getText().toString());
+		user.setNumber(et_number.getText().toString());
+		user.setSex(rg1.getCheckedRadioButtonId() == R.id.rb_nan ? "男" : "女");
+
+		UserDao ud = new UserDao(this);
+		
+		ud.mod(user);				3，视图获取的参数直接传给dao
+		
+		Toast.makeText(this, "success", 0).show();
+	}
+
+	public void query(View v) {
+		String name = et_username.getText().toString();
+		UserDao ud = new UserDao(this);
+		
+		UserVo u = ud.query(name);		4，视图获取的参数直接传给dao，查询返回查询结果
+		
+		tv1.setText(u.toString());
+		
+		Toast.makeText(this, "success", 0).show();
+	}
+
+	public void queryall(View v) {
+		UserDao ud = new UserDao(this);
+		
+		ArrayList<UserVo> list = ud.queryall();//5，4，视图获取的参数直接传给dao，查询返回查询结果
+		
+		StringBuilder sb = new StringBuilder();
+		for(UserVo u : list)
+		{
+			sb.append(u.toString() + "\n");
+		}
+		
+		tv1.setText(sb.toString());
+		
+		Toast.makeText(this, "success", 0).show();
+	}

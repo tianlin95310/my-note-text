@@ -1,0 +1,72 @@
+折半查找的特殊情况
+	没有找到时，min大于max，找到的情况有min == max，或 min < max
+
+
+#include <iostream>
+using namespace std;
+#define swap(x, y) {(x) = (x) + (y); (y) = (x) - (y); (x) = (x) - (y);}
+int search1(int* p,int n,int& min,int &max)
+{
+	int & MIN = min;
+	int & MAX = max;
+	
+	if(min > max)
+		return -1;
+	int mid = (min + max) / 2;
+
+	if(n == p[mid])
+		return mid;
+
+	if(n > p[mid])
+	{
+		MIN = mid + 1;
+		return search1(p,n,MIN,max);
+	}
+
+	if(n < p[mid])
+	{
+		MAX = max - 1;
+		return search1(p,n,min,MAX);
+	}
+	return -1;
+}
+
+
+int search(int* p,int n,int& min,int &max)
+{
+	int mid = 0;
+	while(min <= max)	//若min大于max,则表示没有找到
+	{
+		mid = (min + max) / 2;
+		if(n > p[mid])
+			min = mid + 1;
+		if(n == p[mid])
+			return mid;
+		if(n < p[mid])
+			max = mid - 1;
+	}
+	return mid;
+}
+int main()
+{
+	int n = 9;
+	int* a = new int[n];
+	a[0] = 1;
+	a[1] = 2;
+	a[2] = 3;
+	a[3] = 4;
+	a[4] = 5;
+	a[5] = 6;
+	a[6] = 7;
+	a[7] = 8;
+//	a[8] = 9;
+	int min = 0;
+	int max = n - 2;
+	int mid = search1(a,9,min,max);
+	
+	cout<<"min = "<<min<<endl;
+	cout<<"max = "<<max<<endl;
+	cout<<"mid = "<<mid<<endl;
+	delete a;
+	return 0;
+}

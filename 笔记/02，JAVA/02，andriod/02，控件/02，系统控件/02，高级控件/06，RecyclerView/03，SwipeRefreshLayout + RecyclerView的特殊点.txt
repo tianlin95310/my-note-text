@@ -1,0 +1,2 @@
+如果RecyclerView没有设置adapter的话，Swipe是不能刷新的
+因为Swipe需要知道RecycleView的size，只要能知道RecyclerView的长度，Swipe就能刷新，长度为0也行

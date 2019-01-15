@@ -1,0 +1,8 @@
+1，standard模式，每次启动时都会产生一个实例，activity的默认启动模式
+
+2，singleTop模式，顶部单例，如果待启动的activity已经位于栈顶，那么就用当前的activity，不会创建新的activity，如过待启动的activity（存在但不在不在栈顶）或者根本就不在栈中，系统就会创建新的activity
+
+3，singleTask模式，如果待启动的activity已经存在但不在栈顶，那么启动该activity时，系统会将该activity以上的栈中activity清除（弹出），如果待启动的activity不在栈中，系统会创建一个新的activity，如果待启动的activity就在栈顶，就用当前的activity
+
+4，singleInstance模式，如果待启动的activity不存在，系统会创建一个新的task栈并把该activity加入其中，如果要启动的activity已经存在，不管他在哪个task中，系统都会把那个task移到前台。
+注意这种模式中的task栈中只能有一个activity，就是待启动的activity

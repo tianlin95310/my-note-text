@@ -1,0 +1,42 @@
+1，新的修饰符default,static，
+	1，可以添加默认的方法，并且该接口实现类可以重写该方法，用default
+	2，可以添加静态的已经实现的方法，并且静态的方法不能被重写，用static
+
+2，不变的地方
+	1，接口内部的类，接口仍是默认静态的
+	2，内部的常量仍是默认public static final
+	3，普通的抽象方法仍然是public abstract
+	4，普通的抽象方法仍不能用static修饰
+
+interface Java8
+{
+	class A{}
+	interface B{}
+	abstract class C{}
+	int A = 10;
+	static void fun()
+	{
+		System.out.println("java8中可以有已经实现的方法");
+	}
+	default void fun1()
+	{
+		System.out.println("java8中可以有已经实现的方法");
+	}
+	void fun2();
+}
+
+class TestJava8 implements Java8
+{
+	@Override
+	public void fun2()
+	{
+		System.out.println("接口的普通抽象方法");
+	}
+	@Override
+	public void fun1()
+	{
+		// 调用接口的默认方法
+		Java8.super.fun1();
+		System.out.println("重写接口的默认方法");
+	}
+}

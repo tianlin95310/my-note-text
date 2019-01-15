@@ -1,0 +1,66 @@
+1，使用生产模式
+4.0的版本新加了mode
+webpack 4 引入了新的 mode 标志。你可以将这个标志设置为 'development' 或者 'production' 来告诉 webpack 你正在为特定环境构建应用：
+// webpack.config.js
+module.exports = {
+  mode: 'production',
+};
+
+
+2，启用最小化
+
+这些大部分只适用于 webpack 3。如果你在 webpack 4 中开启了 production 模式，bundle-level 最小化已经启用 – 你只需要启用 loader 特定（loader-specific）的选项。
+1，最小化尺寸是在你通过移除多余的空格、缩短变量的命名等方式压缩代码的时候进行的。
+webpack 支持两种方式最小化代码：bundle-level 最小化和 loader 特定的选项。它们应该同时使用。
+
+// comments.js
+import './comments.css';
+export function render(data, target) {
+  console.log('Rendered!');
+}
+
+在 webpack 4 中， bundle-level 最小化功能是自动开启的 – 无论是否在生产模式。它在底层使用的是 UglifyJS 最小化。（如果你需要禁用最小化，只要使用开发模式或者将 optimization.minimize 选项设置为false 。）
+
+webpack3 使用 uglifyjs-webpack-plugin
+
+3，使用loader，如css-loader，URL-loader
+
+4，指定 NODE_ENV=production
+注意： 这只适用于 webpack 3。如果你在 production 模式下使用 webpack 4，NODE_ENV=production 优化已启用 – 可自由选择地跳过该部分。
+
+// webpack.config.js (基于 webpack 4)
+module.exports = {
+  optimization: {
+    nodeEnv: 'production',
+    minimize: true,
+  },
+}; 
+
+// webpack.config.js (基于 webpack 3)
+const webpack = require('webpack');
+module.exports = {
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"',
+    }),
+    new webpack.optimize.UglifyJsPlugin(),
+  ],
+}; 
+
+5，使用ES模块
+为 ES 模块启用模块串联（又称作用域提升）
+注意： 如果在生产模式下使用 webpack 4，模块串联已经启用。自由地跳过该部分。
+// webpack.config.js (for webpack 4)
+module.exports = {
+  optimization: {
+    concatenateModules: true,
+  },
+};
+
+// webpack.config.js (for webpack 3)
+const webpack = require('webpack');
+module.exports = {
+  plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
+  ],
+};

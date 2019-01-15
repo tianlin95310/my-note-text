@@ -1,0 +1,64 @@
+所有的View烦人子类都能添加动画
+
+public class MainActivity extends ActionBarActivity
+{
+
+	Spinner sp;
+	
+	String str;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		sp = (Spinner) findViewById(R.id.sp);
+		
+		final String strs[] = new String[]{"AAA", "BBB", "CCC", "DDD"};
+		
+		// ArrayAdapter对应的布局文件只能有一个id
+		// 1，设置列表项为CheckTextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, strs);
+		// 2，设置列表项为普通的TextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, strs);
+		// 3，设置带有打钩标记的CheckTextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, strs);
+		// 4，设个跟simple_spinner_item差不多
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, strs);
+		// 5，简单的一个TextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strs);
+		
+		// 自定义布局文件
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.sp_item, R.id.tv, strs);
+		sp.setAdapter(adapter);
+		
+		AnimationSet as = new AnimationSet(false);
+		TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, -0.5f, Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 0);
+		AlphaAnimation aa = new AlphaAnimation(0.0f, 1.0f);
+		ta.setDuration(500);
+		aa.setDuration(500);
+		as.addAnimation(ta);
+		as.addAnimation(aa);
+//		// 设置下一次播放的动画化
+//		sp.setAnimation(as);
+		sp.startAnimation(as);
+		
+		// Spinner的消息处理
+		sp.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id)
+			{
+				str = strs[position];
+				Toast.makeText(MainActivity.this, str, 0).show();
+			}
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+			}
+		});
+	}
+	
+	public void get(View v)
+	{
+	}
+
+}

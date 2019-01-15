@@ -1,0 +1,40 @@
+#include <iostream>
+using namespace std;
+#include <math.h>
+
+int GetAbsMax(int a, int b)
+{
+	if (a == 0) return b;
+	if (b == 0) return a;
+	if (a * b > 0)
+	{
+		if (a > 0)
+			return (a > b ? a : b);
+		else
+			return (a > b ? b : a);
+	}
+	else
+	{
+		if (a > 0)	//5, -4
+			return (a > (-b) ? a : b);
+		else		//-5, 4
+			return ((-a) > b ? a : b);
+	}
+}
+
+int GetAbsMax(int a, int b, int c, int d)
+{
+	int iReturn = GetAbsMax(a, b);
+	iReturn = GetAbsMax(iReturn, c);
+	iReturn = GetAbsMax(iReturn, d);
+	return iReturn;
+}
+
+int main()
+{
+	cout << GetAbsMax(1, 10, -4, 3) << endl;
+	cout << GetAbsMax(1, 0, -4, 3) << endl;
+	cout << GetAbsMax(-5, 1, 4, 33) << endl;
+	cout << GetAbsMax(1, 19, -44, 3) << endl;
+	return 0;
+}

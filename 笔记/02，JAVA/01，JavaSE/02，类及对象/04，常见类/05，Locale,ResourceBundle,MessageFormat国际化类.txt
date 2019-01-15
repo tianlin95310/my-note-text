@@ -1,0 +1,76 @@
+locale类
+
+1首先用locale类创建一个locale对象，本地语言环境对象
+有3中方式
+1，new 一个
+2，取静态值
+3，用系统默认的方法
+
+ResourceBundle类
+
+用来读取资源文件，所有的资源文件需要它来读取，读取时不需要加扩展名。
+不同的资源文件，资源id要一样，即标识符
+getBundles(基本名)
+getBundles(基本名，locale类实例)
+getString（）；取出相关的值
+
+MessageFormat类
+用来处理动态文本
+
+使用举例
+package no4;
+
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Scanner;
+
+public class No4 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		// 创建语言环境对象
+		Locale locale1 = new Locale("zh", "CN");
+		Locale locale2 = Locale.US;// 取常量
+		Locale locale3 = Locale.getDefault();// 默认为中文
+
+		// 绑定资源文件，基本名为包名+基本名称（前缀部分）
+		ResourceBundle res = null;
+		
+		try {
+			//根据locale2选择哪一个,他是重载函数，也可不用第二个参数，使用默认的语言环境
+			res = ResourceBundle.getBundle("no4.info", locale2);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("doubi");
+		}
+		//动态的取出中英文
+		String INPUT = res.getString("input");
+		String USERNAME = res.getString("username");
+		String PASSWORD = res.getString("password");
+		String SUCCESS = res.getString("info.success");
+		String ERROR = res.getString("info.error");
+		//输出特定的语言
+		System.out.println(INPUT+USERNAME);
+		String username = scanner.next();
+
+		System.out.println(INPUT+PASSWORD);
+		String password = scanner.next();
+		
+		if (username.equals("tianlin") && password.equals("123")) {
+			String success = MessageFormat.format(SUCCESS, username);//将username替换掉{0}，变成新的字符串存放到success
+			System.out.println(success);
+
+		} else {
+			System.out.println(ERROR);
+		}
+		scanner.close();
+
+	}
+
+}
+
+
+
+
+
+

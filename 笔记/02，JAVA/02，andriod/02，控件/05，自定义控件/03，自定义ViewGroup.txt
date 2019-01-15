@@ -1,0 +1,199 @@
+package com.example.myviewpager;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Scroller;
+
+public class MyViewPager extends ViewGroup {
+
+	 // 页面改变监听器
+	private OnPagerChangeListener onPagerChangeListener;
+	/**
+	 * 监听页面的变化
+	 * @author 田林
+	 * 
+	 */
+	interface OnPagerChangeListener
+	{
+		/**当页面发生变化时会调用该方法
+		 * @author 田林
+		 * @param position 当前的页面
+		 */
+		void onPagerChanged(int position);
+	}
+	
+	/**
+	 * 设置页面监听器
+	 * @param mOnPagerChangeListener 监听器对象
+	 * @author 田林
+	 * 
+	 */ 
+	public void setOnPagerChangeListener(
+			OnPagerChangeListener mOnPagerChangeListener) {
+		this.onPagerChangeListener = mOnPagerChangeListener;
+	}
+	
+	public MyViewPager(Context context, AttributeSet attrs)
+	{
+		super(context, attrs);
+		scroller = new Scroller(context);
+	}
+
+	// 当前的页面位置
+	int currentPosition = 0;
+	
+	// 起始值
+	float startX;
+	
+	// 自动缓慢滑动
+	Scroller scroller;
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		
+		Log.d("my", "onTouchEvent " + event.getAction());
+		
+		switch(event.getAction())
+		{
+		
+		case MotionEvent.ACTION_MOVE:
+			float dx = event.getX() - startX;
+			scrollTo(currentPosition * getWidth() + (int)-dx, 0);
+			break;
+			
+		case MotionEvent.ACTION_UP:
+			float endX = event.getX();
+			
+			int tempPosition = currentPosition;
+			
+			if( (startX - endX) > getWidth() / 3)
+				tempPosition++;
+			
+			else if( (endX - startX) > getWidth() / 3)
+				tempPosition--;
+			
+			updatePosition(tempPosition);
+			break;
+		}
+		// 保证能就收MOVE，UP事件
+		return true;
+	}
+	public void updatePosition(int tempPosition) {
+		
+		currentPosition = tempPosition;
+		
+		if(tempPosition < 0)
+			currentPosition = 0;
+		else if(tempPosition > getChildCount() - 1)
+			currentPosition = getChildCount() - 1;
+		
+		// 调用客户端的页面改变方法，并传参
+		if(onPagerChangeListener != null)
+			onPagerChangeListener.onPagerChanged(currentPosition);
+		
+		// 1,快速移到指定位置去,显得突兀
+//		scrollTo((currentPosition * getWidth()), 0);
+		
+		// 当前的偏移位置,他是整个内容的偏移量
+		int distanceX = currentPosition * getWidth() - getScrollX();
+		// 2，缓慢移动过去
+		scroller.startScroll(getScrollX(), getScrollY(), distanceX, 0, Math.abs(distanceX));
+		// 开始移动
+		invalidate();
+	}
+	
+	
+	// 调用invalidate会自动的调用 computeScroll，且先于onDraw调用
+	@Override
+	public void computeScroll() {
+		if(scroller.computeScrollOffset())
+		{
+			scrollTo(scroller.getCurrX(), 0);
+			invalidate();
+		}
+	}
+	@Override
+	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			View child = getChildAt(i);
+			child.layout(i  * getWidth(), 0, (i + 1) * getWidth(), getHeight());
+		}
+	}
+	
+	float downX;
+	float downY;
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		
+		Log.d("my", "onInterceptTouchEvent " + ev.getAction());
+		
+		boolean isIntercept = false;
+		
+		switch(ev.getAction())
+		{
+		case MotionEvent.ACTION_DOWN:
+			
+			// 因为ACTION_DOWN不能被拦截，如果ACTION_DOWN被拦截，那么此次事件都会被拦截，那么目标视图就不会接收到事件了
+			// 所以起始值在这里记录
+			startX = ev.getX();
+			
+			downX = ev.getX();
+			downY = ev.getY();
+			break;
+			
+			// 只要MOVE被拦截了，那么UP事件也会被拦截，或者说，只要事件被拦截，那么本次事件后面的事件都会被拦截
+		case MotionEvent.ACTION_MOVE:
+			
+			float endX = ev.getX();
+			float endY = ev.getY();
+			
+			float dx = Math.abs(endX - downX);
+			float dy = Math.abs(endY - downY);
+			
+			// 水平滑动，需要拦截
+			if(dx > dy && dx > 5)
+			{
+				isIntercept = true;
+			}
+			break;
+		}
+		
+		Log.d("my", "isIntercept " + isIntercept);
+		return isIntercept;
+	}
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		
+		// 设置当前ViewGroup的大小，如果想自己设置就用setMeasuredDimension
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		
+		// getSize得到的数值与getMeasuredWidth是一样的，即内部的mMeasuredWidth当前控件本身的宽度
+		// 但getMode数据对于子控件还是有用的，因为他要知道父布局的布局方式，才可以确孩子的布局
+//		int w = MeasureSpec.getSize(widthMeasureSpec);
+//		int modew = MeasureSpec.getMode(widthMeasureSpec);
+//		int h = MeasureSpec.getSize(heightMeasureSpec);
+//		int modeh = MeasureSpec.getMode(heightMeasureSpec);
+//		Log.d("my", 
+//				"w == mMeasuredWidth is " + (w == getMeasuredWidth()) + "w == " + w + "," +
+//				"h == getMeasuredHeight is " + (h == getMeasuredHeight())+ "h == " + w );
+		
+		// 测量孩子，但本例中被孩子消耗了水平滑动事件
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			View child = getChildAt(i);
+			
+			// 不管是View，还是ViewGroup他的measure是一样的，
+			child.measure(widthMeasureSpec, heightMeasureSpec);
+		}
+		
+		// 孩子布局会有问题
+//		 measureChildren(widthMeasureSpec, heightMeasureSpec);
+	}
+	
+	
+}

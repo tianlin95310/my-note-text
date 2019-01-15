@@ -1,0 +1,114 @@
+package com.my;
+
+abstract class Mediator
+{
+	protected ConcreteColleager1 c1;
+	protected ConcreteColleager2 c2;
+	public ConcreteColleager1 getC1()
+	{
+		return c1;
+	}
+	public void setC1(ConcreteColleager1 c1)
+	{
+		this.c1 = c1;
+	}
+	public ConcreteColleager2 getC2()
+	{
+		return c2;
+	}
+	public void setC2(ConcreteColleager2 c2)
+	{
+		this.c2 = c2;
+	}
+	
+	public abstract void doSomething1();
+	public abstract void doSomething2();
+}
+
+class ConcreteMediator extends Mediator
+{
+
+	@Override
+	public void doSomething1()
+	{
+		this.getC1().selfMethod();
+	}
+
+	@Override
+	public void doSomething2()
+	{
+		this.getC2().depMethod();
+	}
+	
+}
+
+abstract class Colleage
+{
+	protected Mediator mediator;
+
+	public Colleage(Mediator mediator)
+	{
+		super();
+		this.mediator = mediator;
+	}
+	
+}
+
+class ConcreteColleager1 extends Colleage
+{
+
+	public ConcreteColleager1(Mediator mediator)
+	{
+		super(mediator);
+	}
+	
+	public void selfMethod()
+	{
+		System.out.println("ConcreteColleager1 selfMethod");
+	}
+	
+	public void depMethod()
+	{
+		super.mediator.doSomething1();
+	}
+}
+
+class ConcreteColleager2 extends Colleage
+{
+
+	public ConcreteColleager2(Mediator mediator)
+	{
+		super(mediator);
+	}
+	
+	public void selfMethod()
+	{
+		System.out.println("ConcreteColleager2 selfMethod");
+	}
+	
+	public void depMethod()
+	{
+		super.mediator.doSomething1();
+	}
+}
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		ConcreteMediator m = new ConcreteMediator();
+		ConcreteColleager1 c1 = new ConcreteColleager1(m);
+		ConcreteColleager2 c2 = new ConcreteColleager2(m);
+		
+		m.setC1(c1);
+		m.setC2(c2);
+		
+		// m的do1实际上上c1的self
+		m.doSomething1();
+		
+		// m的do2实际上是c2的dep，二的dep方法实际上是m的do1,就是c1的self
+		m.doSomething2();
+	}
+
+}

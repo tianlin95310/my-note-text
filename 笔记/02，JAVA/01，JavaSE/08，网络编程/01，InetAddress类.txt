@@ -1,0 +1,39 @@
+package com.itjob;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+public class Test
+{
+	public static void main(String[] args)
+	{
+		try
+		{
+			// 1,获取本机IP
+			InetAddress address1 = InetAddress.getLocalHost();
+			System.out.println(address1.getHostAddress());
+			// 2，获取主机名，即计算机名
+			System.out.println(address1.getHostName());
+			
+			// 3，通过域名获取IP
+			InetAddress address2 = InetAddress.getByName("www.baidu.com");
+			System.out.println(address2.getHostAddress());
+			// 4，获取主机名
+			String hostName = address2.getHostName();
+			System.out.println(hostName);
+			// 5，获取IP字节数组
+			byte bytes[] = address2.getAddress();
+			
+			// 6，根据IP字节数组获取IP
+			InetAddress address3 = InetAddress.getByAddress(hostName,bytes);
+			
+			System.out.println(address3.getHostAddress());
+			System.out.println(address3.getHostName());
+			
+		} catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+}

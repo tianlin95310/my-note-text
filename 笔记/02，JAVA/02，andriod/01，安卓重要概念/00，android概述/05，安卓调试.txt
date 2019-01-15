@@ -1,0 +1,43 @@
+1，通过继承AndroidTestCase类来继承，
+	通过一系列的assertEquals方法来判断某个函数的返回值是否符合需要
+使用方法：
+class math
+{
+	public static int add(int a,int b)
+	{
+		return a + b;
+	}
+}
+public class Test extends AndroidTestCase
+{
+	public void main(String[] args)
+	{
+		assertEquals(50, math.add(10,20));
+	}
+}
+
+条件：Manifest.xml文件需要加上如下信息
+
+  <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
+
+// 1，加到uses-sdk的后面
+     <instrumentation		
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="com.example.ad" />
+
+  <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+// 2，加到<application后面
+          <uses-library android:name="android.test.runner" />
+
+2，Logcat，比较常用的方式。
+通过类Log向Logcat打印调试日志，并且可以自定义Filters，筛选自己的Tag
+
+使用方法，函数名是调试信息的等级，没有assert等级，他是系统级别的错误。
+Log.d("MyTag", "Button clicked");

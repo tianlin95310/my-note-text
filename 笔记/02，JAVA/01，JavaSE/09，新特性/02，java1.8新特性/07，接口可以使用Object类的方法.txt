@@ -1,0 +1,61 @@
+其实这个特性之前的版本应该也有的，只不过之前的版本里接口不能有具体实现，所以不能调用
+Object的方法，所有的接口也都默认继承Object，但是不能继承其他的类，这是一个特殊点
+class C
+{
+	public void fun(){}
+}
+interface A
+{
+	static void call()
+	{
+		/**
+		 * 静态方法不能直接调用非静态方法
+		 * 因为toString是一个对象方法，类和静态方法加载时，此时对象肯定是没有创建的
+		 */
+//		System.out.println(toString());
+		
+		/**
+		 * 下面能调用，因为他已经产生对象了，这中间应该有一种检查机制
+		 */
+		String s = new String();
+		s.toString();
+	}
+	default void fun()
+	{
+		/**
+		 * 但接口却是不能继承其他的类的，只能继承接口
+		 * 所以这里是比较特殊的，经默认方法
+		 * 
+		 */
+		System.out.println(toString());
+	}
+}
+
+
+class B implements A
+{
+	
+}
+public class Test extends Object
+{
+
+	public static void main(String[] args)
+	{
+		
+		Test t = new Test();
+//		t.test();
+		
+		/**
+		 * 接口也会默认继承Object类，这算是一个新特性，之前的接口里不允许有
+		 * 具体的方法，所以不能有具体的实现
+		 */
+		A a = new B();
+		B b = new B();
+		System.out.println(a instanceof Object);
+		System.out.println(b instanceof Object);
+		
+		b.fun();
+		System.out.println(b.toString());
+		
+	}
+	

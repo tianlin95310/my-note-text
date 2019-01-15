@@ -1,0 +1,25 @@
+1,鉴于string类连接字符串时，效率非常低，每次都会产生新的对象，故引进stringbuffer类,用append方法。
+
+2，string类的字符数组是final常量，stringbuffer类不是常量，默认为16个
+  扩展方式为2（n+1）;
+
+3，使用方法
+	public static void main(String[] args)
+	{
+		StringBuilder sb = new StringBuilder();
+		//默认为16长度
+		sb.append("tianlin").append(12).append('x');
+		System.out.println(sb);
+	}
+
+4，stringbuffer的方法stringbuilder都能用，方法功能也一样
+
+5，stringbuilder的append方法含有synchronized关键字，表示同步的意思，在java线程编程有用，
+
+6，多线程安全性问题
+	1，在单线程应用中，使用stringbuilder（同步），效率高，多线程时不安全
+	2，在多线程中，使用stringbuffer（不同步），效率低，线程安全
+
+7，stringBuilder的tostring函数能快速的将stringBuilder转化为string对象
+
+8，StringBuilder的equals比较的是地址

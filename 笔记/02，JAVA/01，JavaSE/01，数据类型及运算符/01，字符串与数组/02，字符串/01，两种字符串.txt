@@ -1,0 +1,47 @@
+以下，指针就是引用，引用就是指针
+
+1，String str1 = new String("abc");
+	//此种方法会产生两个字符串，一个在堆区，一个在常量区。
+	//str1指针本身在栈区，它指向的是堆区的字符串
+	//每new一次都会在堆区产生新的字符串，所以每一次的引用也都不一样。
+
+2，String str2 = "abc";
+	//此种方法定义对象时，先在常量区里找，找到的话，就直接指向该常量，
+	str2指针指向的是常量区的字符串
+
+	System.out.println(str1 == str2);
+
+	str1,str2指向的是不同的内存，是不同的指针，所以为false
+
+3，String str3 = "abc";
+	System.out.println(str3 == str2);
+
+	str3发现常量区里有，便直接生成一个引用指向它，而不像new String那样再
+	产生一个("abc")字符串。str3，str2两个引用表示的是同一个地址
+	若str3 = "doubi";
+	在输出System.out.println(str3 == str2);则为false，因为两个常量的地址不一样,属于不同的对象
+
+	但是这只针对是常量的情况，如果不是常量，是由运行通过计算出来的，那么他们的地址会不一样，只有常量才会有
+	这种特点,或者常量的 + 操作符，
+		如：
+		int i = 1;
+		String str = "ab1";
+		String str2 = "ab" + i;
+		String str3 = "ab" + 1;
+
+		String str4 = "ab";
+		String str5 = str4 + 1;
+		System.out.println(str == str2);	false	相加中有一个变量就不会相同
+		System.out.println(str == str3);	true
+		System.out.println(str == str5);	false 	相加中有一个变量就不会相同
+	
+
+4，String str;
+这里只是定义了一个引用，str目前为空，定义成员变量时可以直接这样用，但注意没有赋值时
+他是为空的，在set函数里再为他赋一个字符串引用
+
+5，对于局部变量，没有赋初值时，用于条件判断时会有问题（未初始化），但若不进行判断是没有问题
+
+6，字符串是属于单次操作对象，每次操作都会产生一个新的对象，这过程中会产生垃圾对象
+
+	

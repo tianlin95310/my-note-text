@@ -1,0 +1,82 @@
+管道流用于实现两个线程之间的通信
+
+class write implements Runnable
+{
+	private PipedOutputStream pos = null;
+
+	public write(PipedOutputStream pos)
+	{
+		this.pos = pos;
+	}
+
+	@Override
+	public void run()
+	{
+		while (true)
+		{
+			try
+			{
+				pos.write("qweasdzxc".getBytes());
+				
+				Thread.sleep(1000);
+			} catch (IOException | InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+}
+
+class read implements Runnable
+{
+	private PipedInputStream pis = null;
+
+	public read(PipedInputStream pis)
+	{
+		this.pis = pis;
+	}
+
+	@Override
+	public void run()
+	{
+		byte b[] = new byte[100];
+		int len = -1;
+		while (true)
+		{
+			try
+			{
+				len = pis.read(b);
+
+				System.out.println(new String(b, 0, len));
+
+				Thread.sleep(1000);
+				
+			} catch (IOException | InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+}
+
+public class Pipe
+{
+	public static void main(String[] args)
+	{
+		try
+		{
+			PipedOutputStream pos = new PipedOutputStream();
+			// 需要连接管道
+			PipedInputStream pis = new PipedInputStream(pos);
+
+			new Thread(new write(pos)).start();
+			new Thread(new read(pis)).start();
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}

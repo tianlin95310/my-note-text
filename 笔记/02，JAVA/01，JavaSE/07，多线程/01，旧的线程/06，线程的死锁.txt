@@ -1,0 +1,45 @@
+1，以下这种情况只是有可能发生死锁，假如到2时，主线程的p2还没开始运行，p2就没有被占用，那p2自然可以调用does函数
+	但如果p2也被p2.have2_need1占用，那就不能调用does函数了。
+
+class Person1 
+{
+	public synchronized void have1_need2(Person2 p2)
+	{
+		1，System.out.println("I want to get 2");
+		2，p2.does();
+	}
+	public synchronized void does()
+	{
+		System.out.println("Person1 do ");
+	}
+}
+class Person2
+{
+	public synchronized void have2_need1(Person1 p1)
+	{
+		3，System.out.println("I want to get 1");
+		4，p1.does();
+	}
+	public synchronized void does()
+	{
+		System.out.println("Person2 do ");
+	}
+}
+public class TestTimer implements Runnable
+{
+	private static Person1 p1 = new Person1();
+	private static Person2 p2 = new Person2();
+	
+	public static void main(String[] args)
+	{
+		//线程1
+		new Thread(new TestTimer()).start();
+		
+		//主线程
+		5，p2.have2_need1(p1);
+	}
+	public void run()
+	{
+		6，p1.have1_need2(p2);
+	}
+}

@@ -1,0 +1,68 @@
+除了File类，其他的与文件相关联的流在创建对象时，文件不存在，会产生一个空文件。
+
+1，FileWriter,FileReader能完成读写操作，指定构造函数FileWriter支持追加，加入缓冲流能提高效率
+
+2，FileWriter,FileReader需要关联文件，缓冲流需要关联FileWriter,FileReader，如果前者支持追加，
+	那么缓冲流也支持追加，缓冲就是不立即写入，刷新时才写入的意思。
+
+3，与文件关联的流操作需要刷新才能写入。
+
+4，字符流支持字符串写入操作，能方便的处理文本文件，处理的对象是字符数组（char chars[]）
+
+public class Test
+{
+	public static void write()
+	{
+		try
+		{
+			FileWriter fw = new FileWriter("C:/Users/LX/Desktop/1.txt",true);
+				// 1，如果fw支持追加，则bw也支持追加
+
+			BufferedWriter bw = new BufferedWriter(fw);
+				// 2，如果两种流同事存在，fw会比bw先写入文件，缓冲流不会立即写入
+			
+
+				// 3，字符流支持字符串写入操作，能方便的处理文本文件
+			bw.write("qwertyuiop123456789****************");
+			fw.write("123");
+
+				// ,4，释放时，先释放缓冲流，否则会有异常
+			bw.close();
+			fw.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	public static void copy()
+	{
+		try
+		{
+			FileReader fr = new FileReader("C:/Users/LX/Desktop/1.txt");
+			BufferedReader br = new BufferedReader(fr);
+			
+			FileWriter fw = new FileWriter("C:/Users/LX/Desktop/2.txt");
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			char buffer[] = new char[10];
+			int len = -1;
+			while( (len = br.read(buffer)) != -1)
+			{
+				bw.write(buffer, 0, len);
+			}
+			
+			bw.close();
+			fw.close();
+			br.close();
+			fr.close();
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	能提高效率

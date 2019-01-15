@@ -1,0 +1,30 @@
+JVM会提供一个加载主类的类加载器，运行过程中然后在加载其他的一些类。
+通过ClassLoader的getSystemClassLoader静态方法能得到该对象
+
+1，他能加载类文件，得到Class反射对象
+2，他能加载资源对象，如一些图片资源，文件资源，xml资源，流类文件
+
+类加载器是负责加载类的对象。ClassLoader 类是一个抽象类。如果给定类的二进制名称，
+那么类加载器会试图查找或生成构成类定义的数据。一般策略是将名称转换为某个文件名，
+然后从文件系统读取该名称的“类文件”。他能加载类文件以及资源文件。
+
+1,用Class的getClassLoader方法得到当前类的类加载器，他是主类加载器，
+    getResource用来得到指定资源的URL
+	URL url = this.getClass().getClassLoader().getResource("com/res/p1.png") 
+	用主类对象得到类加载器可以加载一些资源文件。
+
+2，用ClassLoader得到当前程序的类加载器，LoadClass用来加载类
+	Class c1 = ClassLoader.getSystemClassLoader().loadClass("com.itjob.T");
+
+3，用当前主线程的getContextClassLoader也能得到当前的类加载器
+	ClassLoader c1 = Thread.currentThread().getContextClassLoader();
+	ClassLoader c2 = ClassLoader.getSystemClassLoader();
+		
+	System.out.println(c1);
+	System.out.println(c2);		c1 == c2
+
+4，得到某个流
+	InputStream is = c2.getResourceAsStream("./1.txt");
+	byte bs[] = new byte[1024];
+	int len = is.read(bs);
+	System.out.println(new String(bs , 0 , len));

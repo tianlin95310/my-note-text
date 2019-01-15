@@ -1,0 +1,32 @@
+#include<iostream>
+#include<string>
+#include<time.h>
+using namespace std;
+int main()
+{
+	struct tm s;
+	time_t t;
+	long a,b,c;
+
+	a=time(0);
+	b=time(NULL);
+	c=time(&t);
+
+	cout<<ctime(&a);//将time_t转为字符
+	cout<<ctime(&b);
+	cout<<ctime(&c);
+	cout<<ctime(&t);//t与time(&t)的值相等
+
+	s=*localtime(&t);//得到具体项，若想这样使用，必须先做time(&t)来取得时间
+				//这里c语言没弄好
+	cout<<s.tm_sec<<endl;
+	
+	cout<<mktime(&s)<<endl;//将字符转为time_t
+
+	cout<<a<<endl<<b<<endl<<c<<endl;
+	return 0;
+}
+
+
+
+

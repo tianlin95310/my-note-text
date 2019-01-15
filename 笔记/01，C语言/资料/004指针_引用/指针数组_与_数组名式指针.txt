@@ -1,0 +1,81 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+void main()
+{
+#define DIM2
+#ifdef DIM2
+	int sz[2][3] = {
+		1, 2, 3,
+		4, 5, 6
+	};
+	
+	int *pa = sz[0];	//{1, 2, 3}
+	int *pb = sz[1];	//{4, 5, 6}
+
+	int *pc[2] = {pa, pb};	//指针数组, 是个数组
+	int (*pd)[3] = sz;	//数组名式指针, 是个指针: 数组名为sz, 那这个sz是什么类型呢？答案: int (*pd)[3]
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			//cout << setw(4) << *(sz[i] + j);
+			//cout << setw(4) << *(pa + 3*i + j);
+			cout << setw(4) << *(*(pd +i) + j);
+		}
+		cout << endl;
+	}
+#else
+	int sz[2][3][4] = {
+		 1,  2,  3,  4,
+		 5,  6,	 7,  8,
+		 9, 10, 11, 12,
+
+		13, 14, 15, 16,
+		17, 18,	19, 20,
+		21, 22, 23, 24
+	};
+
+	int *pa = sz[0][0];		//{1, 2, 3, ...., 11, 12}
+	int *pb = sz[1][0];		//{13, 14, ....., 23, 24}
+
+	int *pc[2] = {pa, pb};	//指针数组, 是个数组
+	int (*pd)[3][4] = sz;	//数组名式指针, 是个指针
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				//cout << setw(4) << *(*(sz[i] + j) + k);
+				//cout << setw(4) << *(pa + 3*4*i + 4*j + k);
+				cout << setw(4) << *(*(*(pd + i) + j) + k);
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+#endif
+}
+
+
+
+
+
+#include <iostream>
+using namespace std;
+
+void main()
+{
+	int a[] = {1, 2, 3, 4, 5};
+	int *p1 = (int *)(&a) + 1;
+
+	int *p2 = (int *)(&a + 1);	//这里的 +1 表示加上 1个a[5]数组的长度
+
+	cout << *(a + 1)  << endl;	//2
+	cout << *(p1 + 3) << endl;	//5
+	cout << *(p2 - 2) << endl;	//4
+}

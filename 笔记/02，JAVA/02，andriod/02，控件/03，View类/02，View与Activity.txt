@@ -1,0 +1,10 @@
+1，Activity只是用于管理view，包括分发事件给View
+
+2，Activity实际用于管理View的是内部的Window对象，他能setContentView。这个setContentView
+是将我们定义的布局设置到内部的一个id为content的FrameLayout的一个布局对象上，但它还不是
+整个应用的根布局（DecorView）
+
+3，android应用的根布局是（DecorView），他是一个FrameLayout
+它包括一个状态栏，和一个LinearLayout，这个LinearLayout就是我们应用的布局
+它包括一个LinearLayout（标题栏）和一个FrameLayout，这个FrameLayout就是我们的视图区域
+这个FrameLayout的id就是content，我们定义的布局就是放到这个FrameLayout上面的

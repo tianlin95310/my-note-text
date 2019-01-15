@@ -1,0 +1,48 @@
+1，e.style(class选择的特殊写法)
+p.small {line-height: 90%}
+p.big {line-height: 200%}
+p元素有两个不同的样式
+
+2，派生选择器，所有的元素都有该属性
+<html>
+<head>
+<style type="text/css">
+p {display: inline}
+div {display: none}
+</style>
+</head>
+
+<body>
+<p>本例中的样式表把段落元素设置为内联元素。</p>
+<p>而 div 元素不会显示出来！</p>
+<div>div 元素的内容不会显示出来！</div>
+</body>
+</html>
+
+3，派生选择器，合成写法
+body, h2, p, table, th, td, pre, strong, em {color:gray;}
+
+4，通配符选择器，所有元素都有
+* {color:red;}
+
+5，后代选择器，从父元素开始往下写，h1 em所有的子元素都会有该属性
+<html>
+<head>
+<style type="text/css">
+h1 em {color:red;}
+</style>
+</head>
+<body>
+<h1>This is a <em>important</em> heading</h1>
+<p>This is a <em>important</em> paragraph.</p>
+</body>
+</html>
+
+6，后代选择器，特殊写法div > span
+div > span直选取一代，下一代不会选择
+<div>
+       <a><span>亲人</span></a>
+       <span>独家记忆</span>
+       <span>离不开你</span>
+</div>
+

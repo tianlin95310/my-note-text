@@ -1,0 +1,32 @@
+Environment有很多与系统环境相关的属性
+1，读写方式是用一些常见的字节流，字符流等，与Context的openFileOutput的操作方式是一样的
+
+1,获取内存卡的状态
+if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))		//判断内存卡的状态
+			{
+				File f = Environment.getExternalStorageDirectory();	//得到内存卡的目录
+				
+				File file = new File(f,"info.txt");			//在指定目录下创建文件
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file,true));
+	
+				oos.writeObject(user);
+	
+				oos.close();
+				
+				Toast.makeText(context, "save file success !", Toast.LENGTH_SHORT).show();
+			}
+
+2，获取内存卡的大小
+public void onClick(View v) {
+			File path = Environment.getExternalStorageDirectory();
+	                StatFs stat = new StatFs(path.getPath());	//获取指定目录的详细信息
+	                long blockSize = stat.getBlockSize();		//获取块大小
+	                long totalBlocks = stat.getBlockCount();	//获取块数
+	                long availableBlocks = stat.getAvailableBlocks();	获取可用块数
+	                
+	                long totalSize = blockSize * totalBlocks;
+	                long availableSize = blockSize * availableBlocks;
+	                
+	                tv1.setText("" + totalSize / 1024 /1024 );
+	                tv1.setText("" + availableSize / 1024 /1024 );
+			}

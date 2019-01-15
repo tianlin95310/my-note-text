@@ -1,0 +1,58 @@
+package com.example.subitem;
+
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+
+public class MainActivity extends ActionBarActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		SubMenu menu1 = menu.addSubMenu("men1");
+
+		menu1.add(0, 		// 组id
+				1, 			// 菜单项id
+				0, 			// 菜单显示的顺序
+				"subMenu1"	// 菜单名
+				);
+		menu1.add(0, 2, 1, "subMenu2");
+		menu1.add(0, 3, 2, "subMenu3");
+		menu1.add(0, 4, 3, "subMenu4");
+		menu1.add(0, 5, 4, "subMenu5");
+
+		menu.add(0, 6, 1, "Menu2");
+
+		SubMenu menu3 = menu.addSubMenu("men3");
+
+		menu3.add(0, 7, 1, "subMenu1");
+		menu3.add(0, 8, 2, "subMenu2");
+		menu3.add(0, 9, 3, "subMenu3");
+		menu3.add(0, 10, 4, "subMenu4");
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings)
+		{
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+}

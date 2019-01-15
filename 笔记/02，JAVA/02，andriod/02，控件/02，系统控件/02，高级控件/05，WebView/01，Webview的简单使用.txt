@@ -1,0 +1,77 @@
+
+public class MainActivity extends ActionBarActivity
+{
+
+	private WebView wv;
+	
+	private LinearLayout linear1,linear2;
+	
+	private EditText et1,et2;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		wv = (WebView) findViewById(R.id.wv);
+		linear1 = (LinearLayout) findViewById(R.id.linear1);
+		linear2 = (LinearLayout) findViewById(R.id.linear2);
+		et1 = (EditText) findViewById(R.id.et1);
+		et2 = (EditText) findViewById(R.id.et2);
+		
+		// 这里使用的是文件的url,加载assets资源文件，AS里面将assets放到main目录下
+
+		wv.loadUrl("file:///android_asset/protocol.html");
+		// 打开网页时需要重写该方法，否则系统会调用系统自己的浏览器
+		wv.setWebViewClient(new WebViewClient(){
+			public boolean shouldOverrideUrlLoading(WebView view, String url)
+			{
+				view.loadUrl(url);
+				
+				return true;
+			}
+		});
+		et1.setOnFocusChangeListener(new OnFocusChangeListener()
+		{
+			public void onFocusChange(View v, boolean hasFocus)
+			{
+				// 获取焦点时
+				if(hasFocus == true)
+				{
+					linear1.setVisibility(View.GONE);
+					linear2.setVisibility(View.VISIBLE);
+					// et2请求焦点
+					et2.requestFocus();
+					// 得到系统的输入法服务
+					InputMethodManager input = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					// 第一个参数为请求获取输入法的view，后面的打开输入法的方式
+					input.toggleSoftInputFromWindow(v.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+				}
+			}
+		});
+		
+		et2.setOnFocusChangeListener(new OnFocusChangeListener()
+		{
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus)
+			{
+				if(hasFocus == false)
+				{
+					linear1.setVisibility(View.VISIBLE);
+					// gone这种方式是真的消失了，不会占用空间
+					linear2.setVisibility(View.GONE);
+				}
+				InputMethodManager input = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				// 第一个参数还是需要关闭输入法的view
+				input.hideSoftInputFromWindow(v.getWindowToken(), 0);
+			}
+		});
+		
+	}
+	
+	public void post(View v)
+	{
+		
+	}
+}

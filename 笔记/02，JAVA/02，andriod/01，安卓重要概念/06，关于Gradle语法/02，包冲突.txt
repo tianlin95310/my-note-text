@@ -1,0 +1,18 @@
+1，通常解决办法
+
+ // 官方分页框架
+    implementation ('android.arch.paging:runtime:1.0.1'){
+        exclude module:'recyclerview-v7'
+        exclude group:'android.arch.lifecycle'		屏蔽版本，可能出现的问题是库服务满足另外包的要求
+        exclude group:'android.arch.core'
+    }
+
+2，如果1无法解决，强制使用版本
+
+configurations.all {
+    resolutionStrategy {
+        //Conflict with dependency 'com.android.support:support-annotations' in project ':app'.Resolved versions for app (26.1.0) and test app (27.1.1) differ
+        force 'com.android.support:support-annotations:26.1.0'
+        //Android dependency 'android.arch.lifecycle:runtime' has different version for the compile (1.0.0) and runtime (1.1.1)
+        force 'android.arch.lifecycle:runtime:1.1.1'
+    }

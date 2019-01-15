@@ -1,0 +1,52 @@
+//将第一个数模拟为一个临时数组，将剩下的数往里插
+
+//C1，当前插入第二个数，然后满足临时数组的两个数有序
+//C2，当前插入第三个数，然后满足临时数组的三个数有序，采用一次冒泡
+
+
+#include <iostream>
+using namespace std;
+#define swap(x, y) {(x) = (x) + (y); (y) = (x) - (y); (x) = (x) - (y);}
+/*
+x = x + y
+y = x + y - y = x;
+x = x + y - x; = y;
+*/
+void sort(int* p,int n)
+{
+	for(int i = 1 ; i < n;i++)
+	{
+		int j = i;	//从i开始，到临时数组的第一个数为止
+		while(p[j] < p[j - 1])
+		{
+			swap(p[j],p[j-1]);
+			j--;
+			if(j < 1)
+				break;
+		}
+	}
+}
+int main()
+{
+	int* a = new int[9];
+	a[0] = 9;
+	a[1] = 8;
+	a[2] = 7;
+	a[3] = 6;
+	a[4] = 5;
+	a[5] = 4;
+	a[6] = 3;
+	a[7] = 2;
+	a[8] = 1;
+	
+	sort(a,9);
+	
+	for(int i = 0; i < 9 ; i++)
+	{
+		cout<<a[i]<<" ";
+	}
+	cout<<endl;
+	//(n - 1)的求和
+	delete a;
+	return 0;
+}

@@ -1,0 +1,26 @@
+1,文件夹
+  1，raw，一些短小的媒体资源文件，系统会为其产生id
+  2，anim，帧动画xml文件，系统会为其产生id
+  3，drawable，里面可以放置图片选择器select，和图片资源
+  4，color，里面可以放置颜色选择器
+  5，xml，包含各种xml资源，通过getXml获取
+
+2，常见的常量资源
+	常量资源的文件名没有规定，因为文件里面的每一个item都有一个id
+	而res的其他文件夹里的整个文件才有一个id
+  1，colors.xml，可以定义一些颜色常量
+
+  2，arrays.xml,可以定义一些常量数组
+
+  3，strings.xml等等
+
+  4，自定义属性 attrs.xml
+<resources>
+    <declare-styleable name="MyGiftView">
+        <attr name="gif" format="reference" />
+        <attr name="paused" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="CustomTheme">
+        <attr name="gifViewStyle" format="reference" />
+    </declare-styleable>
+</resources>

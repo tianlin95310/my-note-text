@@ -1,0 +1,43 @@
+public static void sendNotify(Context context)
+	{
+		// 通知管理器
+		NotificationManager notify = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		Notification.Builder builder = new Builder(context);
+		// 这三个函数不能省略
+		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setContentTitle("");
+		builder.setContentText("");
+
+		// 注入布局文件
+		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notify_view);
+
+		// 显示歌曲名和演唱者
+		rv.setTextViewText(R.id.notify_tv_name, localMusics.get(position).getName());
+		rv.setTextViewText(R.id.notify_tv_artist, localMusics.get(position).getArtist());
+
+		// 设置pre点击按钮事件
+		Intent preIntent = new Intent();
+		preIntent.setAction("notify.click.pre");
+		// PendingIntent.FLAG_UPDATE_CURRENT可以连续点击
+		PendingIntent prePendingIntent = PendingIntent.getBroadcast(context, 1, preIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		rv.setOnClickPendingIntent(R.id.notify_bt_pre, prePendingIntent);
+
+		// 设置next点击按钮事件
+		Intent nextIntent = new Intent();
+		nextIntent.setAction("notify.click.next");
+		// PendingIntent.FLAG_UPDATE_CURRENT可以连续点击
+		PendingIntent nextPendingIntent = PendingIntent.getBroadcast(context, 2, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		rv.setOnClickPendingIntent(R.id.notify_bt_next, nextPendingIntent);
+
+		// 设置通知点击事件
+		Intent openIntent = new Intent(context, MainActivity.class);
+		// 打开当前正在运行的Activity
+		openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		PendingIntent openPendingIntent = PendingIntent.getActivity(context, 3, openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		builder.setContentIntent(openPendingIntent);
+
+		builder.setContent(rv);
+		builder.setAutoCancel(true);
+		notify.notify(1, builder.build());
+	}

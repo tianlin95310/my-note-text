@@ -1,0 +1,32 @@
+private Bitmap scale(int x, int y)
+	{
+		BitmapFactory.Options ops = new Options();
+		ops.inJustDecodeBounds = true;
+		BitmapFactory.decodeResource(getResources(), R.drawable.xj002, ops);
+		
+		int srcX = ops.outWidth;
+		int srcY = ops.outHeight;
+		System.out.println(srcX + "," + srcY);
+		
+		int rateX = srcX / x;
+		int rateY = srcY / y;
+		
+		int rate = 0;
+		
+		if(rateX > 1 && rateY > 1)
+		{
+			if(rateX >= rateY)
+				rate = rateX;
+			else if(rateY > rateX)
+				rate = rateY;
+		}
+		
+		System.out.println(rate);
+		
+		ops.inSampleSize = rate;
+		ops.inJustDecodeBounds = false;
+		
+		Bitmap obj = BitmapFactory.decodeResource(getResources(), R.drawable.xj002, ops);
+		
+		return obj;
+	}

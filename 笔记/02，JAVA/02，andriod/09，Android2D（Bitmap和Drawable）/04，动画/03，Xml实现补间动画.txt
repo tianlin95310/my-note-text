@@ -1,0 +1,77 @@
+基本上就是将API，变成属性
+
+代码部分，其他动画类似
+public void alpha(View v)
+	{
+		// 用AnimationUtils加载xml文件得到动画对象
+		aa = (AlphaAnimation) AnimationUtils.loadAnimation(this, R.anim.alpha);
+		
+		iv.startAnimation(aa);
+	}
+
+// xml文件编写
+
+//set就是他们的集合
+
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <alpha
+        xmlns:android="http://schemas.android.com/apk/res/android"
+// 持续时间
+        android:duration="400"
+// 起始透明度
+        android:fromAlpha="1.0"
+// 重复次数
+        android:repeatCount="1"
+// 重复的模式，大于1次才有效
+        android:repeatMode="reverse"
+// 目标透明度
+        android:toAlpha="0.0" >
+    </alpha>
+
+    <rotate
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:duration="4000"
+        android:fromDegrees="0"
+// pivot表示中心点坐标，50%表示相对自己
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:toDegrees="360" >
+    </rotate>
+
+    <scale
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:duration="4000"
+// x,y缩放比
+        android:fromXScale="0.3"
+        android:fromYScale="0.0"
+// pivot表示缩放中心
+        android:pivotX="50%"
+        android:pivotY="100%"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:toXScale="0.3"
+        android:toYScale="1.0" >
+    </scale>
+        <translate
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:duration="4000"
+// fromXDelta表示平移起点，-50%p表示相对父窗体
+// 也就是起点的位置相对于imageview的位置是-0.5的父窗体的宽度，即ImageView在父窗体的中心
+            android:fromXDelta="-50%p"
+            android:fromYDelta="0"
+            android:repeatCount="1"
+            android:repeatMode="reverse"
+            android:toXDelta="50%p"
+            android:toYDelta="0" >
+        </translate>
+</set>
+
+2，对于rotate动画，里面直接放一张图片也行，旋转一周的时间是他内置的
+<rotate
+ 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:drawable="@drawable/src"/>
+</rotate>

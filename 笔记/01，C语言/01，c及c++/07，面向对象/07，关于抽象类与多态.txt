@@ -1,0 +1,38 @@
+1，多态的实现用基类指针指向派生类，和java的基类引用指向派生类本质一样。
+
+#include <iostream>
+using namespace std;
+class a				//抽象类不需要abstract关键字，与java不同
+{
+public:
+	a(){}				//要有构造函数，构造函数不能为虚函数
+	void fun1(){cout<<"shabi\n";}	//可以有非虚成员函数
+	virtual void fun2() = 0;	//至少要有一个纯虚成员函数才是抽象类
+};
+class b : public a
+{
+public:
+	void fun2()			//子类必须实现所有纯虚成员函数，
+	{
+		cout<<"doubi\n";
+	}
+private:
+	int a ;
+	//int b = 1;			//c++里面的类是抽象数据类型，不能对变量进行初始化
+					//这与java不同，java里面可以直接初始化。
+};
+void main()
+{
+	//a cla			//抽象类不能定义对象
+
+	b cla;			//可以用类名直接定义对象，这与java不同
+
+	a* pclass = new b();	//只有指针才需要分配空间，这与java的引用本质是一样的
+	
+	pclass->fun2();		//基类指针指向派生类，多态只能在virtual之间，根据是new的那个子类，
+				//就调用哪个子类的函数，基类的virtual函数也可以不是纯虚函数.
+				//多态时基类一定要用virtual，子类可以省略
+
+	
+
+}

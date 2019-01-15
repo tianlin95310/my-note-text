@@ -1,0 +1,16 @@
+public void install(View v)
+	{
+		String path = et.getText().toString().trim();
+		
+		Intent intent = new Intent();
+		// sd卡的stroage路径可以省略，得到文件的uri，
+		Uri uri = Uri.fromFile(new File(path));
+		// 从文件得到的uri file:///sdcard/ppp.apk,对应的，从内容方提供者得到的uri为content://
+		// 设置activity的data和类型
+		intent.setDataAndType(uri, "application/vnd.android.package-archive");
+		// 打开系统的应用安装啊activity
+		intent.setAction(Intent.ACTION_VIEW);
+		
+		startActivity(intent);
+		
+	}

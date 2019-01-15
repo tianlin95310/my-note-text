@@ -1,0 +1,23 @@
+概念：主要用于便利其他的接口，与c++类似。
+如
+public static void main(String[] args)
+	{
+		LinkedList<String> link = new LinkedList<String>();
+	
+		link.add("123");
+		link.addFirst("qwe");
+		link.addLast("asd");
+		link.add("zxc");
+		
+		Iterator<String> it = link.iterator();	//顺序遍历的迭代器
+		while(it.hasNext())
+		{ 
+			System.out.print(it.next() + " ");
+		}
+		
+		
+	}
+
+1，他有多种类型，不同的集合支持的迭代器类型不同，如LinkedList它支持3种迭代器
+
+2，在集合的while语句里，it.next(),最好只有一个，每做一次，指针就后移一次

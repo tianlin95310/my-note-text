@@ -1,0 +1,63 @@
+注意：	除了File类，其他的只要与文件相关联的流在创建对象时，就会自动产生一个空文件。如果文件存在并且不追加打开的话，会覆盖原有内容
+	所有的与文件相关联的流，需要刷新，内容才会写入文件，close操作会自动刷新一次
+
+1，FileInputStream，FileOutputStream，能够完成读写功能，指定FileOutputStream的构造函数的第二个参数支持追加，
+	配合BufferedInputStream，BufferedOutputStream提高效率，如果前者支持追加，则缓冲流也支持追加
+
+2，FileInputStream，FileOutputStream需要关联文件，BufferedInputStream，BufferedOutputStream需要关联字节流，及其子类
+
+3，字节流主要用于处理二进制文件，操作的主要对象是字节数组（byte[] bytes）。
+
+4，基本上所有的操作都能用字节流完成。用字节流处理字符时，需要加上一个转换流
+
+
+public class ThreadPools
+{
+	
+	public static void copy()
+	{
+		try
+		{
+			// 1,创建字节输入流，该流需要关联其他流。
+			FileInputStream fis = new FileInputStream(".//res/1.jpg");
+			
+			// 2，创建字节输出流，该流需要关联其他流，支持追加
+			FileOutputStream fos = new FileOutputStream(".//res/2.jpg");
+			
+			// 3,创建字节输入缓冲流，该流需要关联字节流类及其子类，该字节输入流本就能完成输入，缓冲流能提高效率
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			
+			// 4，创建字节输出流，该流需要关联字节流类及其子类，该字节输出流本就能完成输入，缓冲流能提高效率
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			
+			byte bytes[] = new byte[1024];
+			
+			int len = -1;
+			//一次最多读1024字节，遇文件尾返回-1，C语言的fread函数则返回0
+
+			while( (len = bis.read(bytes)) != -1)
+			{
+				bos.write(bytes, 0, len);
+			}
+			这是IO流的一种标准写法，len返回实际读的数目，read会往指定数组里读，不会超过数组的
+			长度，函数会依据数组的长度。			
+
+			//关闭流
+			bis.close();
+			bos.close();
+			fis.close();
+			bis.close();
+			
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String []args)
+	{
+		copy();
+	}
+}

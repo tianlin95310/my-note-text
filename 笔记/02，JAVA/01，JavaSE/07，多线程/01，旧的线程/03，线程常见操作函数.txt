@@ -1,0 +1,100 @@
+特点：有一些静态函数，不用对象就能访问，表明是当前代码所在的线程
+	有一些对象函数，用对象访问。没有对象用currentThread()得到当前线程对象
+
+
+1，返回正在执行的线程
+	System.out.println(Thread.currentThread().getName());
+
+
+2，返回正在执行的线程个数
+	System.out.println(Thread.activeCount());
+
+
+3，休眠当前代码所在的线程，
+	Thread.sleep(2000);
+
+4，设置线程优先级
+	t1.setPriority(8);
+	t2.setPriority(8);
+	Thread.currentThread().setPriority(8);
+	System.out.println(t1.getPriority());
+	System.out.println(t2.getPriority());
+
+5，获取线程名
+	System.out.println(t1.getName());
+	System.out.println(Thread.currentThread().getName());
+		
+6，修改线程名
+	t1.setName("线程1");
+	System.out.println(t1.getName());
+
+7，设置为后台线程,当所有前台线程结束时，他也会结束运行，必须要在start之前调用
+	if (!t1.isDaemon()) // 判断线程是否是后台进程
+		t1.setDaemon(true);
+
+8，查看线程有没有被开启
+	System.out.println(t1.isAlive());
+	t1.start();
+	System.out.println(t1.isAlive());
+	
+9，等待某线程完毕再执行其他线程
+	t2.join();
+		
+10，线程中断
+	1，interrupt	函数会让线程抛出一个异常
+	2，InterruptedException	异常会把异常标志位清为false
+	3，isInterrupted	判断线程是否中断
+	4，interrupted		判断线程是否异常，并且将异常标志位清为false
+
+11，自定义中断
+
+class MyThread implements Runnable
+{
+	private static boolean flag = false;
+	public static boolean getFlag()
+	{
+		return flag;
+	}
+	public static void setFlag(boolean flag)
+	{
+		MyThread.flag = flag;
+	}
+	@Override
+	public void run()
+	{
+		while (flag == false)
+		{
+			System.out.println(Thread.currentThread().getName() + " running");
+			try
+			{
+				Thread.sleep(100);
+				Thread t = Thread.currentThread();
+				t.interrupt();
+				
+			} catch (InterruptedException e)
+			{
+				System.out.println(Thread.currentThread().getName() + " ending");
+				setFlag(true);	
+			}
+		}
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		Thread r = new Thread(new MyThread());
+		r.start();
+		try
+		{
+			Thread.sleep(2000);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+}
+
+		

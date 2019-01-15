@@ -1,0 +1,31 @@
+注册的方法与其他的activity一样，他也是activity的子类,同时它是ListActivity的子类，对ListView进行了封装
+与二维的listview的原理一样
+
+public class MainActivity extends LauncherActivity
+{
+
+	String[] strs = new String[]{"activity1","activity2"};
+	
+	Class<?> activitys[] = new Class<?>[]{Activity1.class,Activity2.class};
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		// LauncherActivity不要使用setContentView函数
+//		setContentView(R.layout.activity_main);
+
+		// 使用一个适配器显示将要被启动的activity
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strs);
+		// 设置适配器
+		this.setListAdapter(adapter);
+	}
+	
+	// 该函数用于得到选中的Intent，用于启动选中的activity
+	@Override
+	protected Intent intentForPosition(int position)
+	{
+		return new Intent(this, activitys[position]);
+	}
+
+}

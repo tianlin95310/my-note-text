@@ -1,0 +1,10 @@
+1，Andorid 3.2以前的SDK可以使用如下配置
+android:configChanges="orientation|keyboardHidden"
+而Adnroid 3.2以后的SDK必须添加一个screenSize属性，具体如下
+android:configChanges="keyboardHidden|orientation|screenSize"
+或者
+android:configChanges="orientation|screenSize"
+
+2，
+// 该函数有可能导致Activity重新启动，因为当前已经调用过一次onCreate，该方法会重新启动Activity
+// this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

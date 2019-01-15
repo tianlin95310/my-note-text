@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+int Add(int, int);	//0x004?????
+int Sub(int, int);
+int Mul(int, int);
+int Div(int, int);
+
+typedef float (*MYFUN)(int, float, char);
+float MyFun(int x, float y, char z)
+{
+	return 1.1f;
+}
+MYFUN f1 = &MyFun;
+
+typedef int (*PFUN)(int, int);
+
+#define dim(x) sizeof(x) / sizeof(x[0])
+
+void main()
+{
+	PFUN pFuns[] = {&Add, &Sub, &Mul, &Div};
+
+	int a, b;
+	char o;
+	cin >> a >> o >> b;
+	switch (o)
+	{
+	case '+':
+		cout << pFuns[0](a, b) << endl;
+		break;
+	case '-':
+		cout << pFuns[1](a, b) << endl;
+		break;
+	case '*':
+		cout << pFuns[2](a, b) << endl;
+		break;
+	case '/':
+		cout << pFuns[3](a, b) << endl;
+		break;
+	}
+	//3+5
+}
+
+int Add(int x, int y)
+{
+	return x + y;
+}
+
+int Sub(int x, int y)
+{
+	return x - y;
+}
+
+int Mul(int x, int y)
+{
+	return x * y;
+}
+
+int Div(int x, int y)
+{
+	if (y == 0) return -1;
+	return x / y;
+}

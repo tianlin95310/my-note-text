@@ -1,0 +1,34 @@
+BEGIN
+	#Routine body goes here...
+
+
+declare var1 varchar(700);
+declare var2 VARCHAR(300);
+declare var varchar(1000);
+
+declare totalCount int;
+declare pageSzie int DEFAULT 5;
+
+set var1 = 'select lf3.lid, lf3.leaveType, lf3.eName, lf3.hourCount, lf3.requestDate, lf3.applicant, lf3.approverDate, e3.eName as eApproverName, lf3.`status` 
+		from (select lf2.lid, lf2.leaveType, lf2.eName, lf2.hourCount, lf2.requestDate, e2.eName as applicant, lf2.approverDate, lf2.approver, lf2.status 
+						from (select lf1.lid, lf1.leaveType, e1.eNo, e1.eName, lf1.hourCount, lf1.requestDate, lf1.whoApply, lf1.approverDate, lf1.approver, lf1.`status` 
+										from leaveinfo lf1, employee e1 
+											where lf1.eId = e1.eid and lf1.`status` = ' ;
+
+set var2 = ' ) lf2, employee e2 
+							where lf2.whoApply = e2.eId) lf3 , employee e3
+			where lf3.approver = e3.eId ';
+#转义'单引号
+set @con = '\'approved\' and lf1.eid = ?';
+
+set var = CONCAT(var1, @con, var2);
+
+set @str = var;
+
+set @id = 4;
+PREPARE s1 from @str;
+
+EXECUTE s1 using @id;
+
+
+END

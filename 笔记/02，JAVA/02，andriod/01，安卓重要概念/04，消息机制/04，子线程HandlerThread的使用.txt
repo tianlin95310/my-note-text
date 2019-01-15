@@ -1,0 +1,68 @@
+package com.example.handlerthread;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.HandlerThread;
+import android.os.Message;
+import android.util.Log;
+import android.view.MotionEvent;
+
+
+public class MainActivity extends Activity implements Callback{
+
+    Handler workHandler;
+
+    MyHandlerThread handlerThread;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // HandlerThread线程里面已经封装并绑定了Looper，通过getLooper能获取该Handler线程的Looper
+        // MyHandlerThread实现了消息处理函数，可以直接由他处理
+        handlerThread = new MyHandlerThread("MyHandlerThread");
+        handlerThread.start();
+
+//      workHandler = new Handler(handlerThread.getLooper(), handlerThread);
+
+        // 当然也可以让Activity来处理
+        workHandler = new Handler(handlerThread.getLooper(), this);
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        workHandler.sendEmptyMessage(1);
+
+        return super.onTouchEvent(event);
+    }
+
+    class MyHandlerThread extends HandlerThread implements Callback
+    {
+
+        public MyHandlerThread(String name)
+        {
+            super(name);
+        }
+
+        @Override
+        public boolean handleMessage(Message msg)
+        {
+            Log.d("my", "MyHandlerThread handleMessage");
+            return false;
+        }
+
+    }
+    @Override
+    public boolean handleMessage(Message msg)
+    {
+        Log.d("my", "MyHandlerThread handleMessage");
+        return false;
+    }
+
+}

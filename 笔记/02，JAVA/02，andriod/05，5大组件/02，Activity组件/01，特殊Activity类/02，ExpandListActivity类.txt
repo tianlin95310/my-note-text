@@ -1,0 +1,57 @@
+与前面的ListActivity类似，他们与对应的列表控件的使用类似，
+只是换成activity做了一些简化，本身都是从列表控件转化而来，核心成员都是列表控件
+
+布局文件id有些特殊不能去掉前缀,但作为普通的控件使用的话可以不同加上android:
+因为这里系统将ListView内置到ExpandableListActivity中，他已经有系统定义了，这里只要引用系统的id即可
+引用还包括引用自己的定义的id
+ <ExpandableListView
+        android:id="@+id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+// 类
+public class MainActivity extends ExpandableListActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		// 所有大组需要显示的内容，相当于一个一维的ListView
+		 List<Map<String, Object>> groupData = new ArrayList<Map<String,Object>>();
+		 
+		 for(int i = 1 ;i <= 3 ;i++)
+		 {
+			 // 得到每一组对象
+			 Map<String,Object> group = new HashMap<String,Object>();
+			 // 所有的组key要相同
+			 group.put("group", "group " + i);
+			 groupData.add(group);
+		 }
+		 // 所有子项的数据集合，相当于一个二维的数组，二维的listview，第一位用于控制有多少个组，第二维才是每一组的所有子元素
+		 List<List<Map<String, Object>>> childData = new ArrayList<List<Map<String,Object>>>();
+		 
+		 for(int i = 1; i <= 3 ;i++)
+		 {
+			 // 得到大组对象，他的个数应该与主组数量相同
+			 List<Map<String,Object>> child = new ArrayList<Map<String,Object>>();
+			 
+			 for(int j = 1; j <= 4; j++)
+			 {
+				 // 得到每组具体的子元素对象
+				 Map<String,Object> child_map = new HashMap<String,Object>();
+				 // 所有的子列表的key要相同
+				 child_map.put("child", "child " + j);
+				 // 循环完毕，就得到一组
+				 child.add(child_map);
+			 }
+			 // 循环完毕，得到所有组
+			 childData.add(child);
+		 }
+		 
+		SimpleExpandableListAdapter adapter = new SimpleExpandableListAdapter(this, groupData, R.layout.group_view, new String[]{"group"}, new int[]{R.id.group}, childData, R.layout.child_view, new String[]{"child"}, new int[]{R.id.child});
+		this.setListAdapter(adapter);
+	}
+}

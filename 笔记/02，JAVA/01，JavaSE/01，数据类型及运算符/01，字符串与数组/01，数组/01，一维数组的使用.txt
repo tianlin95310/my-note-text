@@ -1,0 +1,45 @@
+介绍，数组与类的对象一样，是一种引用数据类型，必须申请堆空间后才能使用。但引用是在栈区里的。
+	他有类的属性，有length变量得到其数组大小。
+
+1，数组语法与C语言不同
+	C语言能int a[4];
+	java不能，java里，int a[],就是定义一个数组，但它还不能使用。a = new int[4]后才能用
+int a[] = new int[4];		//先定义
+
+int a[] = new int[]{1,2,3,4}	//定义时立即初始化，[]里不能自己指定大小，系统会自己算出
+
+int[] a = {1,2,3,4};		//定义同时使用，是上面的简写
+
+int a[] = {1,2,3,4};		//[]可在变量前，也可在变量后。
+		
+
+
+2，Java数组名也是堆内存的首地址，但它是可以被赋值的。、
+	int a[] = {1,2,3,4};
+	int b[] = {5,6,7,8};
+	a = b;	
+		//C语言里数组名是常量，不允许被赋值，会造成内存泄露。除非是自己申请的堆内存。
+	
+		//并且这种赋值称为引用赋值（浅赋值）
+
+3，可变数组
+if(i >= a.length)
+	{
+		int len = a.length + 1;
+		a = Arrays.copyOf(a, len);
+	}
+
+4，未知长度的数组
+public static void main(String[] args)
+	{
+		int length = 10;
+		
+		int []a = new int[length];
+		
+		for(int i = 0 ; i < length ; i++)
+		{
+			a[i] = i;
+			System.out.println(  a[i] );
+		}
+	
+	}

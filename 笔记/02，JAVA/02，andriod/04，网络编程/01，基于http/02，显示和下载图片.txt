@@ -1,0 +1,138 @@
+public class MainActivity extends Activity {
+
+	private ImageView iv;
+
+	private EditText et;
+
+	// 用于发送和处理消息
+	private Handler handle = new Handler() {
+		// 消息处理函数，类似于Windows的消息回调函数
+		public void handleMessage(Message msg) {
+			// 通过what属性对消息进行分离，与Windows一样
+			switch (msg.what) {
+			case 0x1000:
+
+				Bitmap bmp = (Bitmap) msg.obj;
+				iv.setImageBitmap(bmp);
+
+				break;
+			case 0x1001:
+				break;
+			}
+
+			super.handleMessage(msg);
+		}
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		iv = (ImageView) findViewById(R.id.iv);
+
+		et = (EditText) findViewById(R.id.et);
+
+	}
+
+	public void show(View v) {
+		// 耗时线程需要放在子线程，放在主线程里会产生一些异常，如应用没有响应
+		new Thread() {
+			public void run() {
+				String path = et.getText().toString().trim();
+
+				if (TextUtils.isEmpty(path))
+					return;
+				try {
+					// 用图片的具体网址构造URL
+					URL url = new URL(path);
+					// 用URL得到链接
+					HttpURLConnection con = (HttpURLConnection) url
+							.openConnection();
+					// 设置链接时延
+					con.setConnectTimeout(5000);
+					// 设置连接方式
+					con.setRequestMethod("GET");
+					// 设置请求属性
+					con.setRequestProperty(
+							"Accept",
+							"image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, */*");
+					con.setRequestProperty("Connection", "Keep-Alive");
+					// 得到连接返回码
+					int code = con.getResponseCode();
+					// 200表示正常连接
+					if (code == 200) {
+						// 用连接得到需要的流
+						InputStream is = con.getInputStream();
+
+						// 用流来构造位图
+						Bitmap bmp = BitmapFactory.decodeStream(is);
+						// 定义消息类型，并添加内容
+						Message msg = new Message();
+						msg.what = 0x1000;
+						msg.obj = bmp;
+						// 用handler发送消息
+						handle.sendMessage(msg);
+					}
+
+					else {
+						// 没有正常连接，做一些异常处理
+						Message msg = new Message();
+						msg.what = 0x1001;
+						msg.obj = "net have wrong";
+						handle.sendMessage(msg);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+
+	}
+
+	public void download(View v) {
+		String path = et.getText().toString().trim();
+
+		if (TextUtils.isEmpty(path))
+			return;
+
+		try {
+			URL url = new URL(path);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+			con.setConnectTimeout(5000);
+			con.setRequestMethod("GET");
+			con.setRequestProperty(
+					"Accept",
+					"image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, */*");
+			con.setRequestProperty("Connection", "Keep-Alive");
+
+			if (con.getResponseCode() != 200)
+				return;
+
+			InputStream is = con.getInputStream();
+			
+			// 下载就是将流写到一个文件中
+			FileOutputStream fos = this.openFileOutput("01.bmp",
+					Context.MODE_PRIVATE);
+
+			byte bytes[] = new byte[1024];
+
+			int len = -1;
+
+			while ((len = is.read(bytes)) != -1) {
+				fos.write(bytes, 0, len);
+			}
+
+			fos.close();
+
+			is.close();
+
+			Toast.makeText(this, "download success", Toast.LENGTH_SHORT).show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

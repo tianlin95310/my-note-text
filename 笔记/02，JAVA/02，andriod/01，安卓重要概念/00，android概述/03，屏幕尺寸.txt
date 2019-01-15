@@ -1,0 +1,23 @@
+// 方式1		
+// 都能得到WindowManager对象
+	WindowManager window = (WindowManager) this.getSystemService(WINDOW_SERVICE);
+	WindowManager window = this.getWindowManager();
+	// 得到屏幕高宽
+	Point point = new Point();
+	window.getDefaultDisplay().getSize(point);
+	// 得到屏幕的高宽540,960
+	int windowH = point.y;
+	int windowW = point.x;
+
+
+// 方式2
+// 得到Display
+Display dis = wm.getDefaultDisplay();
+
+// 设备度量器
+DisplayMetrics dm = new DisplayMetrics();
+
+// 得到设备数据
+dis.getMetrics(dm);
+
+// 3，需要注意的是横竖屏切换时得到的屏幕长宽也是调换过来的

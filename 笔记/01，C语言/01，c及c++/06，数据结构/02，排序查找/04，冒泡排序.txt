@@ -1,0 +1,51 @@
+//总共做N- 1，每一次找出最值，并移动到两端。
+
+
+#include <iostream>
+using namespace std;
+#define swap(x, y) {(x) = (x) + (y); (y) = (x) - (y); (x) = (x) - (y);}
+/*
+x = x + y
+y = x + y - y = x;
+x = x + y - x; = y;
+*/
+
+void sort(int* p,int n)
+{
+	for(int i = 1; i < n ; i++)
+	{
+		int j = 0;
+		//从左到右将最大值移到右边
+		for(j = 0; j < n - i; j++)
+		{
+			if(p[j] > p[j+ 1])
+			{
+				swap(p[j],p[j + 1]);
+			}
+		}
+	}
+}
+int main()
+{
+	int* a = new int[9];
+	a[0] = 9;
+	a[1] = 8;
+	a[2] = 7;
+	a[3] = 6;
+	a[4] = 5;
+	a[5] = 4;
+	a[6] = 3;
+	a[7] = 2;
+	a[8] = 1;
+	
+	sort(a,9);
+	
+	for(int i = 0; i < 9 ; i++)
+	{
+		cout<<a[i]<<" ";
+	}
+	cout<<endl;
+	//(n - 1)的求和
+	delete a;
+	return 0;
+}

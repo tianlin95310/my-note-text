@@ -1,0 +1,188 @@
+内容提供者：底层还是用数据库对数据进行操作，他方便了不同进程间数据的访问。
+
+1，内容提供者内部有观察者模式机制，包括消息处理，也就是事件处理，相当于Windows的回调函数。
+	内容提供者需要继承ContentProvider类
+
+2，应用信息中需要加上
+  <provider 
+		// 表示别的进程能访问
+            android:exported="true"
+		// 完整的类名
+            android:name="com.example.util.MyContentProvider"
+		// 内容提供者名，要唯一
+            android:authorities="com.example.util.Provider"
+            />
+
+3，使用举例
+
+服务器端
+public class MyContentProvider extends ContentProvider {
+	// 操作匹配器
+	private static UriMatcher um = null;
+	// 数据库对象
+	private MySqlite sql = null;
+	
+	// 上下文用于得到数据库是哪个应用的数据库，以及得到
+	private Context context;
+	
+	// 操作宏，即该内容提供者所有的资源，在这里就是所有可用的函数
+	private static final int INSERT = 1;
+	private static final int DELETE = 2;
+	private static final int UPDATE = 4;
+	private static final int QUERY = 8;
+	// authority是match函数需要删除的内容，得到剩下的内容是addURI的第三个参数
+	private static final String authority= "com.example.util.Provider";
+	
+	// 类加载时就要添加已知的所有操作
+	static 
+	{
+		um = new UriMatcher(UriMatcher.NO_MATCH);
+		um.addURI(authority, "insert", INSERT);
+		um.addURI(authority, "delete", DELETE);
+		um.addURI(authority, "update", UPDATE);
+		um.addURI(authority, "query", QUERY);
+	}
+	
+	// 删除操作，返回值将传给ContentResolver对象调用者，ContentResolver对象调用的函数本质就是调用该函数，最终调用的函数数据库的函数
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		// match函数返回与之匹配的宏
+		if(um.match(uri) == DELETE)
+		{
+			SQLiteDatabase db = sql.getWritableDatabase();
+			
+			// 服务器中ContentResolver对象调用notifyChange方法后，只有用客户端中ContentResolver对象的registerContentObserver注册注册的观察者
+			// 的onChange才能接受到更新响应
+			context.getContentResolver().notifyChange(uri, null);
+			
+			// 返回值最终会传给客户端中的ContentResolver对象调用的函数
+			return db.delete("student", selection, selectionArgs);
+		}
+		else
+		{
+			return -1;
+		}
+	}
+
+	@Override
+	public String getType(Uri uri) {
+		return null;
+	}
+	// 这里返回的uri会有意想不到的用处
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		return null;
+	}
+	@Override
+	public boolean onCreate() {
+		context = this.getContext();
+		sql = new MySqlite(context);
+		
+		return true;
+	}
+	// 查询操作，客户端的ContentResolver对象调用的函数的本质就是调用该函数，返回值最终也传给他
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		if(um.match(uri) == QUERY)
+		{
+			SQLiteDatabase db = sql.getReadableDatabase();
+			
+			return db.query("student", null, null, null, null, null, null);
+		}
+		else
+			return null;
+	}
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+		return 0;
+	}
+
+}
+
+客户端
+public class MainActivity extends Activity {
+	// 客户端内容提供者操作对象
+	private ContentResolver cr;
+	private TextView tv;
+	private EditText et;
+	private final String authority= "com.example.util.Provider";
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        cr = getContentResolver();
+        
+        tv = (TextView) findViewById(R.id.tv);
+        
+        et = (EditText) findViewById(R.id.et);
+        
+        // 注册观察者后，服务器端如果添加了相关代码，onChange函数就能就受到更新响应
+        cr.registerContentObserver(Uri.parse("content://" + authority + "/" ), true, new ContentObserver(new Handler()) {
+
+			public void onChange(boolean selfChange) {
+				
+				Toast.makeText(MainActivity.this, "change", Toast.LENGTH_SHORT).show();
+				
+				super.onChange(selfChange);
+			}
+        });
+    }
+    
+    public void query(View v)
+    {
+    	// 带有的query资源名表示访问ContentProvider（服务器端）的query函数
+    	Uri uri = Uri.parse("content://" + authority + "/query");
+    		//ContentResolver对象的相应函数的本质是调用MyContentProvider对应的函数，返回的值最终是SQLiteDatabase对应的API的返回结果
+    	Cursor rs = cr.query(uri, null, null, null, null);
+    	
+    	if(rs == null)
+    	{
+    		Toast.makeText(MainActivity.this, "not exist", Toast.LENGTH_SHORT).show();
+    		return;
+    	}
+    	
+    	StudentVo s = null;
+    	
+    	StringBuilder sb = new StringBuilder();
+    	while(rs.moveToNext())
+    	{
+    		s = new StudentVo();
+    		
+    		s.setNo(rs.getString(rs.getColumnIndex("no")));
+    		s.setName(rs.getString(rs.getColumnIndex("name")));
+    		s.setAge(rs.getInt(rs.getColumnIndex("age")));
+    		s.setSex(rs.getString(rs.getColumnIndex("sex")));
+    		
+    		sb.append(s.toString() + "\n");
+    	}
+    	
+    	rs.close();
+    	tv.setText(sb.toString());
+    }
+    public void add(View v)
+    {
+    }
+    public void del(View v)
+    {
+    	String no = et.getText().toString().trim();
+    	// 访问服务器端的delete函数
+    	Uri uri = Uri.parse("content://com.example.util.Provider/delete");
+    	
+    	int iResult = cr.delete(uri, "no=?", new String[]{no});
+    	
+    	if(iResult <= 0)
+    	{
+    		Toast.makeText(this, "not exist", Toast.LENGTH_SHORT).show();
+    	}
+    	else
+    	{
+    		Toast.makeText(this, "delete success", Toast.LENGTH_SHORT).show();
+    	}
+    }
+    public void mod(View v)
+    {
+    }
+}

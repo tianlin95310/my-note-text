@@ -1,0 +1,47 @@
+1，事务的概念
+  事务是一系列数据库操作的集合，各操作不能分开。
+2，事务的属性
+  1，原子性
+  2，一致性
+  3，隔离性
+  4，持续性
+
+3，
+set autocommit=false //不自动提交
+set autocommit=ftrue //自动提交
+设值不自动提交后，做数据库增删改操作之后
+查询一下，能查到，但并未写入文件，只在内存里
+若做rollback；后，在查就查不到了。
+
+若做了commit；则数据会真正保存下来，如果再做rollback；
+这就可以查到了，
+
+4，事物的使用举例
+BEGIN
+	#Routine body goes here...
+
+declare error int;
+
+// 定义异常处理，如果有异常，会调用里面的回滚并将标志位置为1
+declare continue HANDLER for SQLEXCEPTION
+
+BEGIN
+ROLLBACK;
+set error = 1;
+end;
+
+	set autocommit = false;
+	// 开始事物
+	start TRANSACTION;
+
+	
+	set error = 0;
+	insert into testevent(name) values('aaa');
+	insert into testevent(name) values('bbb');
+	insert into testevent(name) values('ccc');
+// 提交
+commit;
+
+select error;
+
+END

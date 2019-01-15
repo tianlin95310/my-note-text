@@ -1,0 +1,346 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include <string.h>
+#include <conio.h>					
+
+char * check(int x, int y, char * qizi);
+void showchess();
+int play_step();
+
+void gotoxy(int x, int y)
+{
+	COORD pos;
+	pos.X = x;
+	pos.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+void color(int b)
+{
+	HANDLE hConsole = GetStdHandle((STD_OUTPUT_HANDLE));
+	SetConsoleTextAttribute(hConsole, b);
+}
+char * chess[13][13] = {
+		"┌", "┬", "┬", "┬", "┬", "┬", "┬", "┬", "┬", "┬", "┬", "┬", "┐",//设计思想，用数组代替棋盘的一些部分
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",//通过修改数组值来下棋
+		"├", "┼", "·", "┼", "┼", "┼", "·", "┼", "┼", "┼", "·", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"├", "┼", "·", "┼", "┼", "┼", "·", "┼", "┼", "┼", "·", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"├", "┼", "·", "┼", "┼", "┼", "·", "┼", "┼", "┼", "·", "┼", "┤",
+		"├", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┼", "┤",
+		"└", "┴", "┴", "┴", "┴", "┴", "┴", "┴", "┴", "┴", "┴", "┴", "┘",
+};
+void showchess()
+{
+	color(14);
+	system("cls");
+	printf("  ┌──────────────────────┐\r\n");
+	printf("  │                 四子棋                     │\r\n");
+	printf("  └──────────────────────┘\r\n");
+	printf("   A   B   C   D   E   F   G   H   I   J   K   L   M\r\n");
+	printf(" N%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[0][0], chess[0][1], chess[0][2], chess[0][3], chess[0][4], chess[0][5], chess[0][6], chess[0][7], chess[0][8], chess[0][9], chess[0][10], chess[0][11], chess[0][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" O%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[1][0], chess[1][1], chess[1][2], chess[1][3], chess[1][4], chess[1][5], chess[1][6], chess[1][7], chess[1][8], chess[1][9], chess[1][10], chess[1][11], chess[1][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" P%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[2][0], chess[2][1], chess[2][2], chess[2][3], chess[2][4], chess[2][5], chess[2][6], chess[2][7], chess[2][8], chess[2][9], chess[2][10], chess[2][11], chess[2][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" Q%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[3][0], chess[3][1], chess[3][2], chess[3][3], chess[3][4], chess[3][5], chess[3][6], chess[3][7], chess[3][8], chess[3][9], chess[3][10], chess[3][11], chess[3][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" R%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[4][0], chess[4][1], chess[4][2], chess[4][3], chess[4][4], chess[4][5], chess[4][6], chess[4][7], chess[4][8], chess[4][9], chess[4][10], chess[4][11], chess[4][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" S%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[5][0], chess[5][1], chess[5][2], chess[5][3], chess[5][4], chess[5][5], chess[5][6], chess[5][7], chess[5][8], chess[5][9], chess[5][10], chess[5][11], chess[5][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" T%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[6][0], chess[6][1], chess[6][2], chess[6][3], chess[6][4], chess[6][5], chess[6][6], chess[6][7], chess[6][8], chess[6][9], chess[6][10], chess[6][11], chess[6][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" U%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[7][0], chess[7][1], chess[7][2], chess[7][3], chess[7][4], chess[7][5], chess[7][6], chess[7][7], chess[7][8], chess[7][9], chess[7][10], chess[7][11], chess[7][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" V%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[8][0], chess[8][1], chess[8][2], chess[8][3], chess[8][4], chess[8][5], chess[8][6], chess[8][7], chess[8][8], chess[8][9], chess[8][10], chess[8][11], chess[8][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" W%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[9][0], chess[9][1], chess[9][2], chess[9][3], chess[9][4], chess[9][5], chess[9][6], chess[9][7], chess[9][8], chess[9][9], chess[9][10], chess[9][11], chess[9][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" X%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[10][0], chess[10][1], chess[10][2], chess[10][3], chess[10][4], chess[10][5], chess[10][6], chess[10][7], chess[10][8], chess[10][9], chess[10][10], chess[10][11], chess[10][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" Y%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[11][0], chess[11][1], chess[11][2], chess[11][3], chess[11][4], chess[11][5], chess[11][6], chess[11][7], chess[11][8], chess[11][9], chess[11][10], chess[11][11], chess[11][12]);
+	printf("  │  │  │  │  │  │  │  │  │  │  │  │  │\r\n");
+	printf(" Z%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s─%s\r\n", chess[12][0], chess[12][1], chess[12][2], chess[12][3], chess[12][4], chess[12][5], chess[12][6], chess[12][7], chess[12][8], chess[12][9], chess[12][10], chess[12][11], chess[12][12]);
+	printf("\r\n");
+}
+int play_step()
+{
+	static bool byturn = true;//交替来实现换方
+	char * qizi = byturn ? "●" : "○";
+	
+	int x;
+	int y;
+	char a, b;
+	while (1)
+	{
+		fflush(stdin);
+		x = -1;
+		y = -1;
+		color(10);
+		gotoxy(13 * 4 + 6, 10);
+		printf("请%s输入落子坐标:", qizi);
+		gotoxy(13 * 4 + 6, 11);
+		printf("横纵坐标无序:");
+		a = getche();
+		if (a == '0')
+			exit(0);
+		if ((a <= 'M' && a >= 'A') || (a <= 'm' && a >= 'a'))
+		{
+			b = getche();
+			if (a <= 'M' && a >= 'A')
+				y = a - 'A';
+			if (a <= 'm' && a >= 'a')
+				y = a - 'a';
+			if (b <= 'Z' && b >= 'N')
+				x = b - 'N';
+			if (b <= 'z' && b >= 'n')
+				x = b - 'n';
+		}
+		if ((a <= 'Z' && a >= 'N') || (a <= 'z' && a >= 'n'))
+		{
+			b = getche();
+			if (a <= 'Z' && a >= 'N')
+				x = a - 'N';
+			if (a <= 'z' && a >= 'n')
+				x = a - 'n';
+			if (b <= 'M' && b >= 'A')
+				y = b - 'A';
+			if (b <= 'm' && b >= 'a')
+				y = b - 'a';
+		}
+		if (x < 0 || y < 0 || x > 12 || y > 12)//判断出界
+		{
+			gotoxy(13 * 4 + 6, 12);
+			printf("输入错误，请重下\n");
+			continue;
+		}
+		if (chess[x][y] == "●" || chess[x][y] == "○")//判断已下子
+		{
+			gotoxy(13 * 4 + 6, 13);
+			printf("该处已落子，请重下\n");
+			continue;
+		}
+		break;
+	}
+	chess[x][y] = qizi;
+	
+	char * check_return = check(x, y, qizi);
+	if (check_return == qizi)
+	{
+		showchess();
+		color(13);
+		printf("恭喜%s方胜利\n", qizi);
+		exit(0);
+	}
+	byturn = !byturn;//翻转下棋的方
+	return 0;
+}
+//void play_step()
+//{
+//static bool byturn = true;
+//char* qizi = byturn ? "●" : "○";
+//
+//  int x;
+//  int y;
+//  char shuru[4];
+//  while (1)
+//  {
+//		fflush(stdin);
+//		x = -1;
+//		y = -1;
+//		memset(shuru, 0, 4);
+//		
+//		  color(10);
+//		  gotoxy(13*4+6,10);
+//		  printf("请%s输入落子坐标:",qizi);
+//		  gotoxy(13*4+6,11);
+//		  printf("横纵坐标无序:");
+//		  gets(shuru);
+//		  strupr(shuru);
+//		  if(shuru[0] == '0')
+//		  exit(0);
+//		  
+//			if(shuru[0]>='A'&&shuru[0]<='M')
+//			{
+//			y = shuru[0]-'A';
+//			if(shuru[2] == 0)
+//			{
+//			x = shuru[1]-'0'-1;
+//			}
+//			else
+//			{
+//			x = (shuru[1]-'0') * 10 + shuru[2] - '0' - 1;
+//			}
+//			
+//			  }
+//			  if(shuru[0] >= '1' && shuru[0]<='9')
+//			  {
+//			  if(shuru[1]>='A' && shuru[1]<='M')
+//			  {
+//			  y = shuru[1] - 'A';
+//			  x = shuru[0] - '0' - 1;
+//			  }
+//			  if((shuru[1] >= '0' && shuru[1] <= '3')&&(shuru[2]>='A' && shuru[2]<='M'))
+//			  {
+//			  y = shuru[2] - 'A';
+//			  x = (shuru[0]-'0')*10 + shuru[1] - '0' - 1;
+//			  }
+//			  }
+//			  if (x < 0 || y < 0 || x > 12 || y > 12)
+//			  {
+//			  gotoxy(13*4+6,12);
+//			  printf("输入错误，请重下\n");	
+//			  continue;
+//			  }
+//			  if (chess[x][y] == "●" || chess[x][y] == "○") 
+//			  {
+//			  gotoxy(13*4+6,13);
+//			  printf("该处已落子，请重下\n");
+//			  continue;
+//			  }
+//			  
+//				break;
+//				}
+//				chess[x][y] = qizi;
+//				
+//				  char* check_return = check(x,y,qizi);
+//				  if(check_return == qizi)
+//				  {
+//				  showchess();
+//				  color(13);
+//				  printf("恭喜%s方胜利\n",qizi);
+//				  exit(0);
+//				  }
+//				  byturn = !byturn;	
+//				  }
+char * check(int x, int y, char * qizi)//重要思想，从落子的哪一个棋子开始（8方向）      1 1 1
+{									     		1 1 1	 
+	int inum = 0;							     		1 1 1
+	int i = x;
+	int j = y;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		i--;
+		j--;
+		if (i < 0)
+			break;
+		if (j < 0)
+			break;
+	}
+	
+	i = x + 1;
+	j = y + 1;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		i++;
+		j++;
+		if (i > 12)
+			break;
+		if (j > 12)
+			break;
+	}
+	
+	inum = 0;
+	i = x;
+	j = y;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		i--;
+		j++;
+		if (i < 0)
+			break;
+		if (j > 12)
+			break;
+	}
+	
+	i = x + 1;
+	j = y - 1;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		i++;
+		j--;
+		if (i > 12)
+			break;
+		if (j < 0)
+			break;
+	}
+	inum = 0;
+	i = x;
+	j = y;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		i--;
+		if (i < 0)
+			break;
+	}
+	i = x + 1;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		i++;
+		if (i > 12)
+			break;
+	}
+	inum = 0;
+	i = x;
+	j = y;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		j--;
+		if (j < 0)
+			break;
+	}
+	j = y + 1;
+	while (chess[i][j] == qizi)
+	{
+		inum++;
+		if (inum == 4)
+			return qizi;
+		j++;
+		if (j > 12)
+			break;
+		
+	}
+	return NULL;
+}
+void main()
+{
+	HWND hWnd = ::GetForegroundWindow();
+	if (hWnd)
+	{
+		::SetWindowText(hWnd, "四子棋    作者: 田林");
+		::ShowWindow(hWnd, SW_MAXIMIZE);
+	}
+	while (1)
+	{
+		showchess();
+		play_step();
+	}
+}

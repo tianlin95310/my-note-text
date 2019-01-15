@@ -1,0 +1,203 @@
+1，详细使用
+  说明：1，getDeclared***s,Get***s,getDeclared***,Get***,主要区别
+		1,前者获取的是子类内部的代码可见的部分，包括所有的修饰符,后者获得的是包括从父类继承过来
+		  的，但只有public修饰的，他们不需要参数
+
+		2,不加s表示得到具体的，
+			1，对于字段，参数为字段名
+			2，对于函数，第一个参数为函数名，后面的可变参数为参数的反射类型,需要加上.class
+			3，对于构造函数，参数为构造函数的可变参数的反射类型，需要加上.class
+			4，对于注解，参数为注解的类型加上.class
+
+	2，GetName，GetSimpleName，后者获得的类名更简化
+
+	3，Class<T>里面的T类型如果知道就填具体的，不知道就填？，这个不能用于其他的泛型，可以理解为反射的
+		特殊情况
+
+	4，Class<T>里面的newInstance只能用无参构造函数，而Constructor<T>支持多种构造参数。
+
+	5，Field,Method里面有能访问private成员的setAccessible函数，但违反了封装性原则，最好不要使用
+
+	6，修饰符采用是与Windows类似的单位表示，1,2,4,8,16的形式，同时具有可用与运算解决
+
+class Parent
+{
+}
+interface I1
+{
+}
+interface I2
+{
+}
+class T extends Parent implements I1, I2
+{
+	private String name1;
+	private static String name2;
+	public T()
+	{
+		super();
+	}
+	public T(String name1)
+	{
+		super();
+		this.name1 = name1;
+	}
+	public void fun1()
+	{
+		System.out.println("fun1");
+	}
+	private static void fun2()
+	{
+		System.out.println("fun2");
+	}
+	public static void fun3()
+	{
+		System.out.println("fun3");
+	}
+	public String toString()
+	{
+		return "T [name1=" + name1 + "]";
+	}
+}
+
+// 1，获取类名，如果不知道类型，就用<?>表示，通常应该能知道类名
+		**************集合里比较特殊，集合里用<?>添加数据会有问题，可以理解为专门用于反射
+		Class<?> c1 = T.class;
+		System.out.println("本类名 " + Modifier.toString(c1.getModifiers()) + " "
+				+ c1.getName());
+
+		System.out.println("******************************************************");
+
+
+// 2，获取父类名,实现的接口
+		Class<?> c2 = c1.getSuperclass();
+		System.out.println("父类名  " + c2.getName());
+		// 获取实现的接口
+		Class<?> c3[] = c1.getInterfaces();
+		for (Class<?> c : c3)
+		{
+			System.out.println("接口  " + c.getName());
+		}
+		System.out.println("******************************************************");
+
+// 3，获取所有构造函数
+		Constructor<?> cons[] = c1.getDeclaredConstructors();// 获取所有的构造方法
+
+		for (Constructor<?> con : cons)
+		{
+			// 1，获取修饰符，类名
+			System.out.print("构造函数  " + Modifier.toString(con.getModifiers())
+					+ " " + c1.getName() + "(");
+
+			// 2，获取所有的参数类型
+			Class<?> pars[] = con.getParameterTypes();
+			for (Class<?> par : pars)
+			{
+				System.out.print(par.getName() + ",");
+				// 获取参数类型
+			}
+			System.out.println(")");
+		}
+		System.out.println("******************************************************");
+
+// 4，获取具体构造函数
+		//获取指定的构造函数
+		Constructor<?> con = c1.getConstructor();	//也可以获取其他的有参构造函数
+		// 创建对象
+		T p1 = (T) con.newInstance();
+		System.out.println(p1);
+
+		System.out.println("******************************************************");
+
+// 5，获取字段
+		Field[] fields = c1.getDeclaredFields();
+		for (Field field : fields)
+		{
+			// 获取修饰符
+			System.out.print("字段    " + Modifier.toString(field.getModifiers())
+					+ " ");
+			// 获取Type类型
+			System.out.print(field.getGenericType() + " ");
+			// 获取类型名
+			System.out.print(field.getName());
+			System.out.println();
+		}
+		
+//6，对字段的操作
+		//1，非静态私有成员
+			//非静态成员需要借助对象才能使用
+		Field f = c1.getDeclaredField("name1");			//参数为字段名
+		//创建对象
+		Constructor<?> con = c1.getDeclaredConstructor();	//可变参数
+		T p = (T)con.newInstance();
+		//修改访问权限，最好不要使用
+		f.setAccessible(true);
+		f.set(p, "tianlin");		//用过set传参
+	
+		System.out.println(p);
+			
+		//2，静态私有成员
+		Field f2 = c1.getDeclaredField("name2");
+		//获取静态成员不需要对象
+		f2.set(null, "qweerttyi");
+		//获取静态成员的值
+		System.out.println(f2.get("name2"));
+			
+		System.out.println("******************************************************");
+
+// 7，获取函数
+		Method mes[] = c1.getDeclaredMethods();
+		for (Method me : mes)
+		{
+			// 获取修饰符
+			System.out.print("函数    " + Modifier.toString(me.getModifiers())
+					+ " ");
+
+			// 获取返回值
+			System.out.print(me.getReturnType().getSimpleName() + " ");
+
+			// 获取函数名
+			System.out.print(me.getName() + " ");
+
+			// 获取异常信息
+			Class<?> es[] = me.getExceptionTypes();
+			for (Class<?> e : es)
+			{
+				System.out.print("throws " + e.getSimpleName() + " ");
+			}
+
+			System.out.print("(");
+			// 获取参数类型
+			Class<?> pars[] = me.getParameterTypes();
+			// 可变数组，长度为0表示没有参数
+			if (pars.length == 0)
+			{
+				System.out.println(")");
+				continue;
+			}
+			for (Class<?> par : pars)
+			{
+				System.out.print(par.getSimpleName() + ", ");
+				System.out.print(")");
+			}
+			System.out.println();
+
+		}
+
+//8，对函数的操作
+	
+		//获取指定的有参方法，类型需要转换为详细类型,加.class
+		Method m = c1.getDeclaredMethod("fun2", int.class);
+		//设置访问权限
+		m.setAccessible(true);
+		//调用静态函数，不需要经过对象
+		m.invoke(null, 123456);				//传参方法
+			
+		//获取无参方法
+		Method m1 = c1.getDeclaredMethod("fun1");
+		//获取构造方法
+		Constructor<?> con = c1.getConstructor();
+		T p = (T)con.newInstance();
+		//调用非静态函数需要对象
+		m1.invoke(p);
+		

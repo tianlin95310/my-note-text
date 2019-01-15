@@ -1,0 +1,131 @@
+接收端
+
+class receiveProcess implements Runnable
+{
+	private Socket s = null;
+	public receiveProcess(Socket s)
+	{
+		this.s = s;
+	}
+	public void run()
+	{
+		try
+		{
+			InputStream is = s.getInputStream();
+			FileOutputStream fos = new FileOutputStream(
+					"C:/Users/LX/Desktop/2.png");
+			
+			byte bytes[] = new byte[1024];
+			int len = -1;
+
+			while ((len = is.read(bytes)) != -1)
+			{
+				fos.write(bytes, 0, len);
+			}
+			
+			fos.close();
+			s.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+public class Service implements Runnable
+{
+	private Socket s = null;
+
+	public Service(Socket s)
+	{
+		this.s = s;
+	}
+
+	public static void main(String[] arsg)
+	{
+		try
+		{
+			ServerSocket ss = new ServerSocket(8888);
+
+			while (ss != null)
+			{
+				Socket s = ss.accept();
+				new Thread(new Service(s)).start();
+			}
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void run()
+	{
+		if (s != null)
+		{
+			System.out.println(s.getLocalSocketAddress());
+			System.out.println(s.getRemoteSocketAddress());
+			 new Thread(new receiveProcess(s)).start();
+		}
+
+	}
+}
+
+发送端：
+class sendProcess implements Runnable
+{
+	private Socket s = null;
+	public sendProcess(Socket s)
+	{
+		this.s = s;
+	}
+	public void run()
+	{
+		try
+		{
+			OutputStream os = s.getOutputStream();
+			BufferedInputStream bis = new BufferedInputStream(
+					new FileInputStream("C:/Users/LX/Desktop/1.png"));
+
+			byte bytes[] = new byte[1024];
+			int len = -1;
+
+			while ((len = bis.read(bytes)) != -1)
+			{
+				os.write(bytes, 0, len);
+				os.flush();
+			}
+
+			bis.close();
+
+			//s.close();
+			// socket需要关闭，如果没有关闭，服务器端仍在读的话，会抛异常。
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+public class Client
+{
+	public static void main(String[] args)
+	{
+		try
+		{
+			Socket s = new Socket("10.177.7.144", 8888);
+			System.out.println(s.getLocalSocketAddress());
+			System.out.println(s.getRemoteSocketAddress());
+
+			if (s != null)
+			{
+				 new Thread(new sendProcess(s)).start();
+			}
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+

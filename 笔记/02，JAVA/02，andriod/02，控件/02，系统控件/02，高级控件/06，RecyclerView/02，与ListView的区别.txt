@@ -1,0 +1,10 @@
+@Override
+    public void onBindViewHolder(MyViewHolder holder, int position)
+    {
+        /**
+         * 这个与ListView的最大的区别是，在ListView的该函数中，能够得到item的View，但在这里不能得到
+         * 在ListView中可以很轻易的对整个Item的View进行操作，但在RecyclerView里只能对item的孩子进行操作
+         *
+         */
+        holder.tvContent.setText(list.get(position));
+    }

@@ -1,0 +1,43 @@
+概念：SqLite是Android内嵌的一个小型数据库，与其他数据库一样，都有一些数据库基本的操作
+
+1，首先需要继承SQLiteOpenHelper类来创建自己的数据库类，以及得到SQLiteDatabase数据库操作对象
+
+2，用自己的类的对象来调用getWritableDatabase()，getReadableDatabase()函数来得到数据库操作对象，当onCreate
+	里有新建表的操作时，他随着会getWritableDatabase()的调用执行一次，也只有一次。
+
+3，需要用SqlLite的对象调用getWritableDatabase()函数时，onCreate才会执行，用于创建表，或索引什么的。
+	对数据库进行写的操作时，一定要用getWritableDatabase()，读的时候可以用getWritableDatabase()，
+	也可用getReadableDatabase(),都是用来获取数据库操作对象SQLiteDatabase，
+
+4，由于构造函数里有Context参数，所以构造时比较麻烦。导致dao类需要带有构造函数。
+
+5，数据库使用时，记得释放资源，否则可能会有意想不到的错误
+
+public class SqlLite extends SQLiteOpenHelper{
+	
+	// AA,构造函数用于创建数据库，这个是很重要的
+	public SqlLite(Context context, 	// 1，应用程序上下文，通常是MainActivity的对象
+			String name, 		// 2，数据库的名字，可以加.db扩展名，也可以不加
+			CursorFactory factory,	// 3，相当于结果集的遍历器
+			int version) 		// 4，版本号，通常从1开始
+	{
+		super(context, name, factory, version);
+	}
+	// BB,onCreate函数用于创建一个表，并且只有第一次创建表时才会调用，他是系统自动调用的
+
+	public void onCreate(SQLiteDatabase db) {
+		db.execSQL("create table user(" +	// 5，创建一个表，用类的对象调用sql.getWritableDatabase()方法
+				"uName varchar(20)," +	// 6，系统会执行该函数
+				"uPwd varchar(20)," +
+				"uTel varchar(20)," +
+				"sex varchar(5))");
+	}
+	// CC,数据库的版本等信息发生变化时他就会自动调用，该函数用于删除表，修改表等等操作，针对的都是表级的操作
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		
+			
+	}
+}
+	
+	
+	

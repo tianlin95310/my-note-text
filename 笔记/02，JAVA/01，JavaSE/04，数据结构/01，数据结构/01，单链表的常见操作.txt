@@ -1,0 +1,39 @@
+java节点的特殊性
+理解：
+p.next = ?;	就是p1的next指向哪里
+p = ?;		就是p指向哪里
+
+
+class list
+{
+	private dateType date;
+	public list next;
+}
+
+list l = new list();	//l.next系统初始化为空，不需要人为指定为空，这与C语言有些区别
+
+
+
+对于已知接点h
+
+1，将新节点p放在h的后面（两节点之前并未连接）
+	h.next = p;
+
+2，删除掉h,与p之间的节点（h,p两节点没有直接连接）
+	h.next = p;	//将h直接与p连接。
+
+3，在h与p之间添加节点q（h,p两节点直接连接）
+
+	q.next = h.next	//将之前h后面的p节点放在q的后面
+	h.next = q;	//将整个q连到h后面
+	
+4，删除第一个节点
+	h.next = h;	//让头结点的下一个节点成为新的头节点
+
+5，删除最后一个节点
+    1，只有两个节点
+	h.next = null;
+    2，三个及以上
+	if(p.next.next == null)
+		p.next = null;
+	

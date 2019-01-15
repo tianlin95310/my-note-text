@@ -1,0 +1,3 @@
+scrollBy, scrollTo移动控件的内容
+
+getScrollX(),getScrollY()内部移动的偏移量

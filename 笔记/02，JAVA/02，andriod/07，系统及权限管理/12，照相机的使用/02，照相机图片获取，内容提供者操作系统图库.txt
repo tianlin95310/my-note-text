@@ -1,0 +1,132 @@
+ <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+ <uses-permission android:name="android.permission.CAMERA"/>
+
+public class MainActivity extends ActionBarActivity
+{
+
+	ImageView iv;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		iv = (ImageView) findViewById(R.id.iv);
+		tv = (TextView) findViewById(R.id.tv);
+	}
+
+	public void bt1(View v)
+	{
+		// 打开系统应用并通过onActivityResult来过去返回值
+		Intent intent = new Intent(
+				android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+		startActivityForResult(intent, 1);
+	}
+
+	protected void onActivityResult(int arg0, int arg1, Intent data)
+	{
+		if (data != null)
+		{
+			// 系统将uri返回值放到了data里面
+			Bundle bundle = data.getExtras();
+			Bitmap bmp = (Bitmap) bundle.get("data");
+			iv.setImageBitmap(bmp);
+		}
+	}
+
+	public void bt2(View v)
+	{
+		// 得到图片的保存位置
+		File dir = Environment.getExternalStorageDirectory();
+		File file = new File(dir, "img.bmp");
+		Uri uri = Uri.fromFile(file);
+
+		// 系统照相机的activity
+		Intent intent = new Intent(
+				android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+		// Parcelable是Uri的父接口,intent能放置uri资源，EXTRA_OUTPUT是intent携带的数据，表示
+		// 告诉系统的照相程序的图片存到外存上，而不是系统内部的DCIM文件夹里
+		intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
+		startActivityForResult(intent, 1);
+
+	}
+
+	// android.provider.MediaStore.Images.Media;
+	// 该media下包含了图片数据库里的列的名称，相应的，联系人，短信，音乐，视频里应该都有
+	// Media.DATA是文件名的全路径，Media._ID是uri中的最后的一个id值，Media.TITLE文件名，不带扩展名
+	// Media.DISPLAY_NAME文件名带有扩展名
+	String[] columns = { Media.DATA, Media._ID, Media.TITLE, Media.DISPLAY_NAME };
+	TextView tv;
+
+	public void query(View v)
+	{
+		// 1，通过activity的managedQuery查询所有的图片数据
+		// EXTERNAL_CONTENT_URI是系统内容提供者关于外部存贮卡的uri，它对应一个数据库，通过它能像图库添加，删除，更新，查询
+		// 图库图片，Media.INTERNAL_CONTENT_URI是内存中的访问uri。
+		// Cursor rs = this.managedQuery(Media.EXTERNAL_CONTENT_URI, columns,
+		// null, null, null);
+
+		// 2，通过android.provider.MediaStore.Images.Media的query查询，他是做了一层封装，本质还是cr的query
+		// 内容提供者是MediaStore
+		// Cursor rs = Media.query(getContentResolver(),
+		// Media.EXTERNAL_CONTENT_URI, columns);
+
+		// 3，直接通过ContentResolver查询外存图片数据库，当然借用了内容提供者MediaStore
+		Cursor rs = getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
+				columns, null, null, null);
+		StringBuilder sb = new StringBuilder();
+		while (rs.moveToNext())
+		{
+			sb.append(rs.getString(2) + "\n");
+		}
+		tv.setText(sb.toString());
+	}
+
+	public void show(View v)
+	{
+		// 得到系统所有的图片的列表，当然自己也可以通过递归来得到
+		Cursor rs = getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
+				columns, null, null, null);
+		// 移到第一张图片的位置
+		if (rs.moveToNext())
+		{
+			String path = rs.getString(0);
+			Bitmap bmp = BitmapFactory.decodeFile(path);
+			iv.setImageBitmap(bmp);
+
+			try
+			{
+				// ExifInterface能直接设置图片的EXIF信息，他应该是对EXTERNAL_CONTENT_URI
+				// 做了一些封装,底层操作的应该还是那个数据库
+				ExifInterface ei = new ExifInterface(path);
+				// 得到某个属性，当然还有其他属性
+				String imgDes = ei.getAttribute("ImageDescription");
+
+				if (imgDes != null)
+					System.out.println(imgDes);
+				else
+					System.out.println("null");
+
+				// 设置属性
+				ei.setAttribute("ImageDescription", "myDes");
+
+				// 重新得到属性
+				imgDes = ei.getAttribute("ImageDescription");
+
+				if (imgDes != null)
+					System.out.println(imgDes);
+				else
+					System.out.println("null");
+
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+}

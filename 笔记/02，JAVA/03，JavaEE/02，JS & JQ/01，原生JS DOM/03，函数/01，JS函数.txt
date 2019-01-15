@@ -1,0 +1,36 @@
+<script type="text/javascript">
+
+// 这种赋值方式是函数的匿名实现，onload函数是由一个匿名的函数来赋值的
+// 这里类似于java里面的匿名内部类，直接实现接口里的抽象函数
+// 而在这里是直接给出函数的实现，真正赋值给onload的其实是函数的地址，即这个匿名函数的地址
+	window.onload = function() {
+
+	var lis = document.getElementsByTagName("li");
+	
+	alert(lis.length);
+	// 方式1，与上面一样
+	lis[0].onclick = function()
+	{
+		alert("匿名函数的形式将函数地址赋值给ocnclick函数");
+	}
+	
+	// 方式2，将函数名赋值给onclick，函数名其实就是函数的入口地址
+	lis[1].onclick = test2;
+	
+
+	// 错误写法，直接将函数体赋值给onclick
+	// 在JS脚本里这样写的话是将函数的调用结果返回给onclick，而不是将函数的地址返回给onclick，但是在HTML内部是可以这样写的
+	lis[2].onclick = alert("");
+	lis[3].onclick = test3();
+}
+	
+function test2()
+{
+	alert("通过函数名将函数地址赋值给onclick函数");
+}
+
+function test3()
+{
+	alert("test是函数的地址");
+}
+</script>

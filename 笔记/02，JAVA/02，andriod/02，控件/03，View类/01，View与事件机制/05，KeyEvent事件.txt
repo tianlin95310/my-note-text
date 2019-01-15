@@ -1,0 +1,32 @@
+1，每当点击一次
+// 先分发事件
+public boolean dispatchKeyEvent(KeyEvent event)
+// 如果一直按着不动的话，会一直DOWN
+public boolean onKeyDown(int keyCode, KeyEvent event)
+// 最后会有UP，
+public boolean onKeyUp(int keyCode, KeyEvent event)
+
+2，注册长按事件
+     1，back键系统已经为他设置长按事件
+
+     2，其他按键需要在
+onKeyDown里添加event.startTracking();
+并且return true;即可！并且此时onKeyDown事件也是持续发生的
+
+// 举例
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if(keyCode == KeyEvent.KEYCODE_MENU);
+			event.startTracking();
+		
+			// 这里要返回true
+		return true;
+	}
+	
+	@Override
+	public boolean onKeyLongPress(int keyCode, KeyEvent event)
+	{
+		Log.d("my", "onKeyLongPress" + keyCode);
+		return true;
+	}

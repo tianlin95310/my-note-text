@@ -1,0 +1,19 @@
+ 然而，ConstraintLayout用于更多的特性：
+
+    layout_constraintTop_toTopOf?—?期望视图的上边对齐另一个视图的上边。
+    layout_constraintTop_toBottomOf?—?期望视图的上边对齐另一个视图的底边。
+    layout_constraintTop_toLeftOf?—?期望视图的上边对齐另一个视图的左边。
+    layout_constraintTop_toRightOf?—?期望视图的上边对齐另一个视图的右边。
+    layout_constraintBottom_toTopOf?—?期望视图的下边对齐另一个视图的上边。
+    layout_constraintBottom_toBottomOf?—?期望视图的底边对齐另一个视图的底边。
+    layout_constraintBottom_toLeftOf?—?期望视图的底边对齐另一个视图的左边。
+    layout_constraintBottom_toRightOf?—?期望视图的底边对齐另一个视图的右边。
+    layout_constraintLeft_toTopOf?—?期望视图的左边对齐另一个视图的上边。
+    layout_constraintLeft_toBottomOf?—?期望视图的左边对齐另一个视图的底边。
+    layout_constraintLeft_toLeftOf?—?期望视图的左边对齐另一个视图的左边。
+    layout_constraintLeft_toRightOf?—?期望视图的左边对齐另一个视图的右边。
+    layout_constraintRight_toTopOf?—?期望视图的右边对齐另一个视图的上边。
+    layout_constraintRight_toBottomOf?—?期望视图的右边对齐另一个视图的底边。
+    layout_constraintRight_toLeftOf?—?期望视图的右边对齐另一个视图的左边。
+    layout_constraintRight_toRightOf?—?期望视图的右边对齐另一个视图的右边。
+    如果需要，属性支持开始和结尾也可用在左和右对齐。

@@ -1,0 +1,9 @@
+1.Drawable¡ª>Bitmap
+
+Bitmap icon = ( (BitmapDrawable)drawable).getBitmap();
+
+2.Bitmap---->Drawable
+
+Drawable drawable =new BitmapDrawable(bmp);
+
+

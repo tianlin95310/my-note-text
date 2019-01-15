@@ -1,0 +1,27 @@
+1,对于相对布局，只有在父布局的长宽已经确定时，才可以使用android:layout_alignParentXXXX="true"属性
+	否则他会去与根布局对其，而不与当前的父布局对其
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.youku.MainActivity" >
+
+    <RelativeLayout
+        android:id="@+id/level2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/level2" >
+         <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/icon_menu" />
+    </RelativeLayout>
+
+</RelativeLayout>
+因为ImageButton不知道level2的边界在哪里，所以就以根据的为准
+但是layout_alignParentLeft，TOP确实可以用的，只是Right，Bottom会这样。若将level2的长宽指定的话，就不会有这种情况了

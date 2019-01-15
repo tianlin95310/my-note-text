@@ -1,0 +1,28 @@
+1,dayofweek()
+select 
+dayofweek(now()) as day;
+
+2,dayofmonth()
+select 
+dayofmonth(now()) as day
+
+3,dayofyear()
+select 
+dayofyear(now()) as day
+
+4,weekday()//返回周几
+
+5，year()//返回年
+
+6,mouth()//返回月
+
+7，quarter()//返回季度
+
+8，hour()//返回小时
+
+9，second（）//返回秒
+
+10，minute（）//返回分
+
+
+

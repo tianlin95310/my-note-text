@@ -1,0 +1,15 @@
+常见的MotionEvent 
+	public static final int ACTION_DOWN             = 0;单点触摸动作
+   	public static final int ACTION_UP               = 1;单点触摸离开动作	
+	public static final int ACTION_MOVE             = 2;触摸点移动动作
+   	public static final int ACTION_CANCEL           = 3;触摸动作取消,不知道怎么触发
+   	public static final int ACTION_OUTSIDE          = 4;触摸动作超出边界
+   	public static final int ACTION_POINTER_DOWN     = 5;多点触摸动作
+   	public static final int ACTION_POINTER_UP       = 6;多点离开动作
+	MotionEvent.ACTION_MASK				多点触摸需要用到
+  
+    以下是一些非touch事件
+	public static final int ACTION_HOVER_MOVE       = 7;
+	public static final int ACTION_SCROLL           = 8;
+	public static final int ACTION_HOVER_ENTER      = 9;
+	public static final int ACTION_HOVER_EXIT       = 10;

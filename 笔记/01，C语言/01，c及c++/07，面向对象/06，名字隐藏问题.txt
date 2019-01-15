@@ -1,0 +1,30 @@
+#include<iostream>
+#include<string>
+using namespace std;
+class d1
+{
+public:
+	d1(){cin>>d;cout<<"d1 "<<d<<endl;}
+	void put(int n){cout<<"something\n";}
+protected:
+	int d;	//int d=0是错误的，类是抽象类型，不能直接初始化成员
+
+};
+class d2:public d1
+{
+public:
+	d2(){cin>>d;cout<<"d2 ";}	//名字隐藏
+	void put(){cout<<d<<endl;}
+	void put(string s){cout<<"nohting\n";}
+protected:
+	int d;				//d覆盖了基类的d；
+
+};
+void main()
+{
+	d2 s;		//s生成时先调用d1（），输入的d是d1的d，想用到d1的d，用d=d1::d
+	s.put();
+	s.put("doubi");
+	s.put(5);eroor：//基类的put被隐藏，如果在基类的put前加virtual，就构成了多态条件之一
+	s.d1::put(5);
+}

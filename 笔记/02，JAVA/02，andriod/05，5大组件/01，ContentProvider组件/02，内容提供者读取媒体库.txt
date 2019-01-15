@@ -1,0 +1,13 @@
+//  ”∆µ
+		// Cursor rsVideo = Video.query(getContentResolver(),
+		// Video.Media.EXTERNAL_CONTENT_URI, new String[]{Video.Media.DATA});
+
+		// ¬º“Ù
+		// Cursor rsAudioPlaylists =
+		// getContentResolver().query(Audio.Playlists.EXTERNAL_CONTENT_URI, new
+		// String[]{Audio.Playlists.DATA}, null, null, null);
+
+		// “Ù¿÷
+		// Cursor rsAudioMedia =
+		// getContentResolver().query(Audio.Media.EXTERNAL_CONTENT_URI, new
+		// String[]{Audio.Media.DATA}, null, null, null);

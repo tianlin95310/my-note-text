@@ -1,0 +1,118 @@
+package com.my1;
+
+import java.util.ArrayList;
+
+abstract class Component
+{
+	public abstract void doSomething();
+}
+
+class Composite extends Component
+{
+	private String name;
+	
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	ArrayList<Component> list;
+	public Composite()
+	{
+		list = new ArrayList<Component>();
+	}
+	
+	public void add(Component c)
+	{
+		list.add(c);
+	}
+	
+	public void remove(Component c)
+	{
+		list.remove(c);
+	}
+	public ArrayList<Component> getList()
+	{
+		return list;
+	}
+
+	@Override
+	public void doSomething()
+	{
+		System.out.println("我是树枝" + name);
+	}
+	
+}
+
+class Leaf extends Component
+{
+	private String name;
+	
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	@Override
+	public void doSomething()
+	{
+		System.out.println("我是" + name);
+	}
+}
+public class Test1
+{
+	
+	public static void print(Composite c)
+	{
+		for(Component component : c.getList())
+		{
+			// 如果是叶子，就输出
+			if(component instanceof Leaf)
+				component.doSomething();
+			// 如果不是叶子，那就是Composite，因为不支持自动向下转型，所以要强转，因为它本身就是这种类型的
+			// 强转没有问题，根据的是root的添加方法
+			else
+				// 也是这里破坏以依赖倒置原则，Composite本应依赖Component
+				print((Composite)component);
+		}
+	}
+	
+	public static void main(String[] s)
+	{
+		Composite root = new Composite();
+		root.setName("树根");
+		root.doSomething();
+		
+		Leaf leaf1 = new Leaf();
+		leaf1.setName("树叶1");
+		Leaf leaf2 = new Leaf();
+		leaf2.setName("树叶2");
+		
+		// 为树枝1添加两个叶子
+		Composite branch1 = new Composite();
+		branch1.setName("树枝1");
+		Leaf leaf3 = new Leaf();
+		leaf3.setName("树叶3");
+		Leaf leaf4 = new Leaf();
+		leaf4.setName("树叶4");
+		branch1.add(leaf3);
+		branch1.add(leaf4);
+		
+		// 为树根添加，2个叶子和1个树枝
+		root.add(leaf1);
+		root.add(leaf2);
+		root.add(branch1);
+		
+		print(root);
+	}
+}

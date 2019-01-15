@@ -1,0 +1,76 @@
+
+public class MainActivity extends Activity implements OnClickListener
+{
+	private Button bt1,bt2,bt3,bt4;
+	public static TextView tv;
+	
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		tv = (TextView) this.findViewById(R.id.tv);
+		
+		bt1 = (Button) this.findViewById(R.id.button1);
+		
+		bt2 = (Button) this.findViewById(R.id.button2);
+		
+		bt3 = (Button) this.findViewById(R.id.button3);
+		
+		bt4 = (Button) this.findViewById(R.id.button4);
+		
+		// 1,用内部类实现OnClickListener接口
+		bt1.setOnClickListener(new MyListener());
+		
+		// 2,用接口式匿名内部类实现OnClickListener接口
+		bt2.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				if(v.getId() == R.id.button2)
+				{
+					tv.setText("i'm button2");
+				}
+			}
+		});
+		
+		// 3,用MainActivity实现OnClickListener
+		bt3.setOnClickListener(this);
+		
+		// 4，还可以用XML来指定
+		
+	}
+	
+	// MainActivity实现
+	public void onClick(View v)
+	{
+		if(v.getId() == R.id.button3)
+		{
+			tv.setText("i'm button3");
+		}
+	}
+	
+	// XML指定
+	public void bt4Click(View v)
+	{
+		if(v.getId() == R.id.button4)
+		{
+			tv.setText("i'm button4");
+		}
+	}
+
+}
+
+// 自定义内部类实现,因为我写在内的外部，所以成员是public static，当然也可以写成内部类，
+//可以直接访问外部类的成员
+class MyListener implements OnClickListener
+{
+	public void onClick(View arg0)
+	{
+		if(arg0.getId() == R.id.button1)
+		{
+			MainActivity.tv.setText("i'm button1");
+		}
+	}
+	
+}

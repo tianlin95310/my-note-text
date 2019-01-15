@@ -1,0 +1,49 @@
+#include <stdio.h>
+
+int add(int x, int y)	//0x0040????
+{
+	return x + y;
+}
+
+int sub(int x, int y)	//0x0040????
+{
+	return x - y;
+}
+
+int mul(int x, int y)	//0x0040????
+{
+	return x * y;
+}
+
+int div(int x, int y)	//0x0040????
+{
+	if (y == 0) y = 1;
+	return x / y;
+}
+
+short sub2(short x, short y)
+{
+	return x - y;
+}
+
+//typedef int * PINT1;
+//#define PINT int *
+typedef int (*PFUN)(int, int);
+
+void main()		//0x0040????
+{
+//	PINT px, py;	//px: int *		py: int
+//	PINT1 pa, pb;	//pa: int *		pb: int *
+
+	int (*f1)(int x, int y) = add;
+	f1(1, 2);
+
+	int (*f2)(int, int) = (int (*)(int, int))sub2;
+	int aa = f2(1, 2);
+	printf("%d\n", aa);
+
+	//int (*f3)(int, int) = div;
+	PFUN f3 = div;
+
+	//(*((void (*)())0))();
+}

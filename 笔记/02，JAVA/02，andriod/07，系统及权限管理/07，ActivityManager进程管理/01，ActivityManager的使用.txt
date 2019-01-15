@@ -1,0 +1,19 @@
+// 1,获取当前正在前台运行的应用
+		ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningTaskInfo> list = am.getRunningTasks(1);
+		String current = list.get(0).topActivity.getPackageName();
+
+
+// 2,获取运行内存
+public void getRunMemory()
+	{
+		am.getMemoryInfo(info);
+		
+		Log.i("my","当系统剩余内存低于" + (info.totalMem >> 10 >> 10) + "MB");
+		// 可用Ram
+		Log.i("my","系统剩余内存:" + (info.availMem >> 10 >> 10) + "MB");   
+		 
+	    Log.i("my","系统是否处于低内存运行：" + info.lowMemory);
+	 
+	    Log.i("my","当系统剩余内存低于" + (info.threshold >> 10 >> 10) + "时就看成低内存运行");
+	}

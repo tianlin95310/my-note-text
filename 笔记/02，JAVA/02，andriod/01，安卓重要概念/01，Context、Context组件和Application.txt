@@ -1,0 +1,86 @@
+1，功能介绍：
+1，启动组件
+2，操作视图对象
+3，获取应用全局环境
+
+2，Context子类：
+    1),Activity		前台界面,生命周期相比较最短，其上的视图更短
+    2),Service		后台服务，生命周期次短
+    3),Application	整个应用的对象，该对象最先创建，全局数据共享的容器，生命周期最长，
+			应用退出该对象仍在，除非该应用的进程被kill
+
+3，两种Context对象的使用
+Activity.this：	dialog，视图相关的，比Activity生命周期短的，例如activity上的View
+getApplicationContext：如果生命周期长于Activity，就需要用它
+
+
+// 示例代码
+// 清单文件里的application即是应用的application对象标记，他的name属性可以指定
+// application的类名,application对象最先创建
+public class MyApplication extends Application
+{
+	private String info;
+
+	public MyApplication()
+	{
+		super();
+		
+		Log.d("my", "MyApplication");
+	}
+	
+	@Override
+	public void onCreate()
+	{
+		Log.d("my", "MyApplication onCreate");
+		super.onCreate();
+	}
+
+	public String getInfo()
+	{
+		return info;
+	}
+
+	public void setInfo(String info)
+	{
+		this.info = info;
+	}
+}
+// MainActivity
+public class MainActivity extends ActionBarActivity
+{
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		Log.d("my", "MainActivity onCreate");
+		
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		// 测试发现，以下的两个对象，指的都是当前应用的MyApplication对象
+		Application app = getApplication();
+		Context context = getApplicationContext();
+		Log.d("my", "app == context is " + (app == context));
+		
+		// 因为MyApplication是Application的子类，Application是Context的子类，所以向下转型安全
+		MyApplication myApp = (MyApplication) context;
+		myApp.setInfo("测试application");
+		
+		startActivity(new Intent(app, Activity1.class));
+	}
+
+}
+
+// activity1
+public class Activity1 extends Activity
+{
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+		MyApplication myApp = (MyApplication) getApplicationContext();
+		
+		// 取出application保存的内容
+		Log.i("my", myApp.getInfo());
+	}
+}

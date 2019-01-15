@@ -1,0 +1,35 @@
+不管是Java，还是C语言，
+   
+1，局部变量会覆盖全局变量。
+
+2，构造函数不会被继承，其余的都会被继承，private继承时子类不可见，但仍然占有内存，protected两者有不同
+
+3，多态相同，Java是基类引用指向派生类。C语言是基类指针指向派生类
+
+4，Java与c语言都有引用返回，函数的返回值可以直接做操作，java里只能是引用类型的变量，c语言的引用
+返回时用&别名，或者指针
+public class Test235_refre_return
+{
+
+	private int b;
+	public static int fun1(){
+		int a = 0;
+		return a;
+	}
+	
+	public static Test235_refre_return fun2()
+	{
+		return new Test235_refre_return();
+	}
+	public static void main(String[] args)
+	{
+		// 引用返回，并且返回的引用本身是不能做修改的，我们只能修改引用所指向的内容
+		System.out.println(fun2().b = 5);	
+		// 因为这个修改直接修改是没有任何意义的，因为我们无法获取新的对象的引用
+		System.out.println(fun2() = new Test235_refre_return());	
+		
+		System.out.println((fun1() = 7));	// 普通类型不能重新赋值
+	}
+
+}
+

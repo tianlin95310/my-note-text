@@ -1,0 +1,89 @@
+// 文件布局
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.example.customattrs"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.customattrs.MainActivity" 
+    >
+    <!-- ADT中需要注意的是自定义的命名空间后面需要加上自定义控件所在的包名 -->
+    <com.example.customattrs.MyView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:age="23"
+        app:name="tianlin"
+        app:head_icon="@drawable/ic_launcher"
+        />
+
+</RelativeLayout>
+
+// 属性定义
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyView">
+        <attr name="age" format="integer"/>
+        <attr name="name" format="string"/>
+        <attr name="head_icon" format="reference|color"/>
+    </declare-styleable> 
+</resources>
+
+// 自定义类
+package com.example.customattrs;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+
+public class MyView extends View {
+
+	Bitmap icon;
+	public MyView(Context context, AttributeSet attrs)
+	{
+		super(context, attrs);
+		
+		// 定义了再values里面attrs后，系统会自动生成MyView数组，他是我们自定义的属性集合
+		TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MyView);
+		
+		// 对自定义的属性集合进行遍历
+		for(int index = 0; index < ta.getIndexCount(); index++)
+		{
+			switch(index)
+			{
+			case R.styleable.MyView_age:
+				int age = ta.getInt(index, 0);
+				Log.d("my", "age " + age);
+				break;
+				
+			case R.styleable.MyView_name:
+				String name = ta.getString(index);
+				
+				Log.d("my", "name " + name);
+				break;
+				
+			case R.styleable.MyView_head_icon:
+				// 将Drawable转化为Bitmap
+				Drawable drawable = ta.getDrawable(index);
+				icon = ( (BitmapDrawable)drawable).getBitmap();
+				break;
+			}
+		}
+		// 释放
+		ta.recycle();
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		Paint paint = new Paint();
+		
+		canvas.drawBitmap(icon, 0, 0, paint);
+		super.onDraw(canvas);
+	}
+
+}

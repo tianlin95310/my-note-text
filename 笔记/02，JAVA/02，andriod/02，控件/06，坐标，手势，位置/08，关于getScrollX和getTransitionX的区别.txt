@@ -1,0 +1,4 @@
+getScrollX		获取控件内容的偏移量，内容偏移
+
+getTransitionX	获取控件的属性动画偏移量，整体偏移
+setTranslationY	为正数时表示向下移动，整体偏移

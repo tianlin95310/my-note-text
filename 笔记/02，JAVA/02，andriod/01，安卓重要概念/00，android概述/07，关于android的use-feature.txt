@@ -1,0 +1,31 @@
+Android Market会根据uses-feature过滤所有你设备不支持的应用。通过使用<uses-feature>元素，一个应用可以指定它所支持的硬件型号，举个例子，有些设备不支持多点触控或者OpenGL ES 2.0，那么过滤器就会过滤需要这些硬件支持（多点触控或者OpenGL ES 2.0）的应用，用户就不会在android market上看到这些应用。
+
+一个<uses-feature>元素包含以下属性：
+<uses-feature android:name="string" android:required=["true" | "false"] android:glEsVersion="integer" />
+
+name属性指定了应用的特征，required属性告诉过滤器我们是否在任何情况下必须要需要这个设备的支持，或者仅仅只是“nice to have”。
+
+最后一个属性是可选择的，只是用在需要指定一个OpenGL ES版本的时候。
+
+接下来的几个硬件特征对于游戏开发是非常有用的。
+
+android.hardware.touchscreen.multitouch：它要求设备有一个多点触控的屏幕以支持基本的多点触控交互，就如收缩（放大）图像比例。这些类型的屏幕跟踪多个手指的能力都有所不同，所以你必须确保这个屏幕的性能是能够支持的游戏进行。
+
+android.hardware.touchscreen.multitouch.distinct: 这是一个多点触控的兄弟属性，它要求提设备供完整的多点触控功能。
+
+我们将会在接下来的章节片段中看到多点触控。现在只要记住在当你的游戏需要一个支持多点触控的屏幕的时候，我们可以使用 <uses-feature>元素来剔除所有不支持多点触控的设备，就像下面这样：
+
+<uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="true"/>
+
+另外一个在游戏开发中非常有用的是去指定需要的OpenGL ES版本。在本书中，我们只关心OpenGL ES1.0和OpenGL ES1.1就可以了。由于这2者基本上没有什么不同，所以我们也不用去指定<uses-feature>了。然而，有些设备支持更强大的OpenGL ES2.0
+
+如果你的游戏需要更强大的图形处理能力，我们可以指定OpenGL ES 2.0，然后我们的游戏只会被支持OpenGL ES 2.0的设备所看见。注意，在本书中不会使用OPenGL ES 2.0, 我们只是过滤那些不能提供足够图形处理能力的设备。下面显示了我们怎么去实现它。
+
+<uses-feature android:glEsVersion="0x00020000" required="true"/>
+
+它将使我们的游戏只被支持OPenGL ES 2.0 和 假装有相当的图形处理能力的设备所看到。
+
+NOTE: 有些设备所反映的性能特征是不正确的，所以开发你的应用的时候尽量去支持各种不同的设备。要谨慎使用<uses-feature>。
+
+
+现在就以硬件而言，你的应用已经直接地减少了许多安装量，这将直接影响到你应用的销量。所以当你定义<uses-feature>之前请慎重考虑。举个例子，如果你的游戏需要有多点触控的支持，但是我们也可以思考另外一种方法，是游戏能够在支持单点触控的设备上运行良好，我们就可以写2个路径的代码，分别在两种设备上运行。

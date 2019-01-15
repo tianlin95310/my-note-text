@@ -1,0 +1,88 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	// 呈现图片
+	private ImageView iv2;
+	// 画板
+	private Canvas canvas;
+	// 画纸
+	private Bitmap draw;
+	// iv2的4边坐标
+	private int left,top,right,bottom;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		iv2 = (ImageView) findViewById(R.id.iv2);
+
+		// 设置图片为填充
+//		iv2.setScaleType(ScaleType.FIT_XY);
+		
+		// 得到位图对象，该位图是不可变的
+		Bitmap bmp2 = BitmapFactory.decodeResource(getResources(), R.raw.p4);
+
+		// 产生一个可变位图
+		draw = Bitmap.createBitmap(bmp2.getWidth(), bmp2.getHeight(),
+				Config.ARGB_8888);
+
+		// 将可变位图放到纸上
+		canvas = new Canvas(draw);
+
+		// 将傍bmp2画到可变位图draw上
+		canvas.drawBitmap(bmp2, new Matrix(), new Paint());
+
+		// 显示可变位图
+		iv2.setImageBitmap(draw);
+
+		iv2.setOnTouchListener(new OnTouchListener()
+		{
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				// 得到iv2的4边
+				left = iv2.getLeft();
+				top = iv2.getTop();
+				right = iv2.getRight();
+				bottom = iv2.getBottom();
+				System.out.println("left=" + left + ",top=" + top + ",right=" + right + ",bottom=" + bottom);
+				
+				switch (event.getAction())
+				{
+				case MotionEvent.ACTION_DOWN:
+					float X = event.getX();
+					float Y = event.getX();
+					System.out.println("X=" + X + ",Y=" + Y);
+					
+					break;
+				case MotionEvent.ACTION_MOVE:
+					int x = (int) event.getX();
+					int y = (int) event.getY();
+					
+					for(int i = x - 15; i <= x + 15;i++)
+					{
+						if(i <= left || i > right)
+							continue;
+						for(int j = y - 15; j <= y + 15; j++)
+						{
+							
+							if(i <= top || i > bottom)
+								continue;
+							
+							// 圆的方程表示在圆内，比较运算符两边可以有表达式，赋值号不能有表达式，不要弄混了
+							if( ((i - x) * (i - x)) <= 225 - ( (j - y) * (j - y)))
+								// 将位图的指定像素设置为透明
+								draw.setPixel(i, j, Color.TRANSPARENT);
+						}
+					}
+					// 显示位图
+					iv2.setImageBitmap(draw);
+					break;
+				}
+				return true;
+			}
+		});
+	}
+	
+
+}

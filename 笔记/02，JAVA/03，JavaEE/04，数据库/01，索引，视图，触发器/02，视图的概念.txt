@@ -1,0 +1,16 @@
+1,也能提高查询的效率
+    概念，从一个或几个基本表根据需要做成的虚表
+    它只存贮定义，没有存贮数据，使用时才从表中取数据
+
+2，语法
+create view myview 
+as
+select tstudent.sId,tcourse.cId
+from tstudent,tcourse
+where tstudent.cId=tcourse.cId;
+
+3，不可更新的视图
+	如图02
+
+4,删除视图
+drop view 视图名

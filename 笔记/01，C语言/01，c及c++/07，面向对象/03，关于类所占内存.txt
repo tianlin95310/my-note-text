@@ -1,0 +1,15 @@
+1，类的成员函数不占有类的内存，函数名为函数的入口地址，存在代码区内。
+
+class a
+{
+public:
+	int b;
+	char c;
+	void fun1(){cout<<sizeof(b);}
+	void fun2(){cout<<sizeof(c);}
+};
+void main()
+{
+	cout<<sizeof(a)<<endl;	//结果为8，函数不占用内存
+				//参数排列规则与struct相同
+}

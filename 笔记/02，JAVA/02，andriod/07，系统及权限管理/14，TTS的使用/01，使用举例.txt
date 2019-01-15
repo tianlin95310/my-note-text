@@ -1,0 +1,66 @@
+package com.example.tts;
+
+import java.util.Locale;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends Activity
+{
+
+	TextToSpeech tts;
+	EditText et;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		et = (EditText) findViewById(R.id.et);
+		
+		tts = new TextToSpeech(this, new OnInitListener()
+		{
+			@Override
+			public void onInit(int status)
+			{
+				if(status == TextToSpeech.SUCCESS)
+				{
+					// 貌似我的手机不支持中文
+					int result = tts.setLanguage(Locale.US);
+					
+					// 语言支持，某种语言支持
+					if(result != TextToSpeech.LANG_AVAILABLE && result != TextToSpeech.LANG_COUNTRY_AVAILABLE)
+						Toast.makeText(MainActivity.this, "语言不支持", 0).show();
+				}
+				
+			}
+		});
+		
+		// 在onCreate调用该方法是无效的
+		tts.speak("test", TextToSpeech.QUEUE_ADD, null);
+	}
+	
+	int f = 10;
+	public void read(View v)
+	{
+		// 1.0为女声，值越小越男性化
+		tts.setPitch((--f) / 10.0f);
+		
+		// 可以朗读内存里面的内容
+		String text = et.getText().toString().trim();
+		tts.speak(text, TextToSpeech.QUEUE_ADD, null);
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		if(tts != null)
+			tts.shutdown();
+		super.onDestroy();
+	}
+}

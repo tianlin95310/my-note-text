@@ -1,0 +1,39 @@
+public class RatingBarSampleActivity extends Activity {
+ 
+	RatingBar ratingbar;
+	
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        
+        ratingbar = (RatingBar) findViewById(R.id.ratingbar);
+        
+        ratingbar.setOnRatingBarChangeListener(new OnRatingBarChangeListener()
+		{
+			
+			@Override
+			public void onRatingChanged(RatingBar arg0, float arg1, boolean arg2)
+			{
+				// arg1一个星一分，半个星半分，getProgress，一个星两个单位，因为每步的大小为0.5
+				// 2个星等于2.0分的arg1，4个getProgress。
+				if(arg2 == true)
+				{
+					Toast.makeText(RatingBarSampleActivity.this, arg1 + "," + arg0.getProgress(), 0).show();
+				}
+				
+			}
+		});
+    }
+}
+
+// 布局文件
+
+   <RatingBar 
+       android:id="@+id/ratingbar"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:numStars="5"
+       android:max="255"
+// 每一个process的分数
+       android:stepSize="0.5"/>

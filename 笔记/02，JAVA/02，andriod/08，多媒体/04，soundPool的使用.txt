@@ -1,0 +1,25 @@
+public class MainActivity extends ActionBarActivity
+{
+	// 音效池对象
+	private SoundPool pool; 
+	// 音频对象ID
+	private int FIRE = -1;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		// 第三个参数依照默认的
+		pool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+		// 第三个参数采用默认的，加载到音效池
+		FIRE = pool.load(this, R.raw.fire, 1);
+	}
+	
+	public void fire(View v)
+	{
+		// 播放音频
+		pool.play(FIRE, 1.0f, 1.0f, 1, 0, 1.0f);
+	}
+
+}

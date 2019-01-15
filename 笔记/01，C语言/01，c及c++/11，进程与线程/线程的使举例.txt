@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <windows.h>
+#define NUM_THREAD 10
+unsigned WINAPI threadInc(void * arg);
+unsigned WINAPI threadDes(void * arg);
+long int num=0;
+
+int main(int argc, char *argv[])
+{
+	HANDLE tHandles[NUM_THREAD]; 
+	int i;
+	printf("sizeof long int: %d \n", sizeof(long int));
+	for (i=0; i<NUM_THREAD; i++) 
+	{
+		if (i%2) tHandles[i]=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)threadInc,NULL,0, NULL);//接收线程句柄
+		else
+			tHandles[i]=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)threadDes,NULL,0, NULL);
+	}
+	printf("result: %d \n", num);
+	return 0;
+}
+unsigned WINAPI threadInc(void * arg)
+{
+	int i;
+	for (i=0; i<10; i++)  num +=1;
+	return 0;
+}
+unsigned WINAPI threadDes(void * arg)
+{
+	int i;
+	for (i=0; i<10; i++)  num -=1;
+	return 0;
+}

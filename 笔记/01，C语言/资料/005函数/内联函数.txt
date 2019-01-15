@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+int ff(int m)
+{
+	return m + m;
+}
+
+void main()
+{
+	//inline函数
+//	int a = ff(1);
+//	int b = ff(2);
+//	int c = ff(3);
+	int a = (1 + 1);
+	int b = (2 + 2);
+	int c = (3 + 3);
+
+
+	//1. 可将代码很少的函数定义为inline函数
+	//2. 不要将代码很多的函数定义为inline函数
+	
+	//3. 关键字inline 必须与函数定义体放在一起才能使函数成为内联
+	//仅将inline 放在函数声明前面不起任何作用
+	
+	//4. 定义在类声明之中的成员函数将自动地成为内联函数
+
+	//5. 现在的编译器会自动决定是否对函数inline, 无论函数前是否加了inline
+}

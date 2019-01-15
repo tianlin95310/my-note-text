@@ -1,0 +1,26 @@
+不必产生对象
+
+1,字段
+	err	标准错误输出流	printStream
+	in	标准输入流	inputStream
+	out	标准输出	printStream
+
+2，时间函数
+System.out.println(System.currentTimeMillis());//毫秒
+System.out.println(System.nanoTime());	//最准确的时间
+
+3，得到系统环境变量
+System.out.println(System.getenv("path"));
+
+4，获取系统属性，可查阅API
+System.out.println(System.getProperties());
+System.getProperties().list(System.out)
+输出到标准输出
+
+5，重新分配流
+SetIn()，中心分配输入流
+
+6，gc(),通知垃圾回收器回收垃圾对象
+
+7，获取当前的根目录
+System.out.println(System.getProperty("user.dir"));

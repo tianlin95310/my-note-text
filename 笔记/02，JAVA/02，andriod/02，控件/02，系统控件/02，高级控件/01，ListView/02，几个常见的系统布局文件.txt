@@ -1,0 +1,12 @@
+// ArrayAdapter对应的布局文件只能有一个id
+		// 1，设置列表项为CheckTextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, strs);
+		// 2，设置列表项为普通的TextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, strs);
+		// 3，设置带有打钩标记的CheckTextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, strs);
+		// 4，设个跟simple_spinner_item差不多
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, strs);
+		// 5，简单的一个TextView
+//		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strs);
+		

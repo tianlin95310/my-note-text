@@ -1,0 +1,37 @@
+1，两种虚拟机
+	1，java虚拟机JVM，处理过程	.java -> .class -> .jar,解包时，文件太多影响速度
+	2，Android虚拟机Dalvik，处理过程.java -> .class -> .dex -> .apk,解包时，只有一个文件
+
+	3，基于的框架不同
+	java虚拟机基于栈，Android虚拟机Dalvik基于寄存器。
+
+2，学科名词
+
+4，重要工具
+adb.exe ：android debug bridge:安卓调试桥，完成电脑系统与虚拟系统的通信，用socket实现的
+	需要配置环境变量
+  1，adb常见命令
+	1，devices,列出所有的设备（虚拟机）
+	2，kill -service，关闭服务
+	3，start -service，启动服务
+	4，pull 手机目录->电脑目录
+	5，push 电脑目录->手机目录（mnt/sdcard/）
+
+
+6,VGA : Video Graphics Array	视频图形阵列，IBM公司推出的，具有高速率，高分辨率，颜色丰富
+	分辨率为480 * 640
+
+7，安卓虚拟设备参数
+    1，分辨率大小
+	QVGA	240 * 320	1 / 4
+	HVGA	480 * 320	1 / 2
+	WVGA	480 * 800	，更宽
+    2，VM Heap	堆区内存,16M
+    3，Internal Storage	手机自带磁盘内存，200M
+    4，SD Card	内存卡
+
+8，aapt
+看全称，就可知道AAPT是Android资源打包工具。讲这个之前，是有必要简单说下Android是如何构建一个APK的。
+
+10，.android是模拟器的临时文件，且具有互斥锁的保护机制，有时候需要
+自己删除锁文件夹

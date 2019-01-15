@@ -1,0 +1,19 @@
+1,avg()
+select avg(age)
+from person
+
+2,count()
+select count(name)
+from person;
+
+3,min(),max()
+select min(age) as 最小值, max(age) as 最大值
+from person;
+
+4,sum()
+select sum(age)
+from person;
+
+
+
+

@@ -1,0 +1,18 @@
+1，只能由c风格字符串赋值给string,CString类型，不能反过来。
+
+2，string能实现字符串的+号连接操作。
+
+3，其本质是char* str;
+
+4，对[]进行了重载，赋予了数组属性
+
+5，c_str()转换函数
+strcpy (cstr, str.c_str());	
+			//将string转换为c风格字符串
+			//CString有operate LPCSTR重载，功能类似
+
+
+6,length()函数得到的是其字节数
+	string str = "田林asd";
+	cout<<str.length()<<endl;
+

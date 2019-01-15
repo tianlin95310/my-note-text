@@ -1,0 +1,90 @@
+取某个值作为关键值，以该值为标准将待排数组分为两部分
+
+具体做法，设i为最小边界，关键值也为最左边界的值，j为最大边界
+先从j开始向左寻找，发现小于key值就与i对应的key值进行交换，若没有就不用交换
+再从i开始向右寻找，发现比key大的，就与j对应的key进行交换，第一次交换后j对应的值就是key
+
+一直继续，i,j中必有一个对应的是key值，最后i.j相等，key值把数组分为两个部分。
+
+#include <iostream>
+using namespace std;
+#define swap(x, y) {(x) = (x) + (y); (y) = (x) - (y); (x) = (x) - (y);}
+/*
+x = x + y
+y = x + y - y = x;
+x = x + y - x; = y;
+*/
+int getPosition(int* p ,int min,int max)
+{
+	int i = min;
+	int j = max;
+	int key = p[min];
+
+	while(i < j)	//当i >= j时，退出循环。
+	{
+		while(p[j] >= key)
+		{
+			if(i >= j)	//如果i,j相同，排序结束。
+				break;
+				j--;
+		}
+		if(i < j)	//若i >= j，说明不存在比key小的，就不用交换
+		{
+			swap(p[i],p[j]);
+		}
+
+		while(p[i] <= key)
+		{
+			if(i >= j)
+				break;
+			i++;
+		}
+
+		if(i < j)	//若i >= j，说明不存在比key大的，就不用交换
+			swap(p[i],p[j]);
+	}
+	return i;	//最后i,j会相同，key把值分为两个部分
+}
+void sort(int* p,int min,int max)
+{
+	if(min > max)
+	{
+		return;
+	}
+	else if(min + 1 == max)
+	{
+		if(p[min] > p[max])
+			swap(p[min],p[max]);
+		return;
+	}
+	else
+	{
+		int pos = getPosition(p,min,max);	//对左右两边继续递归
+		sort(p,min,pos - 1);
+		sort(p,pos + 1,max);
+	}	
+}
+int main()
+{
+	int* a = new int[9];
+	a[0] = 9;
+	a[1] = 8;
+	a[2] = 7;
+	a[3] = 6;
+	a[4] = 5;
+	a[5] = 4;
+	a[6] = 3;
+	a[7] = 2;
+	a[8] = 1;
+	
+	sort(a,0,9 -1);
+	
+	for(int i = 0; i < 9 ; i++)
+	{
+		cout<<a[i]<<" ";
+	}
+	cout<<endl;
+	//(n - 1)的求和
+	delete a;
+	return 0;
+}

@@ -1,0 +1,97 @@
+package com.my;
+
+import java.io.File;
+import java.io.IOException;
+
+public class Test
+{
+
+	public static void main(String[] args) throws IOException
+	{
+		
+		System.out.println(System.getProperty("user.dir"));
+		// 当前的工作目录为“F:\Eclipse\010 关于java的文件路径”
+		
+		System.out.println("-----------------file1-------------------");
+
+		// /是Linux分隔符， \\是windows分隔符
+		// .表示当前路径
+//		File file1 = new File(".\\");
+		// ..表示上一级路径
+//		File file1 = new File("..\\");
+		// .表示当前路径
+//		File file1 = new File("./");
+		// ..表示上一级路径
+//		File file1 = new File("../");
+		
+		File file1 = new File("../1.txt");
+		// 表示当前文件夹的父目录下的1.txt文件，在带有跨文件夹修饰符时，下面
+		// 3个函数的功能是：
+		if(file1.exists())
+		{
+			System.out.println(file1.getPath());
+			// 1，得到与构造对象时用的字符串一样的路径，最终采用的是windows分隔符
+			
+			System.out.println(file1.getAbsolutePath());
+			// 2， 得到完整的路径，并且如果构造时含有修饰符，如".".".."，他也会记录下来，会显得很长
+			
+			System.out.println(file1.getCanonicalPath());
+			// 3，得到最终的绝对文件路径，无，".",".."等修饰，采用这个一般都不会错
+		}
+		
+		// 测试2 正常情况Linux
+		System.out.println("-----------------file2-------------------");
+		File file2 = new File("C:/Users/Administrator/Desktop/1.txt");
+		if(file2.exists())
+		{
+			System.out.println(file2.getPath());
+			System.out.println(file2.getAbsolutePath());
+			System.out.println(file2.getCanonicalPath());
+		}
+		
+		// 带有当前文件夹修饰
+		System.out.println("-----------------file3-------------------");
+		File file3 = new File("C:/Users/Administrator.//Desktop.//1.txt");
+		
+		if(file3.exists())
+		{
+			System.out.println(file3.getPath());
+			
+			System.out.println(file3.getAbsolutePath());
+			
+			System.out.println(file3.getCanonicalPath());
+		}
+		
+		// 测试3当前文件夹修饰windows
+		System.out.println("-----------------file4-------------------");
+		File file4 = new File("C:\\Users\\Administrator.\\Desktop.\\1.txt");
+		if(file4.exists())
+		{
+			System.out.println(file4.getPath());
+			
+			System.out.println(file4.getAbsolutePath());
+			
+			System.out.println(file4.getCanonicalPath());
+		}
+	}
+
+}
+
+// 运行结果
+F:\Eclipse\010 关于java的文件路径
+-----------------file1-------------------
+..\1.txt
+F:\Eclipse\010 关于java的文件路径\..\1.txt
+F:\Eclipse\1.txt
+-----------------file2-------------------
+C:\Users\Administrator\Desktop\1.txt
+C:\Users\Administrator\Desktop\1.txt
+C:\Users\Administrator\Desktop\1.txt
+-----------------file3-------------------
+C:\Users\Administrator.\Desktop.\1.txt
+C:\Users\Administrator.\Desktop.\1.txt
+C:\Users\Administrator\Desktop\1.txt
+-----------------file4-------------------
+C:\Users\Administrator.\Desktop.\1.txt
+C:\Users\Administrator.\Desktop.\1.txt
+C:\Users\Administrator\Desktop\1.txt

@@ -1,0 +1,71 @@
+//王道集训营开源软件
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+
+typedef struct tagNODE
+{
+	int iData;
+	tagNODE *pNext;
+}NODE, *PNODE;
+
+//反转
+void Reverse(PNODE pNode)
+{
+	PNODE p = pNode->pNext;
+	pNode->pNext = NULL;
+	while (p)
+	{
+		PNODE pTemp = p->pNext;
+
+		p->pNext = pNode->pNext;
+		pNode->pNext = p;
+
+		p = pTemp;
+	}
+}
+
+//显示
+void ShowNode(PNODE pNode)
+{
+	while (pNode)
+	{
+		printf("%d  ", pNode->iData);
+		pNode = pNode->pNext;
+	}
+	printf("\r\n");
+}
+
+int main()
+{
+	//1. 创建空数据的头节点
+	PNODE pHead = (PNODE)malloc(sizeof(NODE));
+	memset(pHead, 0, sizeof(NODE));
+	PNODE pNew;
+
+	//2. 输入5条数据
+	int nCount = 5;
+	while (nCount--)
+	{
+		int iData;
+		printf("请输入一个数：");
+		scanf("%d", &iData);
+
+		pNew = (PNODE)malloc(sizeof(NODE));
+		pNew->iData = iData;
+
+		pNew->pNext = pHead->pNext;
+		pHead->pNext = pNew;
+	}
+
+	//3. 显示反转前的链表
+	ShowNode(pHead);
+
+	//4. 反转
+	Reverse(pHead);
+
+	//5. 显示反转后的链表
+	ShowNode(pHead);
+
+	return 0;
+}

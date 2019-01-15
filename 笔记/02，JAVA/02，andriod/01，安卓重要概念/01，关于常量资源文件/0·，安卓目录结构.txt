@@ -1,0 +1,41 @@
+7，AndroidManifest.xml	应用程序的清单文件，配置信息，如图标，标题文字等等，如下
+
+	1，应用程序包名，package，
+		1，直接关联的是gen目录下的包名，并不是src下的包名，他是应用程序的标志
+		2，如果两个程序的该名相同，那么会覆盖掉另一个程序，复制一个工程时需要改该文件
+		3，默认情况下，他和src下的包名是一样的，所以默认情况下不需要导包，但gen下的包名一旦改了
+			就需要导包。
+
+	2，版本名，versioncode，versionname
+	3，SDK版本信息，minSDKVersion，TargetSDKVersion
+	4，应用程序信息
+		1，是否备份，allowBackup
+		2，图标，icon
+		3，标题，label，应用程序的名字，在string下可以修改应用程序名。
+		4，主题，theme
+
+		5，组件的注册，Activity，ContentProvider，BrodcastReceiver，Server
+		<activity
+			1，name，表示应用程序的，如com.example.first.MainActivity，相当于主函数
+						前面的包名可以省略。
+
+			2，label，表示应用的标题
+
+			3，以下用于创建快捷方式
+			<intent-filter>
+              		<action android:name="android.intent.action.MAIN" />
+                	<category android:name="android.intent.category.LAUNCHER" />
+            		</intent-filter>
+
+		/activity>
+	5，应用权限
+	<uses-permission android:name="android.permission.BIND_NFC_SERVICE"/>
+			
+			
+
+
+Android应用安装过程，有一个签名的过程
+1，将xxx.apk放到data/app下
+2，将xxx.apk解压到/data/data包里
+
+卸载时，就删除掉xxx.apk.以及data/data里的数据

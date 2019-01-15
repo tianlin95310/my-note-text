@@ -1,0 +1,24 @@
+1,
+布局文件 
+ <ListView 
+        android:id="@+id/lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+// entries直接使用字符串常量来作为显示的内容
+        android:entries="@array/names"
+        ></ListView>
+
+// 常量资源文件
+<resources>
+    <string-array name="names">
+        
+        <item >aaaaaaaa</item>
+        <item >bbbbbbbb</item>
+        <item >cccccccc</item>
+        <item >dddddddd</item>
+        <item >eeeeeeee</item>
+        <item >ffffffff</item>
+        <item >gggggggg</item>
+        <item >hhhhhhhh</item>
+    </string-array>
+</resources>

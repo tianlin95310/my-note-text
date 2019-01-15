@@ -1,0 +1,62 @@
+package com.example.xml;
+
+import java.io.IOException;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.content.res.Resources.NotFoundException;
+import android.content.res.XmlResourceParser;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.View;
+
+public class MainActivity extends ActionBarActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	public void read(View v)
+	{
+		
+		try
+		{
+			XmlResourceParser xrp = getResources().getXml(R.xml.myxml);
+			
+			while(xrp.getEventType() != XmlResourceParser.END_DOCUMENT)
+			{
+				if(xrp.getEventType() == XmlResourceParser.START_TAG)
+				{
+					if("book".equals(xrp.getName()))
+					{
+						// 读取属性，带有名字空间
+//						Log.d("my", xrp.getAttributeValue(null, "price") + "\n");
+						
+						// 读取book的两个属性，下标从0开始
+						Log.d("my", xrp.getAttributeValue(0) + "\n");
+						Log.d("my", xrp.getAttributeValue(1) + "\n");
+						// 读取标签里的内容
+						Log.d("my", xrp.nextText() + "\n");
+					}
+				}
+				// 下移
+				xrp.next();
+			}
+			
+		} catch (NotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (XmlPullParserException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}

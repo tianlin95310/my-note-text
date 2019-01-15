@@ -1,0 +1,68 @@
+可以指定对话框的位置
+
+1，pw.showAsDropDown(v，x, y);
+
+x,y为平移量，通常要向上平移-v.height
+
+2，为popWindow的View设置动画时，需要调用pw
+的setBackGroundDrawable函数，传的参数倒是没有什么要求
+
+// 使用举例
+	pop = new PopupWindow(this);
+                pop.setContentView(view);
+                // 透明背景
+                pop.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                // 非模态的对话框
+                pop.setOutsideTouchable(true);
+                pop.setFocusable(true);
+                PopupWindowCompat.showAsDropDown(pop, myViewHolder.ll_reset, 0, 0, Gravity.TOP);
+                view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_scale_in));
+
+
+public class MainActivity extends ActionBarActivity
+{
+
+	PopupWindow pw;
+	
+	Button bt_close;
+	
+	View popView;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		popView = this.getLayoutInflater().inflate(R.layout.popwindw, null);
+		// 用LayoutParams可以匹配屏幕大小
+		pw = new PopupWindow(popView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		pw.setBackgroundDrawable(new BitmapDrawable());
+		
+		bt_close = (Button) popView.findViewById(R.id.close);
+		
+		// 为popWindow设置点击事件
+		bt_close.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				pw.dismiss();
+			}
+		});
+	}
+	
+	public void open(View v)
+	{
+		// 1,从v的下面那里弹出
+//		pw.showAsDropDown(v);
+	
+		// 2，显示的位置,往右平移50，往上平移v的高度
+		pw.showAsDropDown(v, 50, -v.getHeight());
+		
+		// 为pw设置动画
+		popView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pop));
+		
+	}
+
+}
+

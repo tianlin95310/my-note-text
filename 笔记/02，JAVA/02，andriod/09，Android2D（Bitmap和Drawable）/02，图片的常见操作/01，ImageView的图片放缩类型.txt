@@ -1,0 +1,23 @@
+/**************************************************
+
+1，设置填充模式为MATRIX
+	通过iv.setImageMatrix(matrix)来设置图片时，图片的分辨率大小不会变化，只是对图像的Matrix做了一些变换。
+	与自定义的View里面重写onDraw()函数的效果一样，图片有多大，就显示多大。
+	此时图像可以出现在ImageView的任何地方，甚至可以出屏。
+
+
+2，fitXY		图片会放缩，变形
+
+3，fitStart 	图片放在ImageView的上部分，不放缩
+
+4，fitCenter 	图片放在ImageView的中间部分，不放缩
+
+5，fitEnd		图片放在ImageView的下部分，不放缩
+
+
+6，center		图片会填充ImageView，会有变形，变得非常大
+
+7，centerCrop	图片会填充ImageView，会均衡放大填充，丢失部分图片信息
+
+8，centerInside	图片放在ImageView的中间部分
+

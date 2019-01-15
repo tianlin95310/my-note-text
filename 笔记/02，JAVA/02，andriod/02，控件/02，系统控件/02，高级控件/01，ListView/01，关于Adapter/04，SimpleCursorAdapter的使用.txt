@@ -1,0 +1,31 @@
+public class MainActivity extends ListActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+		// 查询需带有_id项
+		Cursor rs = this.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, new String[]{Media.DISPLAY_NAME, Media._ID}, null, null, Media._ID);
+		
+		while(rs.moveToNext())
+		{
+			Log.d("my", rs.getString(0));
+		}
+		
+		// 用于构造SimpleCursorAdapter的rs必须要有_id，
+		SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(
+				this,	
+				android.R.layout.simple_list_item_1, 	// 显示的ListView布局文件
+				rs, 			// 目标待显示的Cursor
+				new String[]{ Media.DISPLAY_NAME }, 	// 用于显示的cursor列
+				new int[]{ android.R.id.text1 }, 		// 对应的文本id
+				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);	// 处理标志
+		
+		this.setListAdapter(simpleCursorAdapter);
+		
+	
+	}
+
+}

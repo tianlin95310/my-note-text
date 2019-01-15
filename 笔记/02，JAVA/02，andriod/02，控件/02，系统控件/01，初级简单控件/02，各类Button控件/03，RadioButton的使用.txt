@@ -1,0 +1,90 @@
+public class MainActivity extends ActionBarActivity
+{
+	RadioGroup rg;
+	RadioButton p1;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		rg = (RadioGroup) findViewById(R.id.rg);
+		p1 = (RadioButton) findViewById(R.id.p1);
+		// 设置开始的默认选中项
+		p1.setChecked(true);
+		
+		rg.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId)
+			{
+				// 根据checkID来区分不同的button
+				switch(checkedId)
+				{
+				case R.id.p1:
+				Toast.makeText(MainActivity.this, "p1", 0).show();
+				break;
+				
+				case R.id.p2:
+					Toast.makeText(MainActivity.this, "p2", 0).show();
+					break;
+					
+				case R.id.p3:
+					Toast.makeText(MainActivity.this, "p3", 0).show();
+					break;
+					
+				case R.id.p4:
+					Toast.makeText(MainActivity.this, "p4", 0).show();
+					break;
+				}
+				
+			}
+		});
+	}
+
+}
+
+// 布局文件
+<RadioGroup
+	// 用于管理各个button
+        android:id="@+id/rg"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/BLUE"
+	// button的排列方式
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/p1"
+            style="@style/myStyle"
+		// 图片可以用一个图片选择器
+            android:drawableTop="@drawable/p1_select"
+            android:text="p1" />
+
+        <RadioButton
+            android:id="@+id/p2"
+            style="@style/myStyle"
+            android:layout_width="@dimen/p_width"
+            android:layout_height="@dimen/p_height"
+            android:layout_weight="1"
+	// @null表示不显示button
+            android:button="@null"
+            android:drawablePadding="@dimen/p_padding"
+            android:drawableTop="@drawable/p2_select"
+            android:gravity="center_horizontal"
+            android:text="p2"
+            android:textColor="@color/textcolor" />
+
+        <RadioButton
+            android:id="@+id/p3"
+            style="@style/myStyle"
+            android:drawableTop="@drawable/p3_select"
+            android:text="p3" />
+
+        <RadioButton
+            android:id="@+id/p4"
+            style="@style/myStyle"
+            android:drawableTop="@drawable/p4_select"
+            android:text="p4" />
+    </RadioGroup>

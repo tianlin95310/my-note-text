@@ -1,0 +1,45 @@
+// 进度条对话框
+	public void open6(View v)
+	{
+		// 进度条对话框
+		ProgressDialog dialog = new ProgressDialog(this);
+		
+		dialog.setTitle("提示");
+		// 设置显示的内容
+		dialog.setMessage("读取中");
+		// 显示
+		dialog.show();
+
+	}
+
+	// 横向的进度对话框
+	public void open7(View v)
+	{
+		final ProgressDialog dialog = new ProgressDialog(this);
+
+		dialog.setTitle("提示");
+		dialog.setMessage("读取中");
+		// 设置最大值
+		dialog.setMax(1000);
+		// 设置风格为横向
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		new Thread(){
+			public void run()
+			{
+				for(int i = 0; i <= 1000; i += 20 )
+				{
+					// 没50秒钟更新一次
+					dialog.setProgress(i);
+					try
+					{
+						Thread.sleep(50);
+					} catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				super.run();
+			}
+		}.start();
+		dialog.show();
+	}

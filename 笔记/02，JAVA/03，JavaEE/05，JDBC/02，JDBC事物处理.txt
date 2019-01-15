@@ -1,0 +1,39 @@
+1，与数据库的事务概念基本相同，语法规则，步骤基本相同
+
+2，使用方法
+	1，先将自动提交设为False
+    	2，假如使用的是PrepareStatement
+
+public static void main(String[] args)
+	{
+		Connection con = null;
+		try
+		{
+			Class.forName("");
+			con = DriverManager.getConnection("","","");
+			con.setAutoCommit(false);	//将自动提交设为false
+			
+			String sql1 = "";
+			PreparedStatement ps = con.prepareStatement(sql1);
+			ps.executeUpdate();		//先做一次更新
+			
+			String sql2 = "";
+			ps = con.prepareStatement(sql2);
+			ps.executeUpdate();		//再做一次更新
+			
+			con.commit();		//提交
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+			try
+			{
+				con.rollback();		//如果其中某句有问题，则回滚，另一句也不会执行
+			} catch (SQLException e1)	//这就是事务的原子性
+			{
+				e1.printStackTrace();
+			}
+		}
+	}

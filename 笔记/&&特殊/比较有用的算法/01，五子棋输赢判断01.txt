@@ -1,0 +1,124 @@
+public static int checkWinner1(int x,int y)
+	{
+		String who = bWho == false ? "●" : "╳";
+		int iCount = 0;
+		int i ;
+		int j ;
+		//水平
+		i = x;
+		j = y;
+		while(play1[i][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			j++;
+			if(j > N)
+				break;
+		}
+		j = y - 1;
+		if(j >= 0)
+		{
+			while(play1[i][j].equals(who))
+			{
+				iCount++;
+				if(iCount == 5)
+					return iCount;
+				j--;
+				if(j < 0)
+					break;
+			}
+		}
+		//竖直
+		i = x;
+		j = y;
+		iCount = 0;
+		while(play1[i][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			i++;
+			if(i > N)
+				break;
+		}
+		i = x - 1;
+		j = y;
+		if(i >= 0)
+		{
+			while(play1[i][j].equals(who))
+			{
+				iCount++;
+				if(iCount == 5)
+					return iCount;
+				i--;
+				if(i < 0)
+					break;
+			}
+		}
+		//主对角线
+		i = x;
+		j = y;
+		iCount = 0;
+		while(play1[i][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			i++;
+			j++;
+			if(i > N || j > N)
+				break;
+			
+		}
+		i = x - 1;
+		j = y - 1;
+		if(i >= 0 && j >= 0)
+		{
+			while(play1[i][j].equals(who))
+			{
+				iCount++;
+				if(iCount == 5)
+					return iCount;
+				i--;
+				j--;
+				if(i < 0 || j < 0)
+					break;
+			}
+		}
+		//副对角线
+		i = x;
+		j = y;
+		iCount = 0;
+		while(play1[i][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			i++;
+			j--;
+			if(i > N || j < 0)
+				break;
+		}
+		
+		i = x - 1;
+		j = j + 1;
+		if(i >= 0 && j <= N)
+		{
+			while(play1[i][j].equals(who))
+			{
+				iCount++;
+				if(iCount == 5)
+					return iCount;
+				i--;
+				j++;
+				if(i < 0 || j > N)
+					break;
+			}
+		}
+		
+		return iCount;
+	}
+	
+
+}

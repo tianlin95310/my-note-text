@@ -1,0 +1,36 @@
+package com.itjob;
+
+import java.util.Arrays;
+
+public class Test
+{
+	public static void main(String[] args)
+	{
+		int a[] = {1,5,9,2,4,8};
+		sort(a);
+		System.out.println(Arrays.toString(a));
+	}
+	//内层循环找到所有元素的最值，然后将当前的数与最值进行交换
+	public static void sort(int a[])
+	{
+		for(int i = 0; i < a.length; i++)
+		{
+			int index = i;
+			
+			for(int j = i + 1 ; j < a.length ;j++)
+			{
+				if(a[j] < a[index])
+				{
+					index = j;
+				}
+			}
+			
+			if(index != i)
+			{		
+				int temp = a[i];
+				a[i] = a[index];
+				a[index] = temp;
+			}
+		}
+	}
+}

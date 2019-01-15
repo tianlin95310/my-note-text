@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+	window.onload = function() {
+		// 1, 根据id获取节点，确保id唯一，否则操作会有问题
+		// 他是document对象的方法
+		var bjNode = document.getElementById("bj");
+		alert(bjNode);
+
+		// 2，根据元素名获取元素
+		// 该方法是Node接口的方法，即任何一个节点都有该方法，包括整个
+		// document文档
+		var liNodes = document.getElementsByTagName("li");
+		alert(liNodes.length);
+
+		// 先获取CityUl元素，然后以他为根，查找他的元素名为li的
+		// 孩子元素
+		var cityUl = document.getElementById("city");
+		var cityNodes = cityUl.getElementsByTagName("li");
+		alert(cityNodes.length);
+		
+		// 3，根据元素节点的属性节点名name来获取指定元素节点的集合
+		// IE浏览器元素没有定义name属性，谷歌有，所以使用该方法
+		// 需谨慎
+		var genderNode = document.getElementsByName("gender");
+		alert(genderNode.length);
+		
+		// 内置的浏览器支持没有name属性也能获取元素
+		var not_support = document.getElementsByName("BeiJing");
+		alert(not_support.length);
+		
+	}
+</script>
+</head>
+<body>
+
+	<p>你喜欢哪个城市?</p>
+	<ul id="city">
+		<li id="bj" name="BeiJing">北京</li>
+		<li>上海</li>
+		<li>东京</li>
+		<li>首尔</li>
+	</ul>
+
+	<br>
+	<br>
+	<p>你喜欢哪款单机游戏?</p>
+	<ul id="game">
+		<li id="rl">红警</li>
+		<li>实况</li>
+		<li>极品飞车</li>
+		<li>魔兽</li>
+	</ul>
+
+	<br>
+	<br> gender:
+	<input type="radio" name="gender" value="male" />Male
+	<input type="radio" name="gender" value="female" />
+</body>
+</html>

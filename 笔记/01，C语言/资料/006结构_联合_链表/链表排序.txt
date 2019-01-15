@@ -1,0 +1,56 @@
+#include <iostream>
+using namespace std;
+#define SWAP(x, y) ((x) = (x) + (y) - ((y) = (x)))
+struct NODE
+{
+	int iData;
+	NODE *pNext;
+};
+
+int main()
+{
+	//1. Create NODE
+	NODE e = {23, NULL};
+	NODE d = {20, &e};
+	NODE c = {22, &d};
+	NODE b = {24, &c};
+	NODE a = {21, &b};
+	
+	NODE *pHead = &a;
+
+	//2. Sort: 20 21 22 23 24
+	//      p1 p2
+	NODE *p1 = NULL;
+	NODE *p2 = pHead;
+
+	bool bDone;
+	while (1)
+	{
+		p1 = NULL;
+		p2 = pHead;
+
+		bDone = false;
+		while (p2)
+		{
+			p1 = p2;
+			p2 = p2->pNext;
+			if (p2 && p2->iData < p1->iData)
+			{
+				bDone = true;
+//				SWAP(p1->iData, p2->iData);
+				p2->iData = (p1->iData + p2->iData) - (p1->iData = p2->iData);
+			}
+		}
+		if (bDone == false) break;
+	}
+
+	//3. Show
+	p2 = pHead;
+	while (p2)
+	{
+		cout << p2->iData << endl;
+		p2 = p2->pNext;
+	}
+
+	return 0;
+}

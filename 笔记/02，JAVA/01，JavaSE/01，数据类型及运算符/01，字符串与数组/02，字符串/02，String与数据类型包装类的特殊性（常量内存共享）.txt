@@ -1,0 +1,58 @@
+1，介绍
+对基本数据类型进行包装。	
+1，把基本类型转型为包装类称为装箱操作，再向包装类以及Object类传参时，系统已经为我们做好自动装箱（转化），
+2，将包装类转为基本数据类型称为拆箱
+3，有各自对应的拆箱方法。这种类似于c++的拷贝构造函数。实现基本类型与类对象的转化
+4，在新的JDK中，数据类型包装类也支持各种运算符操作
+
+	Integer，Short，Long，Double，Float，Byte都是Number的子类
+	Character，Boolean都是Object的直接子类
+
+2，使用方法
+		Integer i1 = 100;		//自动装箱
+		Integer i2 = new Integer(100);	//人为装箱
+
+		int i3 = i2.intValue();	//拆箱操作要由我们自己完成,
+
+3，转型操作
+在包装类中，可以将一个字符串（数字字符串）变为指定的基本数据类型，一般在数据时会使用
+Integer类中将字符串转为int型有parseInt()，Int类型有valueof(),相当于c语言的atoi()
+Float类中将字符串转为float型数据有parseFloat方法，相当于c语言的atof（）
+* * * * * * * *需要注意的是当需要转化的值含有非数字字符，以及空字符串时，会抛出异常，需要做一个判断
+
+4，JAVA享元模式
+Integer x1 = 10；
+Integer x2 = 10；
+与string类似，x1 == x2是true ，但是仅限在一个字节范围（-128-127）
+超过这个范围时，x1 == x2是false.而String是没有这种限制的
+
+享元设计模式：byte，short，int,long都有以上特性
+
+示例如下
+		Byte b1 = 100;
+
+5，数据类型包装类与String类的特殊性，注意，他们只针对常量，要运行才能确定的话就不行
+String str1 = "abc";
+String str2 = "abc"
+此时str1 == str2，因为他们是从常量区取的
+如果String str2 = "xyz";此时str1 与 str2不同，他们指向不同的常量区对象
+
+而对于数据类型包装类
+Integer i1 = 100;
+Integer i2 = 100;
+他们相等的条件只能在一个字节之内，并且与String一样
+如果让重新赋值i1 = 200;
+i3也会指向新的对象
+
+List<Long> list = new ArrayList<>();
+		Long l1 = 100L;
+		Long l2 = 200L;
+		list.add(l1);
+		list.add(l2);
+		// 这里与String一样，这种类型引用本身只有一个值，若想改变只能用 = ，
+		// 但一旦赋值，很有可能让他指向新的对象(产生新对象)
+		// 除非内容与他们一样，
+		Long l3 = list.get(1);
+		l3 = 300L;
+		System.out.println(list.get(1));
+		

@@ -1,0 +1,42 @@
+内部是对Handler + Thread的封装，采用了线程池技术
+
+		// 启动异步加载，参数类型为异步加载的第一个参数类型
+		new My().execute(params);
+
+class My extends AsyncTask<
+	String, 	// execute传入参数
+	Integer, 	// 进度更新参数
+	Bitmap>		// 后台运行结果参数
+	{
+
+		// 在主线程中运行，执行异步加载前的工作
+		@Override
+		protected void onPreExecute()
+		{
+			super.onPreExecute();
+		}
+		// 在主线程中运行，执行异步加载后前的工作
+		@Override
+		protected void onPostExecute(Bitmap result)
+		{
+			super.onPostExecute(result);
+		}
+		// 在主线程中运行，执行异步加载中的工作
+		@Override
+		protected void onProgressUpdate(Integer... values)
+		{
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+		}
+		
+		// 后台运行异步工作
+		@Override
+		protected Bitmap doInBackground(String... params)
+		{
+			// 调用该方法能自动的调用onProgressUpdate方法
+			// 参数的类型为类的第二个泛型参数
+//			publishProgress(values);
+			return null;
+		}
+		
+	}

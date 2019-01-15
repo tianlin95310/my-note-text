@@ -1,0 +1,23 @@
+1，
+    Activity最先分发dispatchTouchEvent给一级视图，也就是根布局，他的onTouchEvent的优先级最低，只有分发过程中所有的视图的处理都返回false，他才会处理消耗该事件
+
+2，
+    根布局(ViewGroup)继续往下分发(dispatchTouchEvent).
+
+3，
+    1，直到分发给目标视图（View），目标视图也是先分发(dispatchTouchEvent)，因为他没有子视图，所以分发完毕。
+
+    2，这时先看目标视图的OnTouchListener，如果OnTouchListener返回true，事件被消耗，那么View的onTouchEvent将不会执行，
+	
+    3，如果目标视图的OnTouchListener返回false，继续看onTouchEvent，如果onTouchEvent返回true,事件也会在目标视图View的onTouchEvent结束,
+
+    4，如果目标视图的OnTouchListener，onTouchEvent都返回false，也就是目标视图(View)没有消费事件(后面的MOVE，UP都不会分发到目标视图了)
+
+    5，系统会将事件回传给上层的布局的OnTouchListener（如果有的话）处理，如果消费了则结束，否则再由根布局的onTouchEvent处理，如果根布局的onTouchEvent返回true的话，就由根布局消费(后面的MOVE，UP事件就只会发到根布局上，不会往目标视图发送)
+    
+    6，如果根布局也没有消费，将由Activity消费，如果由activity处理消费，后面MOVE，UP就不往下分发了
+
+4，
+    super.onTouchEvent(event)，可以回传事件，在View处理结果返回true的情况下，想要onClickListener，或者想让手势
+    能接收到事件，可以使用super.onTouchEvent(event)，以及gd.onTouchEvent(event)将事件发给他们处理,
+   

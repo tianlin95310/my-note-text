@@ -1,0 +1,23 @@
+1，C语言的异常没有Java那么重要,c语言的返回指类型做的很明确
+
+#include<iostream>
+using namespace std;
+void f()
+{
+	throw 10;//函数f能识别并抛出例外
+}
+void main()
+{
+	try
+	{
+		f();
+	}
+	catch(double i)//catch必须位于try之后
+	{
+		cout<<"you doubi\n";
+	}
+	catch(int i)
+	{
+		cout<<"shabi\n";
+	}
+}

@@ -1,0 +1,120 @@
+/*
+
+  二叉树排序
+
+1.一个无序整数数组
+2.创建二叉树，数组第一个元素为根节点，数组中下一个元素小于根的值放左边，大于的放右边
+3.中序遍历，结果即为数组从小到大大排序
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define dim(x) sizeof(x) / sizeof(x[0])
+#define swap(x, y) x = (y + x) - (y = x)
+#define RAND() (srand((unsigned int)GetCpuCycle()), rand())
+
+//获得CPU自上电以来的时钟周期数
+__declspec (naked) unsigned __int64 GetCpuCycle()
+{
+	_asm
+	{
+		rdtsc
+		ret
+	}
+}
+
+//定义二叉树结构体
+struct NODE
+{
+	int iData;
+	NODE *pLChild;
+	NODE *pRChild;
+};
+
+//中序遍历
+void InOrder(NODE *node)
+{
+	if (node == NULL) return;
+
+	InOrder(node->pLChild);
+
+	printf("%d ", node->iData);
+
+	InOrder(node->pRChild);
+}
+
+//创建二叉树
+NODE * TreeSort(const int sz[], const int nLen)
+{
+	//1. 先创建好所有节点
+	NODE *tree = new NODE[nLen];
+	for (int i = 0; i < nLen; i++)
+	{
+		tree[i].iData = sz[i];
+		tree[i].pLChild = NULL;
+		tree[i].pRChild = NULL;
+	}
+
+	//2. 根据规则，建立节点间的关系
+	NODE *pRoot = &tree[0];		//根节点选择数组第一个元素
+	for (i = 1; i < nLen; i++)
+	{
+		NODE * pCurr = pRoot;
+		bool bGo = true;	//控制跳出循环的
+		while (bGo)
+		{
+			//2.1 判断新加入到节点是不是比当前节点小
+			while (tree[i].iData <= pCurr->iData)
+			{
+				if (pCurr->pLChild == NULL) 
+				{
+					pCurr->pLChild = &tree[i];
+					bGo = false;
+					break;
+				}
+				pCurr = pCurr->pLChild;
+			}
+
+			//2.2 判断新加入到节点是不是比当前节点大
+			while (tree[i].iData > pCurr->iData)
+			{
+				if (pCurr->pRChild == NULL) 
+				{
+					pCurr->pRChild = &tree[i];
+					bGo = false;
+					break;
+				}
+				pCurr = pCurr->pRChild;
+			}
+		}
+	}
+
+	//3. 返回
+	return pRoot;
+}
+
+void main()
+{
+	//1. 随机产生数
+	printf("排序前:\n");
+
+	int sz[10] = {0};
+	for (int i = 0; i < dim(sz); i++)		//随机一个数组出来
+	{
+		sz[i] = RAND() % 100;
+		printf("%d ", sz[i]);
+	}
+
+	//2. 排序
+	NODE * pRoot = TreeSort(sz, dim(sz));
+
+	//3. 中序遍历结果 就是 排序结果
+	printf("\n\n排序后:\n");
+	InOrder(pRoot);
+	printf("\n\n");
+
+	//4. 释放内存
+	delete[] pRoot;
+}

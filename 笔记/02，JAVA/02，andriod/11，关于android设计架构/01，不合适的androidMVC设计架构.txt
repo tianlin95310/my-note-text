@@ -1,0 +1,7 @@
+与传统的JAVAWEB MVC相类比，android的MVC结构如下
+
+M 模型		业务逻辑(dao,vo)
+V 视图		附在Activity上的View
+C 控制器	由Activity承担
+
+该种模式下Activity将会变得很臃肿随着业务逻辑的不断复杂

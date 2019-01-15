@@ -1,0 +1,153 @@
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Binarytree bt = new Binarytree();
+		for(int i = 0; i <= 10; i++)
+		{
+			bt.addnode(5 * i + (int)Math.pow( (-1),i));
+		}
+		bt.prints();
+		
+	}
+
+}
+//平衡二叉树的实现，中序遍历有序
+ class Binarytree
+{
+	private node root;
+	public void addnode(int data)
+	{
+		//如果没有根节点，则创建根节点
+		if(root == null)
+		{
+			root = new node();
+			root.setData(data);
+		}
+		//如果有根节点，则用跟结点来实现添加
+		else
+		{
+			root.add(data);
+		}
+	}
+	public int prints()
+	{
+		
+		if(root != null)
+		{
+			//从root开始遍历
+			root.print();
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	//结点内部类
+	class node implements Cloneable //实现Cloneable接口并重写clone，对象可以克隆
+	{
+		private int data;
+		private node left;
+		
+		public void add(int data)
+		{
+			//如果data大于跟的值，则加到左节点上
+			if(this.getData() >= data)
+			{
+				//如果左结点为空，则创建左结点
+				if(this.getLeft() == null)
+				{
+					node temp = null;
+					try
+					{
+						temp = (node)this.clone();
+					} 
+					catch (CloneNotSupportedException e)//受检异常
+					{
+						e.printStackTrace();
+					}
+					temp.setData(data);
+					this.setLeft(temp);
+				}
+				//如果左结点不为空，则把左结点当作新的跟，递归添加
+				else
+				{
+					this.getLeft().add(data);
+				}
+			}
+			else if(this.getData() < data)
+			{
+				if(this.getRight() == null)
+				{
+					node temp = null;
+					try
+					{
+						temp = (node)this.clone();
+					} 
+					catch (CloneNotSupportedException e)
+					{
+						e.printStackTrace();
+					}
+					temp.setData(data);
+					this.setRight(temp);
+				}
+				else
+				{
+					this.getRight().add(data);
+				}
+			}
+			
+		}
+		public void print()
+		{
+			//如果跟的左结点不为空，则递归跟的左结点的左结点
+			//为空时，则结束，然后中序
+			if(this.left != null)
+			{
+				this.getLeft().print();
+			}
+			
+			System.out.println(this.getData()+" ");
+			
+			if(this.right != null)
+			{
+				this.getRight().print();
+			}
+		}
+		public node getLeft()
+		{
+			return left;
+		}
+		public node getRight()
+		{
+			return right;
+		}
+		private node right;
+		public int getData()
+		{
+			return data;
+		}
+		public void setLeft(node left)
+		{
+			this.left = left;
+		}
+		public void setRight(node right)
+		{
+			this.right = right;
+		}
+		public void setData(int data)
+		{
+			this.data = data;
+		}
+		//重写clone方法
+		protected Object clone() throws CloneNotSupportedException
+		{
+			return super.clone();
+		}
+		
+	}
+
+}

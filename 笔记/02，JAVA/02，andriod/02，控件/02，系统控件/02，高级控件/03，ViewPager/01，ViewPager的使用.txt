@@ -1,0 +1,190 @@
+package com.example.viewpager;
+
+import java.util.ArrayList;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
+
+public class MainActivity extends ActionBarActivity {
+
+	ViewPager vp;
+
+	LinearLayout ll_points;
+
+	TextView tv;
+
+	int prePosition = 0;
+	ArrayList<ImageView> imgs;
+	private final int[] imageIds =
+	{ R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e };
+
+	private final String[] imageDescriptions =
+	{ "尚硅谷波河争霸赛！", "凝聚你我，放飞梦想！", "抱歉没座位了！", "7月就业名单全部曝光！", "平均起薪11345元" };
+
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			// 将vp的位置后移
+			vp.setCurrentItem(vp.getCurrentItem() + 1);
+		};
+
+	};
+	Runnable autoSlide = new Runnable() {
+		@Override
+		public void run() {
+			handler.sendEmptyMessage(1);
+			handler.postDelayed(autoSlide, 3000);
+		}
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		vp = (ViewPager) findViewById(R.id.vp);
+		ll_points = (LinearLayout) findViewById(R.id.ll_points);
+		tv = (TextView) findViewById(R.id.tv);
+		imgs = new ArrayList<ImageView>();
+
+		for (int i = 0; i < imageIds.length; i++)
+		{
+			// 添加图片
+			ImageView img = new ImageView(this);
+			img.setBackgroundResource(imageIds[i]);
+			imgs.add(img);
+
+			// 添加点
+			ImageView point = new ImageView(this);
+
+			LayoutParams params = new LayoutParams(12, 12);
+			params.leftMargin = 12;
+			point.setLayoutParams(params);
+
+			point.setBackgroundResource(R.drawable.point_bg);
+			if (i == 0)
+			{
+				point.setEnabled(true);
+			} else
+			{
+				point.setEnabled(false);
+			}
+
+			ll_points.addView(point);
+		}
+
+		vp.setAdapter(new MyPagerAdapter());
+		// 设置页面改变事件
+		vp.setOnPageChangeListener(new MyPageChangeListener());
+
+		// 是5的整数倍，保证第一次它在第一个位置显示
+		vp.setCurrentItem(4000);
+
+		handler.postDelayed(autoSlide, 3000);
+
+	}
+
+	class MyPageChangeListener implements OnPageChangeListener {
+		// 该函数会一直调用，如果不滑动的话，一直保持SCROLL_STATE_IDLE，一直会调用
+		// 拖住不动1
+		// 拖动放下2
+		// 停止滑动0
+		boolean isHaveDrag = false;
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+			switch (arg0)
+			{
+			case ViewPager.SCROLL_STATE_DRAGGING:
+				isHaveDrag = true;
+				handler.removeCallbacks(autoSlide);
+				// Log.d("my", "SCROLL_STATE_DRAGGING " + arg0);
+				break;
+
+			case ViewPager.SCROLL_STATE_SETTLING:
+				// Log.d("my", "SCROLL_STATE_SETTLING " + arg0);
+				break;
+
+			case ViewPager.SCROLL_STATE_IDLE:
+				Log.d("my", "SCROLL_STATE_IDLE");
+				if (isHaveDrag == true)
+				{
+					handler.post(autoSlide);
+					isHaveDrag = false;
+				}
+				break;
+			}
+		}
+
+		// 滑动时一直调用
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			Log.d("my", "onPageScrolled");
+		}
+
+		// 该方法系统默认第一次显示第0张时，不会调用该方法，后面一旦滑动，或setCurrentItem都会调用该方法
+		@Override
+		public void onPageSelected(int arg0) {
+			int realPosition = arg0 % imageIds.length;
+			ll_points.getChildAt(prePosition).setEnabled(false);
+			ll_points.getChildAt(realPosition).setEnabled(true);
+			prePosition = realPosition;
+		}
+
+	}
+
+	class MyPagerAdapter extends PagerAdapter {
+		@Override
+		public int getCount() {
+			return 8000;
+		}
+
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			return arg0 == arg1;
+		}
+
+		// 在没有setCurrentItem，第一次显示时，他会调用两次，加载以0,1项
+		// 除了两以外，在内存都有3个view，两端的只有2个
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+
+			int realPosition = position % imageIds.length;
+			Log.d("my", "realPosition " + realPosition);
+
+			ImageView img = imgs.get(realPosition);
+			container.addView(img);
+
+			img.setTag(realPosition);
+			img.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+
+				}
+			});
+
+			tv.setText(imageDescriptions[realPosition]);
+
+			return img;
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			// object即是将要删除的view
+			container.removeView((ImageView) object);
+		}
+
+	}
+}

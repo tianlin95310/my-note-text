@@ -1,0 +1,6 @@
+ListView lv = null;
+BaseAdapter a;
+int first = lv.getFirstVisiblePosition();
+int last = lv.getLastVisiblePosition();
+
+// 判断当前getView的position在不在first和last范围里

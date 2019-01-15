@@ -1,0 +1,27 @@
+将位图进行放缩
+
+<?xml version="1.0" encoding="utf-8"?>
+<clip xmlns:android="http://schemas.android.com/apk/res/android"
+	android:drawable="@drawable/progress" android:clipOrientation="horizontal"
+	android:gravity="left" 
+
+/>
+
+
+public class MainActivity extends ActionBarActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		ImageView imageview = (ImageView) findViewById(R.id.img);
+		// 得到img的clip背景
+        ClipDrawable drawable = (ClipDrawable) imageview.getBackground();
+        // 设置范围，0 - 10000之间
+        drawable.setLevel(8000);
+	}
+
+}

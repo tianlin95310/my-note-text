@@ -1,0 +1,27 @@
+public class ToggleButtonActivity extends Activity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        ToggleButton tb = (ToggleButton)findViewById(R.id.tb);
+        final LinearLayout ll =(LinearLayout)findViewById(R.id.l2);
+        tb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked){
+					ll.setOrientation(1);
+				}else{
+					ll.setOrientation(0);
+					}
+			}
+		});
+    }
+}
+
+// 布局文件
+
+<ToggleButton 
+    android:id="@+id/tb"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textOn="纵向排列"
+    android:textOff="横向排列"/>

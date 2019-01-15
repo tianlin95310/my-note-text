@@ -1,0 +1,112 @@
+1，应用程序发送广播，应用自身可以收到，别的应用也可以收到，不需要运行，只要安装了
+即可，这与activity，contentProvider一样。
+
+2，发送的时候如果带有Permission的话，那么只有具有该权限的应用才能接受到该广播，
+必须有 
+// 定义权限
+<permission
+        android:name="tian.lin"
+        android:protectionLevel="normal" >
+</permission>
+// 使用权限 
+<uses-permission android:name="tian.lin" />
+
+如果只在<receiver里有permission属性是无效的，他只是声明
+ <receiver
+            android:name="com.example.selfbroadcast.MyReceiver1"
+            android:permission="tian.lin" >
+            <intent-filter 
+		android:priority="1000" >
+                <action android:name="aaa.bbb.ccc" />
+            </intent-filter>
+        </receiver>
+
+并且如果有了<uses-permission android:name="tian.lin" />，那么receiver里的
+permission属性可有可无。
+
+3,priority在有序广播里才有效，有序广播才能被中断
+
+
+
+使用举例
+public class MainActivity extends ActionBarActivity
+{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		// 通过源代码注册，不需要设置Permission也能接收，只要清单文件里有权限就可以接收
+		IntentFilter intent = new IntentFilter();
+		intent.addAction("aaa.bbb.ccc");
+		this.registerReceiver(new MyReceiver5(), intent);
+	}
+	
+	public void send(View v)
+	{
+		Intent intent = new Intent();
+		
+		intent.setAction("aaa.bbb.ccc");
+		// 1,无序方式发送的话，所有的接受者都会收到，中断无效
+//		this.sendBroadcast(intent);
+		
+		// 2,有序发送的话，中断以后，低于中断优先级的接受者就不能收到了
+//		this.sendOrderedBroadcast(intent, null);
+		
+		// 3，该种方式MyReceiver4一定会受到，MyReceiver3被MyReceiver2终端拦截
+//		this.sendOrderedBroadcast(intent, null, new MyReceiver4(), null, 0, null, null);
+		
+		// 4，Permission是一个许可，对应的注册文件里有Permission属性，Permission需要注册，并且 一定要注册，
+		// 光有声明是无效的，并且注册后声明可以不用了，只要清单文件里有对应的权限，那么所有的接受者都可以接受到广播，包括用源代码注册的接受者
+		// Permission好像至少需要一個点分开，tianlin实测是不行的.他也可以为空，为空表示不要权限。
+		this.sendOrderedBroadcast(intent,"tian.lin");
+	}
+
+}
+
+// 部分代码展示
+	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+		System.out.println("MyReceiver2");
+		this.abortBroadcast();
+	}
+
+	public class MyReceiver3 extends BroadcastReceiver
+	{
+
+	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+		System.out.println("MyReceiver3");
+	}
+
+
+
+// 广播清单文件
+<receiver
+            android:name="com.example.selfbroadcast.MyReceiver1"
+            android:permission="tian.lin" >
+            <intent-filter android:priority="1000" >
+                <action android:name="aaa.bbb.ccc" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.example.selfbroadcast.MyReceiver2"
+            android:permission="tian.lin" >
+            <intent-filter android:priority="800" >
+                <action android:name="aaa.bbb.ccc" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.example.selfbroadcast.MyReceiver3" >
+            <intent-filter android:priority="500" >
+                <action android:name="aaa.bbb.ccc" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.example.selfbroadcast.MyReceiver4" >
+            <intent-filter android:priority="0" >
+                <action android:name="aaa.bbb.ccc" />
+            </intent-filter>
+        </receiver>

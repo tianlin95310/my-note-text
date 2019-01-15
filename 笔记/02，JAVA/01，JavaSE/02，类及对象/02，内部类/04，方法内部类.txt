@@ -1,0 +1,77 @@
+1，非静态方法内部类
+	1，可以使用外部类的成员，外部类加上this可以区分命名冲突
+	2，只能在函数内部实例化
+	3，只能使用方法内的常量
+	4，可以定义属性
+	5，方法内部类只能是abstract或者final修饰
+public class C
+{
+	private int a;
+	public int b;
+	static private int c;
+	
+	public void fun5()
+	{
+		final int f1 = 10;
+		final class c5
+		{
+			private int f2 = 200;
+			public void fun()
+			{
+				a = 10;		//访问外部类的成员
+				C.this.a = 10;	//可用外部类名+this来区分
+				f2 = 300;	//访问方法内部类的成员
+				System.out.println(f1 +" " +  a+ " " + f2);	
+				//只能使用函数常量成员，包括形参
+				//类最先加载，那是对象还未产生，更无fun5函数及非静态变量，
+				//所以不能使用
+			}
+		}
+		new c5().fun();		//只能在类的内部进行实例化
+	}
+
+public static void main(String[] args)
+	{
+		C p = new C();//调用
+		p.fun5();
+	}
+
+2，静态方法内部类
+	1，只能访问函数内的常量
+	2，只能访问外部类的静态成员，不能用外部内加上this的形式
+
+public class C
+{
+	private int a;
+	public int b;
+	static private int c;
+	
+	public static void fun5()
+	{
+		int b = 10;
+		final int f1 = 10;
+		//this.a = 23;		//静态函数不能有this
+		final class c5
+		{
+			private int f2 = 200;
+			public void fun()
+			{
+				//C.this.a = 10;	//不能访问外部类的非静态成员，不能有this
+				c = 100;		//可以访问外部类的静态成员
+				
+				this.f2 = 300;		//类的内部可以用this
+				
+				System.out.println(f1 +" " + f2+" " +c);//只能访问常量
+				
+				//b = 20;		//不能访问函数内的非常量成员
+			}
+		}
+		new c5().fun();				//只能在类的内部进行实例化
+	}
+}
+
+public static void main(String[] args)
+	{
+		C.fun5();	//类名直接调用
+	}
+	

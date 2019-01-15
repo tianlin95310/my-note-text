@@ -1,0 +1,15 @@
+使用handler和Thread即可实现异步加载，这也是android多线程通信的主要内容
+
+自己写异步加载时要注意线程池的使用，否则开销会太大导致oom
+
+// 1,异步加载方式1
+Activity中的方法可以实现
+在子线程中调用，在UI线程中运行
+runOnUiThread(action);
+
+
+// 2,异步加载方式2
+使用handler + Thread实现
+
+
+

@@ -1,0 +1,10 @@
+1，list	双向链表
+
+2，vector	可变数组
+deque		两端插入的数组
+
+3，set	可以重复的集合
+mutilset	//可以重复的set
+
+4，map	键值集合
+mutilmap	//可以重复的map

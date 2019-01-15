@@ -1,0 +1,5 @@
+1，node.js
+JS运行环境，可以用来做服务器，发送请求，将前端环境变成Android类似，与
+
+2，CommonJS
+nodeJs的语法标准

@@ -1,0 +1,13 @@
+ Android 6.0 解决recyclerview 在 scrollview 中不能全部显示，高度不正常的问题。
+这个问题困扰了我半天，国内百度上的资料非常的烂。根本无法解决问题。
+在android 4 / 5 版本中 scrollview 包含了一个recyclerview 滚动一切正常。
+在6.0中不能全部显示。原来是一个BUG
+最终 stackoverflow 找到了解决办法：
+http://stackoverflow.com/questions/27083091/recyclerview-inside-scrollview-is-not-working
+ 
+主要代码
+https://github.com/amardeshbd/android-recycler-view-wrap-content
+This is a sample android app which demonstrates `RecyclerView` wrap_content inside `ScrollView` issue on Marshmallow and Nougat (API 23 & 24) and how to work around it.
+在API23 24中不能正常工作。
+解决办法：
+在 recyclerview 外面再包一层 RelativeLayout

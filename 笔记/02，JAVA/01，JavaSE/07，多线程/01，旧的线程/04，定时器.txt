@@ -1,0 +1,55 @@
+package com.itjob;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+class TT extends TimerTask
+{
+	@Override
+	public void run()
+	{
+		System.out.println("TT fun");
+	}
+	
+}
+
+public class TestTimer
+{
+	public static void main(String[] args)
+	{
+//		1,后台定时器，后台定时器内部启动的定时器也是后台定时器，会随着主线程的关闭而关闭
+//		TT tt = new TT();
+//		Timer t = new Timer(true);
+//		t.schedule(tt, 1000,500);
+//		try
+//		{
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e)
+//		{
+//			e.printStackTrace();
+//		}
+		
+//		2，前台线程
+		TT tt = new TT();
+		Timer t = new Timer();
+		
+		t.schedule(tt, 0,500);
+		
+		try
+		{
+			Thread.sleep(3000);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
+		//关掉某个任务
+		tt.cancel();
+		
+		//关掉Timer下的所有任务
+		t.cancel();
+		
+		
+		
+	}
+}

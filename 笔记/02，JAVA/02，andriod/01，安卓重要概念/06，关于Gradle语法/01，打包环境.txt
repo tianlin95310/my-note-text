@@ -1,0 +1,5 @@
+什么是BuildTypes、Flavors、BuildVariants ?
+
+BuildTypes：构建类型，AndroidStudio的Gradle组件默认提供给了“debug”“release”两个默认配置，此处用于配置是否需要混淆、是否可调试等 
+Flavors：产品渠道，默认不提供任何默认配置，在实际发布中，根据不同渠道，我们可能需要用不同的包名，服务器地址等 
+BuildVariants：每个buildtype和flavor组成一个buildvariant

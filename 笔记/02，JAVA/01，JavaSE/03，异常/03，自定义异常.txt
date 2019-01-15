@@ -1,0 +1,64 @@
+package com.itjob;
+
+import java.io.PrintStream;
+
+import com.my.List;
+
+
+class MyException extends Exception	//继承异常类
+{
+	public MyException()
+	{
+		super();	//调用父类的构造函数，最终所有的都是用Throwable的构造函数来实现的
+	}
+	public MyException(String arg0)
+	{
+		super(arg0);	//调用父类的构造函数，最终所有的都是用Throwable的构造函数来实现的
+	}
+	public void printStackTrace()	//重写一些自己的异常类方法
+	{
+		System.out.println("printStackTrace1");
+	}
+	public void printStackTrace(PrintStream arg0)
+	{
+		System.out.println("printStackTrace2");
+	}
+	public String toString()
+	{
+		return "toString";
+	}
+}
+public class Test
+{
+	public static void main(String[] args) throws MyException
+	{
+		
+		throw new MyException("myException");//让虚拟机自己捕获 的话，他调用的是有参的printStackTrace
+//		
+//		try
+//		{
+//			throw new MyException("myException");	//Exception及其子类都是首检异常，必须要捕获
+//		} catch (MyException e)
+//		{
+//			e.printStackTrace();
+//			e.printStackTrace(System.err);
+//			System.out.println(e);
+//		}
+	}
+
+}
+
+public static void main(String[] args)
+	{
+		
+		try
+		{
+			throw new MyException("myException");	//Exception及其子类都是受检异常，必须要捕获
+		} catch (MyException e)
+		{
+			e.printStackTrace();		//无参的
+			e.printStackTrace(System.err);	//有参的
+			System.out.println(e);		//toString
+		}
+	}
+

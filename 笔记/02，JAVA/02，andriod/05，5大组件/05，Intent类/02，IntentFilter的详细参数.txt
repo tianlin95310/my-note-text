@@ -1,0 +1,8 @@
+1，IntentFilter可以含有多个action，Intent携带任何一个action都有可能与他匹配
+
+2，category action的附加信息
+
+3，data action的操作数据
+
+
+

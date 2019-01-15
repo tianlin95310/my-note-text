@@ -1,0 +1,91 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	SensorManager sm;
+
+	private MySensorListener listener;
+
+	Sensor sensor;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		// 传感器操作不需要权限
+		sm = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+		listener = new MySensorListener();
+
+		// 列举所有的传感器，我的手机上只有3个传感器
+		List<Sensor> list = sm.getSensorList(Sensor.TYPE_ALL);
+		for (Sensor s : list)
+		{
+			System.out.println(s.getName() + "," + s.getType() + ","
+					+ s.getVendor());
+		}
+
+		// 1,我的手机好像没有方向传感器
+		// sensor = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+		// if(sensor == null)
+		// {
+		// System.out.println("null");
+		// return;
+		// }
+		// System.out.println(sensor.getName());
+
+		// 2,加速度传感器
+		// sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		// if (sensor == null)
+		// {
+		// System.out.println("null");
+		// return;
+		// }
+		// System.out.println(sensor.getName());
+
+		// 3,近距离传感器，传感器在右上，靠近为0，远离为1
+//		 sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+//		 if (sensor == null)
+//		 {
+//		 System.out.println("null");
+//		 return;
+//		 }
+//		 System.out.println(sensor.getName());
+
+		// 4,光传感器
+		 sensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
+		 if (sensor == null)
+		 {
+		 System.out.println("null");
+		 return;
+		 }
+		 System.out.println(sensor.getName());
+
+		sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+		// 级别灵敏度级别
+		// SensorManager.SENSOR_DELAY_NORMAL; 正常
+		// SensorManager.SENSOR_DELAY_UI; 控件的显示
+		// SensorManager.SENSOR_DELAY_GAME; 游戏，实时性较高
+		// SensorManager.SENSOR_DELAY_FASTEST; 实时性高的
+	}
+
+	class MySensorListener implements SensorEventListener
+	{
+		public void onSensorChanged(SensorEvent event)
+		{
+			float[] data = event.values;
+			System.out.println(data[0] + "," + data[1] + "," + data[2]);
+		}
+
+		public void onAccuracyChanged(Sensor sensor, int accuracy)
+		{
+
+		}
+	}
+
+	protected void onDestroy()
+	{
+		sm.unregisterListener(listener);
+	}
+
+}

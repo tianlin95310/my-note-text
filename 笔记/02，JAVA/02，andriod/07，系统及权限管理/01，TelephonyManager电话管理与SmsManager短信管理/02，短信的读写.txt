@@ -1,0 +1,112 @@
+内部涉及有：内容提供者，观察者模式，内容提供者系统已经为我们实现了，如query，insert等等函数
+观察这模式的通知函数系统也已经为我们实现了。
+
+
+public class MainActivity extends Activity {
+
+	private EditText et;
+	private TextView tv;
+
+	private ContentResolver cr;
+	// 该Uri表示能查询所有的记录
+	private Uri uri = Uri.parse("content://sms/");
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		et = (EditText) findViewById(R.id.et);
+		tv = (TextView) findViewById(R.id.tv);
+		
+		// 获取客户端的ContentResolver对象
+		cr = getContentResolver();
+
+		
+		// true监听所有的以指定的uri开头的
+		cr.registerContentObserver(uri, true, new MyObserver(new Handler()));
+	}
+
+	private class MyObserver extends ContentObserver {
+
+		public MyObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		// 系统已经实现了通知函数，所以onChange函数会执行
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			// 这里得到的结果集与数据库里的数据的顺序是相反的
+			Cursor rs = cr.query(uri,
+					new String[] { "address", "body", "type", }, null, null,
+					null);
+
+			StringBuilder sb = new StringBuilder();
+
+			String address = null;
+			String body = null;
+			int type = 0;
+
+			// 因为顺序相反，所以只要移到开头的位置，就能得到最近的短信
+			rs.moveToNext();
+
+			address = rs.getString(rs.getColumnIndex("address"));
+			body = rs.getString(rs.getColumnIndex("body"));
+			type = rs.getInt(rs.getColumnIndex("type"));
+
+			sb.append(address + "    " + (type == 2 ? "发送" : "接受")).append(
+					"    " + body + "\n");
+			tv.setText(sb.toString());
+
+			rs.close();
+
+			// 5556收到短信后，发现短信数据库发生变化后，立即向5554发送一条短信
+			// SmsManager sm = SmsManager.getDefault();
+			// sm.sendTextMessage("5554", null, "receive 5556-5554", null,
+			// null);
+		}
+	}
+
+	public void read(View v) {
+
+		StringBuilder sb = new StringBuilder();
+		Cursor rs = cr.query(uri, new String[] { "body", "address", "date",
+				"type" }, null, null, null);
+
+		if (rs == null) {
+			Toast.makeText(this, "no sms", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		while (rs.moveToNext()) {
+			sb.append(
+					rs.getString(rs.getColumnIndex("address"))
+							+ "    "
+							+ (rs.getInt(rs.getColumnIndex("type")) == 2 ? "发送"
+									: "接受")).append(
+					"    " + rs.getString(rs.getColumnIndex("body")) + "\n");
+		}
+
+		tv.setText(sb.toString());
+
+	}
+
+	public void write(View v) {
+
+		// 直接在本地短信数据库里添加一条短信
+		
+		String address = et.getText().toString().trim();
+		
+		ContentValues values = new ContentValues();
+		values.put("address", address);
+		values.put("body", "send");
+		values.put("date", SystemClock.currentThreadTimeMillis());
+		values.put("type", 2);
+		cr.insert(uri, values);
+
+		// 给5556发送一条短信
+		// SmsManager sm = SmsManager.getDefault();
+		//
+		// sm.sendTextMessage("5556", null, "send 5554-5556", null, null);
+	}
+
+}

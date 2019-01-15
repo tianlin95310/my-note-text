@@ -1,0 +1,74 @@
+package cmo.my;
+
+// 接口定义
+interface DoSomething
+{
+	void dosomething1();
+	void dosomething2();
+}
+
+// 接口实现
+class Impl1 implements DoSomething
+{
+	@Override
+	public void dosomething1()
+	{
+		System.out.println("Impl1 + DoSomething1");
+	}
+	@Override
+	public void dosomething2()
+	{
+		System.out.println("Impl1 + DoSomething2");
+	}
+}
+
+// 角色的抽象，主要定义角色的行为request，包含一个接口实现对象的引用
+abstract class Abstract
+{
+	private DoSomething impl;
+	public Abstract(DoSomething impl)
+	{
+		this.impl = impl;
+	}
+	public void request()
+	{
+		impl.dosomething1();
+	}
+	public DoSomething getImpl()
+	{
+		return impl;
+	}
+	public void setImpl(DoSomething impl)
+	{
+		this.impl = impl;
+	}
+}
+
+// 修正的角色，主要对抽象角色进行扩充
+class RefinedAbstract extends Abstract
+{
+	public RefinedAbstract(DoSomething impl)
+	{
+		super(impl);
+	}
+
+	// 修正父类的方法行为方法
+	@Override
+	public void request()
+	{
+		// 在父类方法的基础上，还需调用接口实现的其他方法，来达到扩充的目的
+		super.request();
+		super.getImpl().dosomething2();
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Abstract refined1 = new RefinedAbstract(new Impl1());
+		refined1.request();
+		
+	}
+
+}

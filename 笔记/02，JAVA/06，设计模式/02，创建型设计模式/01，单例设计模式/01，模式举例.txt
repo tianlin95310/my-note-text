@@ -1,0 +1,36 @@
+1,构造函数私有化
+2，声明一个本类对象 
+3，给外部提供一个静态方法
+
+
+1，懒汉式
+class simpleP
+{
+	private static simpleP sim = null;	//静态成员，因为在类的内部，构造函数还是可以执行的
+	private simpleP(){}			//构造函数私有化
+	public static simpleP getObj()		//返回该固定对象
+	{
+		if(sim == null)			//new了一次后就不能new了，保证了只有一个对象
+			sim = new simpleP();	//去掉if就不是单例了
+		return sim;
+	}
+	public void print()
+	{
+		System.out.println("饿汉式");
+	}
+}
+
+2，饿汗式（多线程可能会不安全，假如是资源释放后他便不能使用了）
+class simpleP
+{
+	private static simpleP sim = new simpleP();	//一开始就定义一个对象，调用类内部的构造函数
+	private simpleP(){}				//构造函数私有化
+	public static simpleP getObj()			//返回该固定对象
+	{
+		return sim;
+	}
+	public void print()
+	{
+		System.out.println("饿汉式");
+	}
+}

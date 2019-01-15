@@ -1,0 +1,133 @@
+public static int checkWinner2(int x,int y)
+	{
+		//此种方法主要是判断其最大与最小值，来确定遍历范围。
+		//注意边界越界来平移最大最小值。
+		String who = bWho == false ? "●" : "╳";
+		
+		//水平
+		int xMax = x + 4;
+		int xMin = x - 4;
+		int yMax = y + 4;
+		int yMin = y - 4;
+		
+		xMin = xMin < 0 ? 0 : xMin;
+		xMax = xMax > N ? N - 1 : xMax;
+		
+		int iCount = 0;
+		int i = xMin;
+		while(play1[i][y].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			i++;
+			if(i > xMax)
+				break;
+		}
+		
+		//竖直
+		xMax = x + 4;
+		xMin = x - 4;
+		yMax = y + 4;
+		yMin = y - 4;
+		yMin = yMin < 0 ? 0 : yMin;
+		yMax = yMax > 0 ? N - 1 : yMax;
+		
+		iCount = 0;
+		int j = yMin;
+		while(play1[x][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			j++;
+			if(j > yMax)
+				break;
+		}
+		
+		//主对角线
+		xMin = x - 4;
+		xMax = x + 4;
+		yMin = y - 4;
+		yMax = y + 4;
+		
+		if(xMin < 0)
+		{
+			yMin -= yMin;
+			xMin -= xMin;
+		}
+		if(yMin < 0)
+		{
+			xMin -= yMin;
+			yMin -= yMin; 
+		}
+		if(xMax > N - 1)
+		{
+			yMax = yMax - (xMax - (N - 1));
+			xMax = N - 1;
+		}
+		
+		if(yMax > N - 1)
+		{
+			xMax = xMax - (yMax - (N - 1));
+			yMax = N - 1;
+		}
+		
+		iCount = 0;
+		
+		i = xMin;
+		y = yMin;
+		while(play1[i][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			
+			i++;
+			j++;
+			if(i > xMax || j > yMax)
+				break;
+		}
+		
+		//副对角线
+		xMin = x - 4;
+		xMax = x + 4;
+		yMin = y - 4;
+		yMax = y + 4;
+		
+		if(xMin < 0)
+		{
+			yMax += xMin;
+			xMin -= xMin;
+		}
+		if(yMin < 0)
+		{
+			xMax += yMin;
+			yMin -= yMin;
+		}
+		if(xMax > N - 1)
+		{
+			yMin = yMin + (xMax - (N - 1));
+			xMax = N - 1;
+		}
+		if(yMax > N - 1)
+		{
+			xMin = xMin + (yMax - (N - 1));
+			yMax = N - 1;
+		}
+		iCount = 0;
+		i = xMin;
+		j = yMax;
+		while(play1[i][j].equals(who))
+		{
+			iCount++;
+			if(iCount == 5)
+				return iCount;
+			i++;
+			j--;
+			if(i > xMax || j < yMin)
+				break;
+		}
+		
+		return iCount;
+	}

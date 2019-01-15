@@ -1,0 +1,19 @@
+1,迭代器
+map<char,int>::iterator it = mymap.begin();
+
+void main()
+{
+	std::map<string,int> m;
+	m.insert(pair<string,int>("tian",1));	//需要加入pair，这里面的pair应该就是与Java相似的entry了，实际的值存到pair里
+	m.insert(pair<string,int>("lin",2));
+
+	std::map<string,int>::iterator it;
+	it = m.begin();
+	while(it != m.end())
+	{
+		std::cout<<it->first<<"->"<<it->second<<endl;
+		it++;
+	}
+
+
+}

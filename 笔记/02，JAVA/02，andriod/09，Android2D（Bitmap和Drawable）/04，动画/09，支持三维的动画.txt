@@ -1,0 +1,81 @@
+package com.example.animation;
+
+import android.graphics.Camera;
+import android.graphics.Matrix;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.Transformation;
+
+public class MyAnimation extends Animation
+{
+
+	// 动画的平移量
+	private int centerX;
+	private int centerY;
+	// 持续时间
+	private int duration;
+	
+	// 支持三维操作的camera
+	Camera camera;
+	public MyAnimation(int centerX, int centerY, int duration)
+	{
+		super();
+		this.centerX = centerX;
+		this.centerY = centerY;
+		this.duration = duration;
+		
+		camera = new Camera();
+	}
+
+	@Override
+	public void initialize(int width, int height, int parentWidth,
+			int parentHeight)
+	{
+		// 注意父类的initialize不能丢掉
+		super.initialize(width, height, parentWidth, parentHeight);
+		this.setDuration(duration);
+		this.setFillAfter(true);
+		
+		// 匀速
+		this.setInterpolator(new LinearInterpolator());
+		
+	}
+	
+	// interpolatedTime表示移动过程中距离原始坐标的位置比率，值为0.0到1.0
+	@Override
+	protected void applyTransformation(float interpolatedTime, Transformation t)
+	{
+		// 锁定画布
+		camera.save();
+		
+		// 由于interpolatedTime为0.0到1.0，X - X * interpolatedTime能回到最初的位置
+		camera.translate(100 - 100 * interpolatedTime,
+				80 - 80 * interpolatedTime,
+				60 - 60 * interpolatedTime);
+		
+//		camera.translate(50, 50, 50);
+		
+		// 同时有rotateX，rotateY，并且转360能保证回到最初的方向
+		
+		// 绕X轴旋转
+		camera.rotateX(360 * interpolatedTime);
+		// 绕Y轴旋转
+		camera.rotateY(360 * interpolatedTime);
+		// 绕Z轴旋转，效果不好
+//		camera.rotateZ(360 * interpolatedTime);
+		
+//		// 将控件的Matrix拿到并做平移
+		Matrix matrix = t.getMatrix();
+		camera.getMatrix(matrix);
+		
+		// 平移一去一回，最终回到起始点
+		// set主要用于二维平面，3维的话只能用preTranslate
+//		matrix.setTranslate(-centerX, -centerY);
+		matrix.preTranslate(-centerX, -centerY);
+		// post不会清楚之前的效果
+		matrix.postTranslate(centerX, centerY);
+		
+		// 解除锁定
+		camera.restore();
+	}
+}

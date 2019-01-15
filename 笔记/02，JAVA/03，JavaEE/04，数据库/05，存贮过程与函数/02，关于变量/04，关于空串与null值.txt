@@ -1,0 +1,29 @@
+1,解释
+空串	该列的值为空白，但并非null
+null 	该列显示null，没有值
+
+2，使用举例
+BEGIN
+	#Routine body goes here...
+	declare vstr_sql varchar(500);
+	declare veid int;
+	
+	set vstr_sql = 'select * from daycount where 1 = 1';
+
+	if eNo != '' && eNo is not null then 
+		select e.eid into veid from employee e where e.eNo = eNo;
+#对于id类型的值，他可以用单引号括起来，也可以不用
+		set vstr_sql = CONCAT(vstr_sql,' and eid = ', veid);
+
+elseif year != '' && year is not NULL then 
+#但对于字符串类型的值，必须用单引号括起来
+		set vstr_sql =CONCAT(vstr_sql,' and startDate= ','\'', year, '\'' );
+	
+end if;
+
+set @str = vstr_sql;
+
+prepare s1 from @str;
+
+EXECUTE s1;
+END

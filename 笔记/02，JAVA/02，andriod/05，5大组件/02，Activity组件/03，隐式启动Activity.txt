@@ -1,0 +1,8 @@
+
+需要同时配置action和category，才能启动
+<action android:name="aaa.bbb.ccc"/>
+<category android:name="android.intent.category.DEFAULT"/>
+
+ Intent intent = new Intent();
+ intent.setAction("aaa.bbb.ccc");
+ startActivity(intent);

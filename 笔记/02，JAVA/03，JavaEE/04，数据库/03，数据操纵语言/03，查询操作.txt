@@ -1,0 +1,41 @@
+1，查询结果按某列排序order by
+select *
+from game
+order by age;
+
+select *
+from game
+order by age,creatDate;
+//先以age排序，age相同再用creatDate排序，用逗号隔开
+
+2，分组查询group by
+select gender,count(sid) as 人数	//把sid的总数作为人数列
+from game
+group by gender;	//根据gender不同,分为两组，count能统计每组的人数
+
+	补充：他能把每一组里的某个属性一次列举出来，比如我以eid分组，然后将每一个组里的
+	lid列举出来
+	select GROUP_CONCAT(lid) from leaveinfo group by eid;
+
+3，Having语句
+select gender,count(sid) as 人数
+from game
+group by gender
+having gender='f';	//having是专门用来给group by作附加条件的
+	//但最好不要使用，因为他的效率不高，尽量用where来限制条件
+
+4,分页查询limit
+select *
+from game 
+limit 0,3 	//从0开始，查询3个，0是逻辑序号,表示从哪一个开始
+
+5，分页查询
+	第一个3是逻辑号，他是已经满足了前面leavetype='条件的，也就是他在第一个参数时就已经查到了规定的记录条数，接下来就是还要查多少条
+
+所以limit 0,3	就表示了第一页
+    limit 3,3	就表示了第二页
+    limit 6,3	就表示了第三页
+select * from leaveinfo where leavetype='holiday' limit 3,3;
+
+6，union可以将两个结果集进行联合并且能去除重复，union All可以联合所有的结果集
+

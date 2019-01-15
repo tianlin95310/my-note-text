@@ -1,0 +1,4 @@
+item布局中，假若跟布局为LinearLayout1
+设其高度为60dp
+若某个子布局的高度大于60，那么该项item的值会大于60
+若设LinearLayout1为wrap的话。那么每个item的高度可能各不相同,具体由每个item自身决定

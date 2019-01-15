@@ -1,0 +1,17 @@
+1，任意视图的依赖
+layoutDependsOn返回true，则会调用onDependentViewChanged
+
+
+2，支持滑动的情况
+
+CoordiantorLayout收到来自NestedScrollingChild的各种回调后，都是交由需要响应的Behavior来处理的，所以这里可以得出一个结论，CoordiantorLayout是Behavior的一个代理类，所以Behavior实际上也是一个NestedScrollingParent
+
+NestedScrollingChild		NestedScrollingParent	
+子view的方法会触发		Behavior实际上只是一个NestedScrollingParent
+
+startNestedScroll		onStartNestedScroll、onNestedScrollAccepted
+dispatchNestedPreScroll	onNestedPreScroll
+dispatchNestedScroll	onNestedScroll
+stopNestedScroll		onStopNestedScroll
+dispatchNestedPreFling 	onNestedPreFling
+dispatchNestedFling		onNestedFling		

@@ -1,0 +1,43 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	TextView tv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		
+		// 获取所有的可用的定位服务，主要有network，passive,gps
+		List<String> list = lm.getAllProviders();
+		for(String str : list)
+		{
+			System.out.println(str);
+		}
+		
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, new LocationListener()
+		{
+			public void onStatusChanged(String provider, int status, Bundle extras)
+			{
+			}
+			public void onProviderEnabled(String provider)
+			{
+			}
+			public void onProviderDisabled(String provider)
+			{
+			}
+			public void onLocationChanged(Location location)
+			{
+				double latitude = location.getLatitude();
+				double longitude = location.getLongitude();
+				
+				System.out.println(latitude + "\n" + longitude);
+				
+				System.out.println(location.toString());
+			}
+		});
+	}
+
+}

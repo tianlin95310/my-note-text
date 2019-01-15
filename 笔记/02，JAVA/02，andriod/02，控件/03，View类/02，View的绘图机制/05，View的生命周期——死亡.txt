@@ -1,0 +1,6 @@
+1，在View被移除或者activity死亡之前，view会调用
+
+2，移除View
+// 移除视图,先得到父视图
+ViewGroup p = (ViewGroup) mtv.getParent();
+p.removeView(mtv);

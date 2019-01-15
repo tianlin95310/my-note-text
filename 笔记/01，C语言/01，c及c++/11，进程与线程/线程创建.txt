@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <windows.h>
+unsigned WINAPI threadFunc(void * arg);//线程函数声明
+
+int main(int argc, char *argv[])
+{
+	HANDLE hThread; 
+	DWORD threadID;
+	int param=6;
+	hThread=CreateThread(NULL,0,//在主线程的基础上创建一个新线程,返回线程句柄或NULL
+		(LPTHREAD_START_ROUTINE)threadFunc,//线程函数指针，void *类型
+		(void *)&param,//线程函数的参数也可以没有参数，NULL
+		0, //线程标志，创建后立即激活
+		&threadID);//保存新线程的ID
+	if(hThread==NULL)			
+	{
+		puts("CreateThread() fails \n");
+		return -1;
+	}
+	WaitForSingleObject(hThread, INFINITE);//当等待仍在挂起状态时，句柄被关闭，那么函数行为是未定义的。
+	return 0;
+}
+unsigned WINAPI threadFunc(void * arg)//线程函数定义格式
+{
+	int i;
+	int cnt = *((int *)arg);//由void*转为int*在取内容为6
+	for (i=0; i<cnt; i++)  
+	{
+		Sleep(1000);
+		puts("running thread");
+	}
+	return 0;
+}

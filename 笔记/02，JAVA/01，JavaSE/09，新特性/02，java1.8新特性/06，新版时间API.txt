@@ -1,0 +1,46 @@
+package com.testnewdate;
+
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+public class TestNewDate
+{
+
+	public static void main(String[] args)
+	{
+		// 新版时间戳
+		Clock clock = Clock.systemDefaultZone();
+		System.out.println(clock.millis());
+
+		// 旧版时间戳
+		Date date1 = new Date(clock.millis());
+		System.out.println(date1.getTime());
+
+		// 获取个地方时区
+		ZoneId china = ZoneId.systemDefault();
+		System.out.println(china);
+		
+		// 日期
+		LocalDate date2 = LocalDate.now(china);
+		System.out.println(date2);
+		
+		// 时间
+		LocalTime time = LocalTime.now(china);
+		System.out.println(time);
+		
+		// 详细时间
+		LocalDateTime datetime = LocalDateTime.now(china);
+		System.out.println(datetime);
+		
+		// 格式化时间格式
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String customer = format.format(datetime);
+		System.out.println(customer);
+	}
+
+}

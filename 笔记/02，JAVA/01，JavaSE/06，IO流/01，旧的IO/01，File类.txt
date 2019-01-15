@@ -1,0 +1,79 @@
+
+文件操作类，文件夹也被看做文件，所以Java不能创建文件名与文件夹名一样的文件。
+
+public class ThreadPools
+{
+	public static void main(String []args)
+	{
+//		File file = new File(".//res/1.txt");
+		
+//		// 1，判断文件是否存在
+//		if(!file.exists())
+//			try
+//			{
+		
+//			// 2，创建新文件
+//				file.createNewFile();
+//			} catch (IOException e)
+//			{
+//				e.printStackTrace();
+//			}
+//		
+//		// 3，重命名
+//		file.renameTo(new File(".//res/2.txt"));
+		
+		// 4,创建文件
+//		File file = new File(".//res");
+//		if(file.isDirectory())
+//		{
+//			//创建5个文件
+//			for(int i = 0 ; i < 5; i++)
+//			{
+//				String name = ".//res//" + "file" + i + "." + "t" + i;
+//				File tempFile = new File(name);
+//				try
+//				{
+//					tempFile.createNewFile();
+//				} catch (IOException e)
+//				{
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+		
+//		// 5,列出所有的文件名
+//		String[] names = file.list();
+//		for(String name : names)
+//		{
+//			System.out.println(name);
+//		}
+		
+//		//6，列出所有的文件句柄，如果目录为空，则数组的长度为0，
+			//若发生错误，则返回null，例如不是用目录来调用file.listFiles
+//		File files[] = file.listFiles();
+//		
+//		for(File f : files)
+//		{
+//			System.out.println(f.getName() + " " + f.length());
+//		}
+//		System.out.println("success");
+		
+		// 7,创建临时文件
+		try
+		{
+			//创建临时文件
+			File file = File.createTempFile("abc", ".ttt", new File("C:"));
+			System.out.println(file.getPath());
+			Thread.sleep(2000);
+			//删除临时文件
+			file.deleteOnExit();
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}

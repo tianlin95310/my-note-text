@@ -1,0 +1,24 @@
+public void onClick(View v) {
+		if(v.getId() == R.id.bt_call)
+		{
+			String number = et_number.getText().toString().trim();
+			
+			Intent i = new Intent();
+			
+			i.setAction("android.intent.action.CALL");
+			i.setData(Uri.parse("tel:" + number));
+			
+			startActivity(i);
+		}
+		
+		if(v.getId() == R.id.bt_send)
+		{
+			
+			String number = et_number.getText().toString().trim();
+			String text = et_sms.getText().toString().trim();
+			SmsManager sm = SmsManager.getDefault();
+			
+			sm.sendTextMessage(number, null, text, null, null);
+			
+		}
+	}

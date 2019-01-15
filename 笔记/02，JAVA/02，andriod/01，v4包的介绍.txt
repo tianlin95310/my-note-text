@@ -1,0 +1,58 @@
+1，3.0推出的能兼容到API4的兼容jar包
+
+2，对于v4里提供的更新类，尽量用v4包里面的
+
+3，使用兼容包的好处是，高版本的API不能在低版本的手机上运行，因为编译环境都不一样，但v4包是整个都倒进到apk中，所以低版本的手机能够兼容
+
+4，更新的API
+Fragment
+ViewPager
+两者配合使用
+ <android.support.v4.view.ViewPager
+        android:id="@+id/vp_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/vp_titel"
+            android:layout_width="match_parent"
+       		android:layout_height="wrap_content"
+       		android:textColor="#ffff00"
+            />
+            
+    </android.support.v4.view.ViewPager>
+
+5，FileProvider的使用
+	如果发现FileProvider没有find，可能是因为类的数量超了，需要用到 MultiDex，高版本的会自动使用MultiDex
+
+// 内容提供者配置
+  <provider
+        android:name="android.support.v4.content.FileProvider"
+        android:authorities="com.harry.shopping.fileprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths"/>
+    </provider>
+
+// Xml文件配置
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path name="images" path="Android/data/com.harry.shopping/files/Pictures" />
+</paths>
+
+// 其他的文件路径配置
+<files-path name="name" path="path" />
+Context.getFilesDir()
+
+<cache-path name="name" path="path" />
+Context.getCacheDir()
+
+<external-path name="name" path="path" />
+Environment.getExternalStorageDirectory()
+
+<external-files-path name="name" path="path" />
+Context.getExternalFilesDir(String) 
+
+<external-cache-path name="name" path="path" />
+Context.getExternalCacheDir()

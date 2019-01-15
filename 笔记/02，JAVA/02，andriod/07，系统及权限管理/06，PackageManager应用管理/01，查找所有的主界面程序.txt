@@ -1,0 +1,22 @@
+查询指定IntentFilter的应用包名
+
+private List<String> getHomes()
+	{
+		List<String> names = new ArrayList<String>();
+		PackageManager pm = this.getPackageManager();
+		Intent intent = new Intent();
+		
+		// 获取桌面应用程序
+		intent.setAction(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_HOME);
+		
+		List<ResolveInfo> ri = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		
+		for(ResolveInfo info : ri)
+		{
+			names.add(info.activityInfo.packageName);
+		}
+		
+		Log.d("my", "home:" + names.toString());
+		return names;
+	}

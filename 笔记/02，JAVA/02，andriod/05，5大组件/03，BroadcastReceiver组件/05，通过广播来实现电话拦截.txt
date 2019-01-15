@@ -1,0 +1,75 @@
+// 1，远程服务接口
+package com.android.internal.telephony;
+
+interface ITelephony{  
+    boolean endCall();  
+    void answerRingingCall();  
+}
+
+// 2，自动生成的java文件
+
+
+
+// 广播注册，注册后，系统的电话状态发生变化，该广播能接收到
+<receiver android:name="com.example.receiver.CallReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+                
+            </intent-filter>
+
+// 接收处理
+public class CallReceiver extends BroadcastReceiver
+{
+
+	// 系统的电话管理
+	private TelephonyManager tm ;
+	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+		// 得到系统的电话管理
+		tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+		// 得到电话状态
+		switch(tm.getCallState())
+		{
+		// 空闲状态，挂断状态
+		case TelephonyManager.CALL_STATE_IDLE:
+			break;
+			// 接听状态
+		case TelephonyManager.CALL_STATE_OFFHOOK:
+			break;
+			// 响铃状态
+		case TelephonyManager.CALL_STATE_RINGING:
+			// 得到电话号码
+			String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+			
+			System.out.println(number);
+			// 挂断电话
+			endCall();
+			break;
+		}
+	}
+	
+	private void endCall()
+	{
+		// 通过反射得到TelephonyManager类的反射类
+		Class<TelephonyManager> c = TelephonyManager.class;
+		try
+		{
+			// 得到名为getITelephony的方法
+			Method m = c.getDeclaredMethod("getITelephony", (Class[])null);
+			// 设置访问权限，消除private方法的影响
+			m.setAccessible(true);
+			
+			ITelephony iTelephony = null;
+			// 得到iTelephony对象
+			iTelephony = (ITelephony) m.invoke(tm, (Object[])null);
+			// 调用结束通话的方法
+			iTelephony.endCall();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+}

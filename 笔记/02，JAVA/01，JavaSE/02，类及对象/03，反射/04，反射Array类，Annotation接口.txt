@@ -1,0 +1,126 @@
+1，
+专门处理数组反射的类Array
+public static void main(String[] args)
+	{
+		int a[] = {1,2,3,4,5};
+		Class<?> c = a.getClass().getComponentType();
+		
+		Object array = Array.newInstance(c, a.length);
+		Array.set(array, 0, 123);
+		System.out.println(Array.get(array, 0));
+	}
+
+
+2，反射取得类中的注解
+一个Annotation要想让其变得有意义，则必须结合反射机制取得Annotation中设置的全部内容	
+	1，
+	@Target(ElementType.FIELD)
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface FieldAnnotation
+	{
+		String fieldName();
+	}
+	
+	2，
+	@Target(ElementType.METHOD)
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface MethodAnnotation
+	{
+		String methodName();	//这里很像一个函数
+	}
+
+
+@ClassAnnotation(classValue="classValue")
+class T
+{
+	@FieldAnnotation(fieldName="fieldName1")
+	private String name1;
+
+	@FieldAnnotation(fieldName="fieldName2")
+	public static String name2;
+
+	@MethodAnnotation(methodName="methodName1")
+	public void fun1()
+	{
+		System.out.println("fun1");
+	}
+	@MethodAnnotation(methodName="methodName2")
+	public void fun2()
+	{
+		System.out.println("fun2");
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		Class<T> c1 = T.class;
+		
+		//1,类注解
+		Annotation[] anos = c1.getDeclaredAnnotations();
+		for(Annotation an : anos)
+		{
+			System.out.println(an.annotationType().getName());
+			//annotationType函数返回对应的反射类型
+		}
+			//获得指定的注解对象
+		ClassAnnotation ca = c1.getDeclaredAnnotation(ClassAnnotation.class);
+			//获取注解的value值，该函数有系统帮我们实现。
+		System.out.println(ca.classValue());
+		System.out.println("********************************************************");
+		
+
+		//2,变量注解
+		//获取所有变量的注解
+		Field[] fields = c1.getDeclaredFields();
+		for(Field field : fields)
+		{
+			//对每一个变量获取所有注解
+			Annotation[] anos1 = field.getDeclaredAnnotations();
+			for(Annotation an1 : anos1)
+			{
+					//annotationTypeha函数返回对应的反射类型
+				System.out.println(an1.annotationType().getName());
+			}
+		}
+		//获取指定字段的的指定注解
+		try
+		{
+				//获取字段name1的注解
+			Field f1 = c1.getDeclaredField("name1");
+				//获取FieldAnnotation注解
+			FieldAnnotation fa = f1.getDeclaredAnnotation(FieldAnnotation.class);
+				//fieldName是我们定义的注解变量，该函数有系统帮我们实现
+			System.out.println(fa.fieldName());
+		} catch (NoSuchFieldException | SecurityException e)
+		{
+			e.printStackTrace();
+		}
+		System.out.println("********************************************************");
+		
+
+		//3，函数注解
+		Method[] ms = c1.getDeclaredMethods();
+		for(Method m : ms)
+		{
+			Annotation[] anos2 = m.getDeclaredAnnotations();
+			for(Annotation an2 : anos2)
+			{
+						//annotationTypeha函数返回对应的反射类型
+				System.out.println(an2.annotationType().getName());
+			}
+		}
+		
+		try
+		{
+			Method m = c1.getDeclaredMethod("fun2");
+			//传进一个什么类型的注解，就返回一个一个对应的注解对象
+			MethodAnnotation ma = m.getDeclaredAnnotation(MethodAnnotation.class);
+			System.out.println(ma.methodName());
+		} catch (NoSuchMethodException | SecurityException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+}

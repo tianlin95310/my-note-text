@@ -1,0 +1,392 @@
+主要通过通过HttpUrlConnection，HttpClient，以及第三方的AsyncHttpClient的工具类来实现网络资源的处理
+
+
+1，Servlet服务器端
+@WebServlet("/Login")
+public class Login extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    
+    public Login() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		
+		if(username == null|| password == null)
+			return;
+		
+		if(username.equals(password))
+			response.getOutputStream().write("Login Success!".getBytes());
+		
+		else
+			response.getOutputStream().write("Login Default!".getBytes());
+			
+		System.out.println(username + "\n" + password + "\n" + "请求IP" + request.getRemoteAddr() + 
+				"\n" + "本地IP" + request.getLocalAddr());
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}
+
+2,客户端
+public class MainActivity extends ActionBarActivity
+{
+
+	private EditText et_username, et_password;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		et_username = (EditText) findViewById(R.id.et_username);
+		et_password = (EditText) findViewById(R.id.et_password);
+
+	}
+
+	private Handler handler = new Handler()
+	{
+		public void handleMessage(Message msg)
+		{
+			switch (msg.what)
+			{
+			case 0x100:
+				String text = (String) msg.obj;
+				Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT)
+						.show();
+				break;
+			case 0x101:
+				Toast.makeText(MainActivity.this, "something is null",
+						Toast.LENGTH_SHORT).show();
+				break;
+			}
+			super.handleMessage(msg);
+		}
+	};
+
+	public void get1(View v)
+	{
+		// 有网络连接的操作需要放到子线程中去
+		new Thread()
+		{
+			public void run()
+			{
+				String username = et_username.getText().toString().trim();
+				String password = et_password.getText().toString().trim();
+
+				if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username))
+				{
+					handler.sendEmptyMessage(0x101);
+					return;
+				}
+				// get方式需要将参数构造到URL中
+				String path = "http://10.176.163.139:8080/001login/Login?username="
+						+ username + "&password=" + password;
+				try
+				{
+					URL url = new URL(path);
+					// 得到http相应对象
+					HttpURLConnection con = (HttpURLConnection) url
+							.openConnection();
+					// 设置连接时延
+					con.setConnectTimeout(5000);
+					// 设置请求方式
+					con.setRequestMethod("GET");
+					// 获取响应码
+					int code = con.getResponseCode();
+					if (code == 200)
+					{
+						// 得到服务器响应的数据流
+						InputStream is = con.getInputStream();
+						StringBuffer sb = new StringBuffer();
+						byte bytes[] = new byte[1024];
+						int len = -1;
+						while ((len = is.read(bytes)) != -1)
+						{
+							sb.append(new String(bytes, 0, len));
+						}
+						
+						// 将文件流发送到消息队列，等待主线程处理
+						Message msg = new Message();
+						msg.what = 0x100;
+						msg.obj = sb.toString();
+						handler.sendMessage(msg);
+					}
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
+
+	public void post1(View v)
+	{
+		// 网络操作需要用到子线程
+		new Thread()
+		{
+			public void run()
+			{
+				String username = et_username.getText().toString().trim();
+				String password = et_password.getText().toString().trim();
+
+				if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username))
+				{
+					handler.sendEmptyMessage(0x101);
+					return;
+				}
+				
+				String path = "http://10.176.163.139:8080/001login/Login";
+				try
+				{
+					URL url = new URL(path);
+
+					HttpURLConnection con = (HttpURLConnection) url
+							.openConnection();
+					con.setConnectTimeout(5000);
+					con.setRequestMethod("POST");
+					// 设置con能发送数据
+					con.setDoOutput(true);
+					// 构造发送请求的内容
+					String content = "username=" + username + "&password="
+							+ password;
+					// 将内容写进流送到服务器
+					con.getOutputStream().write(content.getBytes());
+					// 得到服务器响应的数据流
+					InputStream is = con.getInputStream();
+
+					StringBuffer sb = new StringBuffer();
+					byte bytes[] = new byte[1024];
+					int len = -1;
+
+					while ((len = is.read(bytes)) != -1)
+					{
+						sb.append(new String(bytes, 0, len));
+					}
+
+					Message msg = new Message();
+					msg.what = 0x100;
+					msg.obj = sb.toString();
+
+					handler.sendMessage(msg);
+
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+			};
+
+		}.start();
+	}
+
+	public void get2(View v)
+	{
+		new Thread()
+		{
+			public void run()
+			{
+
+				String username = et_username.getText().toString().trim();
+				String password = et_password.getText().toString().trim();
+
+				if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username))
+				{
+					handler.sendEmptyMessage(0x101);
+					return;
+				}
+
+				try
+				{
+					// get方式与连接方式相同，将提交数据放到URL里面
+					String path = "http://10.176.163.139:8080/001login/Login?username="
+							+ username + "&password=" + password;
+					// 获取get对象
+					HttpGet hg = new HttpGet(path);
+					// 获得client对象
+					HttpClient hc = new DefaultHttpClient();
+					//  client对象提交url得到服务器响应对象
+					HttpResponse response = hc.execute(hg);
+					// getStatusLine得到所有的状态信息，getStatusCode得到状态吗
+					int code = response.getStatusLine().getStatusCode();
+
+					if (code == 200)
+					{
+						// getEntity得到内容实体，getContent得到内容数据流
+						InputStream is = response.getEntity().getContent();
+						StringBuffer sb = new StringBuffer();
+						byte bytes[] = new byte[1024];
+						int len = -1;
+						while ((len = is.read(bytes)) != -1)
+						{
+							sb.append(new String(bytes, 0, len));
+						}
+						// 发送给主进程的handler对象处理
+						Message msg = new Message();
+						msg.what = 0x100;
+						msg.obj = sb.toString();
+						handler.sendMessage(msg);
+					}
+
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			};
+		}.start();
+	}
+
+	public void post2(View v)
+	{
+		new Thread(new Runnable()
+		{
+
+			public void run()
+			{
+				String username = et_username.getText().toString().trim();
+				String password = et_password.getText().toString().trim();
+
+				if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username))
+				{
+					handler.sendEmptyMessage(0x101);
+					return;
+				}
+
+				try
+				{
+					// post与con连接方式一样，数据另外发送，不放在url里面
+					String path = "http://10.176.163.139:8080/001login/Login";
+					// 获取client对象
+					HttpClient hc = new DefaultHttpClient();
+					// 获取post对象
+					HttpPost post = new HttpPost(path);
+					// 构造提交数据集合
+					List<NameValuePair> list = new ArrayList<NameValuePair>();
+					// 添加数据
+					list.add(new BasicNameValuePair("username", username));
+					list.add(new BasicNameValuePair("password", password));
+					// 构造数据实体
+					HttpEntity entity = new UrlEncodedFormEntity(list);
+					// 将实体设置到post里
+					post.setEntity(entity);
+					// client将post携带的内容提交给服务器获取服务器相应对象
+					HttpResponse response = hc.execute(post);
+					// 获取响应码
+					int code = response.getStatusLine().getStatusCode();
+
+					if (code == 200)
+					{
+						// 得到响应数据流
+						InputStream is = response.getEntity().getContent();
+						StringBuffer sb = new StringBuffer();
+						byte bytes[] = new byte[1024];
+						int len = -1;
+						while ((len = is.read(bytes)) != -1)
+						{
+							sb.append(new String(bytes, 0, len));
+						}
+
+						Message msg = new Message();
+						msg.what = 0x100;
+						msg.obj = sb.toString();
+						handler.sendMessage(msg);
+					}
+
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	// 通过第三方工具来操作
+	public void getbyjar(View v)
+	{
+
+		String username = et_username.getText().toString().trim();
+		String password = et_password.getText().toString().trim();
+
+		if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username))
+		{
+			handler.sendEmptyMessage(0x101);
+			return;
+		}
+		// 获取client对象
+		AsyncHttpClient client = new AsyncHttpClient();
+
+		String url = "http://10.176.163.139:8080/001login/Login?username="
+				+ username + "&password=" + password;
+		// get方式连接服务器
+		client.get(url, new AsyncHttpResponseHandler()
+		{
+			// 重写两个方法，一个是连接失败的方法，一个是连接成功的方法，该工具做了大量的封装
+			// 包括多线程的操作，、handler的处理
+			public void onFailure(int statusCode, Header[] headers,
+					byte[] responseBody, Throwable error)
+			{
+
+				Toast.makeText(MainActivity.this, new String(responseBody),
+						Toast.LENGTH_SHORT).show();
+				super.onFailure(statusCode, headers, responseBody, error);
+			}
+
+			public void onSuccess(int statusCode, Header[] headers,
+					byte[] responseBody)
+			{
+				Toast.makeText(MainActivity.this, new String(responseBody),
+						Toast.LENGTH_SHORT).show();
+				super.onSuccess(statusCode, headers, responseBody);
+			}
+
+		});
+	}
+
+	public void postbyjar(View v)
+	{
+		String username = et_username.getText().toString().trim();
+		String password = et_password.getText().toString().trim();
+
+		if (TextUtils.isEmpty(password) || TextUtils.isEmpty(username))
+		{
+			handler.sendEmptyMessage(0x101);
+			return;
+		}
+
+		AsyncHttpClient client = new AsyncHttpClient();
+		
+		// post方式需要额外的数据结构来提交数据
+		RequestParams data = new RequestParams();
+
+		String url = "http://10.176.163.139:8080/001login/Login";
+		data.put("username", username);
+		data.put("password", password);
+		
+		client.post(url, data, new AsyncHttpResponseHandler()
+		{
+			// 连接失败的
+			public void onFailure(int statusCode, Header[] headers,
+					byte[] responseBody, Throwable error)
+			{
+
+				Toast.makeText(MainActivity.this, new String(responseBody),
+						Toast.LENGTH_SHORT).show();
+				super.onFailure(statusCode, headers, responseBody, error);
+			}
+
+			public void onSuccess(int statusCode, Header[] headers,
+					byte[] responseBody)
+			{
+				Toast.makeText(MainActivity.this, new String(responseBody),
+						Toast.LENGTH_SHORT).show();
+				super.onSuccess(statusCode, headers, responseBody);
+			}
+
+		});
+	}
+}

@@ -1,0 +1,9 @@
+1，vue init webpack my-project-name
+
+2，是否支持sass
+	1，支持css的嵌套写法
+	2，支持定义变量
+	3，混合宏，类似于函数
+	4，条件语句
+
+3，vue查看版本-V

@@ -1,0 +1,8 @@
+在settings.gradle里加上
+
+include ':app'
+
+include ':LibsManager'
+project(':LibsManager').projectDir = new File('../LibsManager')
+
+include ':LibsManager:testlibrary'

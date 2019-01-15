@@ -1,0 +1,73 @@
+#include <iostream>
+using namespace std;
+
+struct NODE
+{
+	int data;
+	NODE *next;
+};
+
+void ShowNode(NODE *pNode)
+{
+	NODE *pCurr = pNode;
+	while (pCurr)
+	{
+		cout << pCurr->data << "  ";
+		pCurr = pCurr->next;
+	}
+	cout << endl;
+}
+
+// 1<--2<--3<--4<--5<--6  7
+//                     p1 p2 p3
+void RevNode(NODE *&pNode)
+{
+	if (pNode == NULL || pNode->next == NULL) return;
+
+	NODE *p1 = pNode;
+	NODE *p2 = p1->next;
+	NODE *p3 = NULL;
+
+	if (p2->next == NULL)
+	{
+		p1->next = NULL;
+		p2->next = p1;
+		return;
+	}
+
+	p3 = p2->next;
+
+	p1->next = NULL;
+
+	while (p3 != NULL)
+	{
+		p2->next = p1;	//!!!!!
+
+		p1 = p2;
+		p2 = p3;
+		p3 = p2->next;
+	}
+	p2->next = p1;
+	pNode = p2;
+}
+
+int main()
+{
+	//1. 创建链表
+	NODE d = {4, NULL};
+	NODE c = {3, &d};
+	NODE b = {2, &c};
+	NODE a = {1, &b};
+	NODE *pHead = &a;
+
+	//2. 显示原始链表内容
+	ShowNode(pHead);
+
+	//3. 反转链表
+	RevNode(pHead);
+
+	//4. 显示反转后的链表内容
+	ShowNode(pHead);
+
+	return 0;
+}

@@ -1,0 +1,3 @@
+鉴于Activity过于臃肿，我们将控制器的角色移到Presenter里，让Presenter来承担
+控制器，而Activity只负责控制器Presenter与View的绑定作用，由Presenter调用业务逻辑，
+实现View与模型的交互

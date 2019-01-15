@@ -1,0 +1,8 @@
+参照DOWN事件的分发图：
+
+1，如果MOVE之前的DOWN事件没有被View消费，即所有的View的OnTouchListener，onTouchEvent都返回false，那么接下来的MOVE，UP直接由activity的onTouchEvent处理，不往下分发。
+
+2，如果MOVE之前的DOWN事件的消费者是目标View，那么MOVE，UP事件将会继续分发，直到分发到之前的DOWN事件的消费者（这里是目标View），
+如果在此次MOVE事件的处理中没有消费掉事件，那么以后的MOVE，UP事件将直接交给activity来处理消费，不在需要经过父View的分发和父View的OnTouchListener和onTouchEvent。
+
+3，如果MOVE之前的DOWN事件的消费者是某一个父View，那么接下来的MOVE，UP事件只会分发到父View，不会分发到目标View，即目标View的OnTouchListener，onTouchEvent都不会执行，如果父View的OnTouchListener，onTouchEvent处理MOVE事件都返回false，那么接下来的MOVE，UP事件也将直接交给activity来处理消费，不在需要经过父View（假如有）的的分发和父View的OnTouchListener和onTouchEvent了。

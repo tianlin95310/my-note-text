@@ -1,0 +1,78 @@
+android的ListView的BaseAdapter，JavaGUI的事件适配器等等，采用的都是这种类似的适配器
+让一个类空实现所有的接口，然后在继承该类来重写目的方法
+
+使用条件
+类实现接口时，不想实现所有的方法
+
+interface DoWhat
+{
+	public void doSomething1();
+	public void doSomething2();
+	public void doSomething3();
+}
+
+// 每一实现类必须实现所有的方法，有的时候是不需要的，应该让客户端想实现那个就实现那个
+class DoImpl1 implements DoWhat
+{
+	@Override
+	public void doSomething1()
+	{
+		System.out.println("doSomething1");
+	}
+
+	@Override
+	public void doSomething2()
+	{
+		System.out.println("doSomething2");
+	}
+
+	@Override
+	public void doSomething3()
+	{
+		System.out.println("doSomething2");
+	}
+	
+}
+
+// 用适配器空实现所有的方法
+class BaseAdapter implements DoWhat
+{
+	@Override
+	public void doSomething1()
+	{
+	}
+	@Override
+	public void doSomething2()
+	{
+	}
+	@Override
+	public void doSomething3()
+	{
+	}
+}
+
+// 继承自适配器，想重写那个就重写那个
+class DoImpl2 extends BaseAdapter
+{
+	@Override
+	public void doSomething1()
+	{
+		System.out.println("doSomething1");
+	}
+	
+}
+class DoImpl3 extends BaseAdapter
+{
+	@Override
+	public void doSomething3()
+	{
+		System.out.println("doSomething3");
+	}
+}
+public class Test1
+{
+	public static void main(String[] args)
+	{
+		
+	}
+}

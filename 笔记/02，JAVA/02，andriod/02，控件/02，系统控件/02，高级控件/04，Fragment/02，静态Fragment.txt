@@ -1,0 +1,49 @@
+概念：Fragment是与View类无关的，他的用法与ListView类似，需要用其他的布局文件来完成最终的布局。
+	早期Fragment的功能有TabActivity来实现，高版本推荐使用Fragment
+
+	public class TabHost extends TabActivity {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        android.widget.TabHost tHost = getTabHost();
+        tHost.addTab(tHost.newTabSpec("tab1").setIndicator("11111").setContent(new Intent(this,One.class)));
+        tHost.addTab(tHost.newTabSpec("tab2").setIndicator("22222").setContent(new Intent(this,Two.class)));
+        tHost.addTab(tHost.newTabSpec("tab3").setIndicator("33333").setContent(new Intent(this,Three.class)));
+    }
+}
+
+1,将屏幕划分为几个部分，用布局可以实现它的功能。
+他跟ListView有些类似，也是占了一个位置，但它上面没有布局，需要通过inflate方法
+将其他的布局移过来
+
+2，Fragment使用时需要继承系统的Fragment类。
+重写onCreateView方法，与activity类似，但它与activity不一样，他没有activity
+的生命周期
+
+public class Fragment2 extends Fragment
+{
+// 通过inflater方法得到Fragment上要显示的视图
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
+	{
+		// TODO Auto-generated method stub
+		return inflater.inflate(R.layout.frag2, null);
+	}
+}
+
+3，静态的Fragment布局文件需要指定对应的Fragment类，和id，id主要用于通过FragmentManager
+来实现对同一activity上的Fragment进行管理，
+ 
+<fragment	便签很特殊
+        android:id="@+id/frag1"
+        android:name="com.example.fragment.Fragment1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+4，通过Fragment对象得到FragmentManager，通过findFragmentById能找到所有的Fragment对象
+就可以调用Fragment对象的方法。
+
+FragmentManager fm = Fragment3.this.getFragmentManager();
+Fragment1 f = (Fragment1) fm.findFragmentById(R.id.frag1);

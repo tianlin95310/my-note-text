@@ -1,0 +1,78 @@
+package com.example.patheffect;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Path;
+import android.graphics.PathDashPathEffect;
+import android.graphics.PathEffect;
+import android.view.View;
+
+public class MyView extends View
+{
+
+	PathEffect pe;
+	
+	Path path;
+	
+	Paint paint;
+	
+	float phase;
+	public MyView(Context context)
+	{
+		super(context);
+		paint = new Paint();
+		
+		path = new Path();
+		
+		path.moveTo(10, 100);
+		path.lineTo(200, 10);
+		
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		super.onDraw(canvas);
+		
+		paint.setStyle(Style.STROKE);
+		paint.setColor(Color.RED);
+		paint.setStrokeWidth(4);
+		
+		canvas.drawColor(Color.WHITE);
+		// 1，正常无修饰
+//		pe = null;
+		// 2，圆弧形线
+//		pe = new CornerPathEffect(10);
+		
+		// 3，离散线
+		// 第一个参数为离散在弧上的间距
+		// 第二个参数为离散的程度
+//		pe = new DiscretePathEffect(3, 10);
+		
+		// 4，Dash为破折号的意思。 应该是破这行
+		// 其中第一个参数是new float[]{} 表示其中的间隔和距离
+		// phase表示相位，周期性的运转，导致有运动的效果，如果去掉invalidate，则不会运动，因为相位一直没有发生变化
+//		pe = new DashPathEffect(new float[] { 20, 5, 5, 20 }, phase);
+		
+		
+		// 5，用Path先制定线条为矩形，在制定相位，就能实现矩形滑动的线条
+		Path p = new Path();
+		p.addRect(0,0,8,8,Path.Direction.CW);
+		pe = new PathDashPathEffect(p, 12, phase, PathDashPathEffect.Style.ROTATE);
+		
+		// 6,组合型
+//		pe = new ComposePathEffect(p1, p2);
+//		pe = new SumPathEffect(p1, p2);
+		
+		paint.setPathEffect(pe);
+		canvas.drawCircle(200, 200, 50, paint);
+		
+		phase++;
+		
+		invalidate();
+	}
+
+}

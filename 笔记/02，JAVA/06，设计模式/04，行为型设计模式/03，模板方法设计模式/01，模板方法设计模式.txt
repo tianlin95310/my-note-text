@@ -1,0 +1,67 @@
+定义一个操作中的算法骨架，而将一些可变部分的实现延迟到子类中。
+
+特点
+1，抽象出所有的业务逻辑，不必急于考虑具体代码
+2，可以由同一个人实现，也可以由不同的人实现，对于那种同一需求但效果不同
+的情况很实用
+3，实现时，必须实现所有的函数，这是一个较明显的缺点,通常会与适配器模式连用
+
+
+interface Operations
+{
+	public abstract void doSomething1();
+	public abstract void doSomething2();
+	public abstract void doSomething3();
+}
+
+class Impl1 implements Operations
+{
+	public void doSomething1()
+	{
+		System.out.println("Impl1 doSomething1");
+	}
+	public void doSomething2()
+	{
+		System.out.println("Impl1 doSomething2");
+	}
+	public void doSomething3()
+	{
+		System.out.println("Impl1 doSomething3");
+	}
+	
+}
+
+class Impl2 implements Operations
+{
+	public void doSomething1()
+	{
+		System.out.println("Impl2 doSomething1");
+	}
+	public void doSomething2()
+	{
+		System.out.println("Impl2 doSomething2");
+	}
+	public void doSomething3()
+	{
+		System.out.println("Impl2 doSomething3");
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Operations op1 = new Impl1();
+		op1.doSomething1();
+		op1.doSomething2();
+		op1.doSomething3();
+		
+		Operations op2 = new Impl2();
+		op2.doSomething1();
+		op2.doSomething2();
+		op2.doSomething3();
+	}
+
+}
+
+

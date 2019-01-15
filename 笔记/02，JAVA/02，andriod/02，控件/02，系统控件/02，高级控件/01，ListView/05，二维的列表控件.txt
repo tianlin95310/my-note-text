@@ -1,0 +1,153 @@
+用法在ExpandListActivity有，用控件的话，就是要自己再定义一个布局文件，封装之后，就是将主
+布局用于setAdapter。
+
+
+// 使用举例
+public class MainActivity extends ActionBarActivity
+{
+
+	private ExpandableListView elv;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		elv = (ExpandableListView) findViewById(R.id.elv);
+
+//		 initExpandableListView1();
+		elv.setAdapter(new MyAdapter());
+		
+	}
+
+	class MyAdapter extends BaseExpandableListAdapter
+	{
+		String groups[] = new String[] { "神族兵种", "人族兵种", "虫族兵种" };
+
+		String childs[][] = new String[][] { { "狂战士", "龙骑士", "黑暗圣堂", "电兵" },
+				{ "小狗", "刺蛇", "飞龙", "自爆飞机" }, { "机枪兵", "护士MM", "幽灵" } };
+
+		@Override
+		public int getGroupCount()
+		{
+			return groups.length;
+		}
+		@Override
+		public long getGroupId(int groupPosition)
+		{
+			return groupPosition;
+		}
+		@Override
+		public Object getGroup(int groupPosition)
+		{
+			return groups[groupPosition];
+		}
+		@Override
+		public View getGroupView(int groupPosition, boolean isExpanded,
+				View convertView, ViewGroup parent)
+		{
+			View view = View.inflate(MainActivity.this, R.layout.group_item, null);
+			TextView tv = (TextView) view.findViewById(R.id.tv_group);
+			
+			// 组里面不能有图标
+			tv.setText((String)this.getGroup(groupPosition) + " (3/3)");
+			return view;
+		}
+		@Override
+		public int getChildrenCount(int groupPosition)
+		{
+			return childs.length;
+		}
+		@Override
+		public Object getChild(int groupPosition, int childPosition)
+		{
+			return childs[groupPosition][childPosition];
+		}
+		@Override
+		public long getChildId(int groupPosition, int childPosition)
+		{
+			return childPosition;
+		}
+		@Override
+		public View getChildView(int groupPosition, int childPosition,
+				boolean isLastChild, View convertView, ViewGroup parent)
+		{
+			View view = View.inflate(MainActivity.this, R.layout.child_item, null);
+			TextView tv = (TextView) view.findViewById(R.id.tv_child);
+			tv.setText((String)this.getChild(groupPosition, childPosition));
+			
+			// 但子列表可以有图标
+			ImageView iv = (ImageView) view.findViewById(R.id.iv_child);
+			iv.setImageResource(R.drawable.ic_launcher);
+			return view;
+		}
+		@Override
+		public boolean hasStableIds()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean isChildSelectable(int groupPosition, int childPosition)
+		{
+			return true;
+		}
+
+	}
+
+	public void initExpandableListView1()
+	{
+		List<Map<String, Object>> groupData = new ArrayList<Map<String, Object>>();
+
+		Map<String, Object> group1 = new HashMap<String, Object>();
+		Map<String, Object> group2 = new HashMap<String, Object>();
+		Map<String, Object> group3 = new HashMap<String, Object>();
+		Map<String, Object> group4 = new HashMap<String, Object>();
+		group1.put("text", "group1");
+		group2.put("text", "group2");
+		group3.put("text", "group3");
+		group4.put("text", "group4");
+
+		groupData.add(group1);
+		groupData.add(group2);
+		groupData.add(group3);
+		groupData.add(group4);
+
+		List<List<Map<String, Object>>> childData = new ArrayList<List<Map<String, Object>>>();
+
+		for (int i = 0; i < groupData.size(); i++)
+		{
+			List<Map<String, Object>> child = new ArrayList<Map<String, Object>>();
+			for (int j = 0; j < 4; j++)
+			{
+				Map<String, Object> map = new HashMap<String, Object>();
+				
+				// 这里子列表也不能使用图标
+				map.put("value", "child" + (j + 1));
+				child.add(map);
+			}
+			childData.add(child);
+		}
+
+		// 用SimpleExpandableListAdapter不管怎么弄，好像都不能使用图标
+		SimpleExpandableListAdapter adapter = new SimpleExpandableListAdapter(
+				this, groupData, R.layout.group_item, new String[] { "text" },
+				new int[] { R.id.tv_group }, childData, R.layout.child_item,
+				new String[] {"icon", "value" }, new int[] {R.id.iv_child,  R.id.tv_child });
+
+		elv.setAdapter(adapter);
+	}
+}
+
+// 事件处理
+elv.setOnChildClickListener(new OnChildClickListener() 
+{
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v,
+		int groupPosition, int childPosition, long id) {
+	
+		// 利用groupPosition,childPosition, 实现业务逻辑
+		return false;
+	}
+});

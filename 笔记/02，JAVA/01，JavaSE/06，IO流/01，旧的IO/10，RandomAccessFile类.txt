@@ -1,0 +1,78 @@
+概念：和C语言一样，文件指针从0开始，到哪就读哪一个。
+若理解为从1开始，那读的时候就从下一个，这也是很多API说读下一个的原因，最好应从0开始要好
+
+该类有C语言文件读写的功能，能移动文件指针，是唯一的能移动指针的类，但功能弱于C语言的。
+
+特殊函数
+	1，只有read函数，读单个字节，数组时，遇文件尾才返回-1，
+	2，像readByte，readChar，readInt，遇文件尾直接抛出异常，与DataInputStream，ObjectInputStream一样
+
+public class ThreadPools
+{
+	public static void write()
+	{
+		File file = new File(".//res/2.txt");
+		try
+		{
+			// 1，创建文件，并制定操作方法，这个与C语言的相同，
+			RandomAccessFile raf = new RandomAccessFile(file,"rw");
+			String str = "123456789qwertyuio";
+			
+			for(int i = 0; i < 5; i++)
+			{
+				str += str;
+			}
+				//将字符串转为字符数组
+			byte[] bytes = str.getBytes();
+			
+			// 2，将字符数组写进文件
+			raf.write(bytes);
+			
+			raf.close();
+		} catch (FileNotFoundException e1)
+		{
+			e1.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void read()
+	{
+		File file = new File(".//res/2.txt");
+		try
+		{
+			RandomAccessFile raf = new RandomAccessFile(file,"rw");
+			byte[] bs = new byte[18];
+			int len = -1;
+				// 1，与流一样，读取块文件时，文件末尾返回-1
+			while((len = raf.read(bs)) != -1)
+			{
+				System.out.println(new String(bs,0,len));
+			}
+			
+				// 2，获取文件位置，此时文件的位置位于末尾
+			long length = raf.getFilePointer();
+			System.out.println(length);
+				// 3，将文件指针一道开头
+			raf.seek(0);
+			long seek = raf.getFilePointer();
+			
+			System.out.println(seek);
+			raf.close();
+			System.out.println("success ");
+			
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String []args)
+	{
+//		write();
+		read();
+	}
+}

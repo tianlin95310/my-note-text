@@ -1,0 +1,47 @@
+算法思想：
+先假想第一个数为一个数组，从第二个数开始往里添加，并且保证有序（采用的是冒泡），直到添加完所有数。
+
+
+package com.itjob;
+
+import java.util.Arrays;
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		int a[] = {1,3,5,7,9,2,4,6,8};
+		sort(a);
+		
+		System.out.println(Arrays.toString(a));
+	}
+	//插入排序
+	public static void sort(int a[])
+	{
+		int insertCount = 0;
+		for(int i = 1; i < a.length ;i++)	//第一个元素不用排
+		{
+			insertCount = i;
+			while(a[insertCount] < a[insertCount - 1])
+			{
+				a[insertCount] = (a[insertCount] + a[insertCount - 1]) - (a[insertCount - 1] = a[insertCount]);
+				insertCount--;
+				
+				if(insertCount <= 0 )
+					break;
+			}
+		}
+		//先将第一个元素加入到临时的数组，从第2个元素开始，往临时数组里插，保证临时数组的有序性
+		//假如我们采用升序，
+		//第1次循环，临时数组里有两个数，如果第二个数小于第一个数，我们就交换，知道临时数组的第一个元素
+		//第2次循环，临时数组里有三个数，从第三个数开始，若第三个数小于第二个数，就交换，接着继续让
+		//第二个数（已经被交换了）与第一个数比较，直到添加完毕后面的N - 1个元素。
+
+
+		//外层循环每次加一个数，内层循环（对临时数组做）一次冒泡。
+	}
+
+}
+
+

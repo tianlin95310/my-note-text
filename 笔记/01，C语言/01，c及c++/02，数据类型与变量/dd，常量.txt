@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <typeinfo>
+
+//#define PI 3.14159f
+#define NUM (100 + 200)
+
+void main()
+{
+	//（1）使用前缀表示数字常量的进制
+	//10进制数字：不带前缀的数字，如123；
+	//8进制数字：带前缀0的数字，如0123。
+	//16进制数字：带前缀0x或0X的数字，如0x123f
+	printf("%d %d %d\n", 123, 0123, 0x123);
+
+	//（2）使用后缀表示数字常量的类型
+	//L/l后缀：long或long double，如123L，1.23L
+	//U/u后缀：unsigned int，如506U
+	//UL/LU/ul/lu/Ul/lU/uL/Lu后缀：unsigned long
+	//F/f后缀：float，如1.23f
+	printf("123 : %s %d\n", typeid(123).name(), sizeof(123));
+	printf("123L : %s %d\n", typeid(123L).name(), sizeof(123L));
+	printf("123u : %s %d\n", typeid(123u).name(), sizeof(123u));
+	printf("123ul : %s %d\n", typeid(123ul).name(), sizeof(123ul));
+
+	printf("1.23 : %s %d\n", typeid(1.23).name(), sizeof(1.23));
+	printf("1.23L : %s %d\n", typeid(1.23L).name(), sizeof(1.23L));
+	printf("1.23f : %s %d\n", typeid(1.23f).name(), sizeof(1.23f));
+
+	//使用
+	int x = 123;
+	float y = 3.14f;
+
+	//字符常量
+	printf("'A' : %s %d\n", typeid('A').name(), sizeof('A'));
+	printf("'AB' : %s %d\n", typeid('AB').name(), sizeof('AB'));
+	printf("'ABC' : %s %d\n", typeid('ABC').name(), sizeof('ABC'));
+	printf("'ABCD' : %s %d\n", typeid('ABCD').name(), sizeof('ABCD'));
+	char a = 'A';	//0x41
+	int b = 'AB';	//0x4142
+	int c = 'ABC';	//0x414243
+	int d = 'ABCD';	//0x41424344
+
+	//字符串常量
+	char *sz = "Hello";
+
+//	char 'A';
+//	char * "A"
+
+	//符号常量 常变量
+	const float PI = 3.14159f;
+	printf("%f\n", PI * 3 * 3);
+	printf("%f\n", PI * 4 * 4);
+
+	printf("%d\n", 5 * NUM);
+}

@@ -1,0 +1,211 @@
+客户端：
+public class Client
+{
+	public static void main(String[] args)
+	{
+		try
+		{
+			Socket s = new Socket("10.177.7.144", 8888);
+
+				 // 1，获取本地端口名
+			 System.out.println(s.getLocalPort());
+				 // 2，获取服务器端（另一端）口名
+			 System.out.println(s.getPort());
+				 // 3，获取本地IP地址
+			 System.out.println(s.getLocalAddress());
+				 // 4，获取服务器端（另一端）IP地址
+			 System.out.println(s.getInetAddress());
+				 5,获取本地套接字
+			System.out.println(s.getLocalSocketAddress());
+				// 6，获取服务器（另一端）套接字
+			System.out.println(s.getRemoteSocketAddress());
+
+			if (s != null)
+			{
+				new Thread(new writeProcess(s)).start();
+				new Thread(new readProcess(s)).start();
+			}
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+class writeProcess implements Runnable
+{
+	private Socket s = null;
+
+	public writeProcess(Socket s)
+	{
+		this.s = s;
+	}
+	public void run()
+	{
+		try
+		{
+			//标准输入
+			BufferedInputStream bis = new BufferedInputStream(System.in);
+
+			OutputStream os = s.getOutputStream();
+
+			byte bytes[] = new byte[50];
+			int len = -1;
+
+				//输出到网络传输
+			while ((len = bis.read(bytes)) != -1)
+			{
+				os.write(bytes, 0, len);
+				os.flush();
+			}
+			s.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+class readProcess implements Runnable
+{
+	private Socket s = null;
+
+	public readProcess(Socket s)
+	{
+		this.s = s;
+	}
+
+	public void run()
+	{
+		try
+		{
+			InputStream is = s.getInputStream();
+			byte bytes[] = new byte[50];
+			int len = -1;
+			while ((len = is.read(bytes)) != -1)
+			{
+				System.out.print(s.getLocalPort() + ":");
+				System.out.println(new String(bytes, 0, len));
+			}
+			s.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+}
+
+服务器端：
+public class Service implements Runnable
+{
+	private Socket s = null;
+	public Service(Socket s)
+	{
+		this.s = s;
+	}
+	public static void main(String[] arsg)
+	{
+		try
+		{
+			ServerSocket ss = new ServerSocket(8888);
+			//获取服务器相关信息
+			// System.out.println(ss.getLocalPort());
+			// System.out.println(ss.getChannel());
+			// System.out.println(ss.getInetAddress());
+			// System.out.println(ss.getLocalSocketAddress());
+
+			while (true)
+			{
+				//可以同时接收多个客户端
+				Socket s = ss.accept();
+				new Thread(new Service(s)).start();
+			}
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void run()
+	{
+		if (s != null)
+		{
+			// 1,获取本地端口名,IP地址，套接字
+			// System.out.println(s.getLocalPort());
+			// System.out.println(s.getLocalAddress());
+			System.out.println(s.getLocalSocketAddress());
+			// 2，获取服务器（另一端）的端口名，IP地址，套接字
+			// System.out.println(s.getPort());
+			// System.out.println(s.getInetAddress());
+			System.out.println(s.getRemoteSocketAddress());
+
+			new Thread(new readProcess(s)).start();
+			new Thread(new writeProcess(s)).start();
+			// new Thread(new receiveProcess(s)).start();
+		}
+	}
+}
+class readProcess implements Runnable
+{
+	private Socket s = null;
+
+	public readProcess(Socket s)
+	{
+		this.s = s;
+	}
+	public void run()
+	{
+		try
+		{
+			InputStream is = s.getInputStream();
+			byte bytes[] = new byte[50];
+			int len = -1;
+
+			while ((len = is.read(bytes)) != -1)
+			{
+				System.out.print(s.getLocalPort() + ":");
+				System.out.println(new String(bytes, 0, len));
+			}
+
+			s.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+class writeProcess implements Runnable
+{
+
+	private Socket s = null;
+
+	public writeProcess(Socket s)
+	{
+		this.s = s;
+	}
+	public void run()
+	{
+		try
+		{
+			OutputStream os = s.getOutputStream();
+			BufferedInputStream bis = new BufferedInputStream(System.in);
+
+			byte bytes[] = new byte[50];
+			int len = -1;
+
+			while ((len = bis.read(bytes)) != -1)
+			{
+				os.write(bytes, 0, len);
+				os.flush();
+			}
+
+			s.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+

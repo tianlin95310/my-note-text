@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+#include <stdlib.h>
+
+void main()
+{
+	FILE* p1;
+	FILE* p2;
+	char c[2048];
+	
+	p1 = fopen("C:\\Users\\Administrator\\Desktop\\1.jpg","rb");
+	p2 = fopen("C:\\Users\\Administrator\\Desktop\\2.jpg","wb+");
+	if(p1 == NULL)			//文件不存在，文件指针为空
+		printf("not such file");
+
+	fseek(p1,0L,SEEK_END);		//将文件指针移动到文件末尾
+	long length = ftell(p1);	//得到文件指针的位置此为文件的长度
+
+	fseek(p1,0L,SEEK_SET);		//将文件指针移到文件首
+	while(!feof(p1))		//对于二进制文件用feof()文件是否读完
+	{
+		int buff = fread(c,1,2048,p1);	//返回读出的字节数，这点与java的相同
+						//不同的是遇到文件尾返回0，java返回的是-1
+		fwrite(c,1,buff,p2);	//将实际读出的值写进文件
+	}
+	fclose(p1);
+	fclose(p2);
+	printf("success\n");
+}

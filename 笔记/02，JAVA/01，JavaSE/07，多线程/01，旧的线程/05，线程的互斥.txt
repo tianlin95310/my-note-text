@@ -1,0 +1,183 @@
+1，同步代码段，对有线程同时访问的代码用代码段进行上锁，保证同一时刻要求只能有一个线程进行对应操作
+	内部应该是用p,v操作进行处理，所以要求对象不能改变。因为若改变p,v操作可能会有问题。
+
+class MyThread1 implements Runnable
+{
+	private int a = 10;
+	private Object obj = new Object();
+
+	public void run()
+	{
+		while (true)
+		{
+			//对一个对象进行互斥锁操作，要求该对象是一个常量，不能变化，
+			//我猜想它内部应该就是对对象做了一个p,v操作
+
+			//1，这里还可以用this，因为两个线程实例的Runnable是由同一个对象创建，所以this是一样的
+			//2，如果不用this的话，那么两个线程的Runnable可有不同的MyThread1对象创建，但要求
+				//公共的a是静态的
+			synchronized (obj)
+			{		
+				System.out.println("begining");
+
+				if (a >= 0)
+				{
+					System.out.println(Thread.currentThread().getName()
+							+ " is saling " + (a--));
+				}
+				try
+				{
+					Thread.sleep(500);
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				System.out.println("ending");
+
+				if(a < 0)
+					return;
+			}
+		}
+	}
+}
+public class Synchronized
+{
+	public static void main(String[] args)
+	{
+		MyThread1 t = new MyThread1();
+
+		// 两个线程的Runable对象是一样的，所以才能保证obj对象是一样的，这样互斥锁才有效
+		Thread thread1 = new Thread(t);
+		Thread thread2 = new Thread(t);
+
+		thread1.start();
+		thread2.start();
+	}
+
+}
+
+
+2,，不同线程调用同一对象的两个互斥锁方法
+class MyThread2 implements Runnable
+{
+	private Synchronized s = null;
+	
+	public MyThread2(Synchronized s)
+	{
+		super();
+		this.s = s;
+	}
+
+	public void run()
+	{
+		s.fun1();
+	}
+}
+
+public class Synchronized
+{
+	//默认锁定的是本类的对象，即this。锁定的时候，别的线程不能访问，必须要出了锁，别人
+	//才能访问对象（方法），相当于p.v操作，p.v操作要完整才能继续进行，若只有p没v，则有可能发生死锁
+	public synchronized void fun1()
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			System.out.println("fun1");
+			try
+			{
+				Thread.sleep(500);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	//这种本质就是synchronized(this)
+			{
+			}
+	public synchronized void fun2()
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			System.out.println("fun2");
+			try
+			{
+				Thread.sleep(500);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void main(String[] args)
+	{
+		
+		// 1,不能同时访问同一对象的两个带有互斥锁的方法
+
+		Synchronized s = new Synchronized();
+
+		// 开启线程1，因为函数占用了s对象，所以主线程不能访问同时s（fun2函数），
+		// 所以先让线程的fun1函数执行完，才会释放对象资源给其他的线程
+		
+		Thread thread1 = new Thread(new MyThread2(s)); 
+		thread1.start();
+
+		// 主线程方法
+		s.fun2();	
+	}
+}
+
+3，通过P,V操作实现互斥，自己写的，不保证正确性
+
+class MyThread1 implements Runnable
+{
+	private int a = 10;
+	private int mutex = 1;
+	public void run()
+	{
+		while (true)
+		{
+			if (mutex == 0)
+				continue;
+
+			if (mutex == 1)
+			{
+
+				if (a < 0)
+					return;
+				
+				mutex--;
+				
+					System.out.println(Thread.currentThread().getName() + " "
+							+ a--);
+				mutex++;
+				
+				//互斥操作放到P,V操作之間
+					try
+					{
+						Thread.sleep(500);
+					} catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+
+			}
+		}
+	}
+}
+public class TestTimer
+{
+	public static void main(String[] args)
+	{
+		//用不同的MyThread1对象的话，要求公共操作的a是静态的。
+		MyThread1 t = new MyThread1();
+		Thread thread1 = new Thread(t);
+		Thread thread2 = new Thread(t);
+
+		thread1.start();
+		thread2.start();
+	}
+
+}
+}

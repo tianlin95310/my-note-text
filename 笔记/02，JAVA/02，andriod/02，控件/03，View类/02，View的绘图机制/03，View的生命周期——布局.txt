@@ -1,0 +1,16 @@
+1，layout(int l, int t, int r, int b)	
+   1，用于指定控件的显示位置, 该方法会调用onLayout
+
+   2，对于view，不需要重写该方法，使用继承的layout即可
+
+   3，对于ViewPager，他的layout是final的，不能重写，也就是ViewGroup控件自身的布局我们不需要管，我们要管的是
+	他的孩子
+
+2，onLayout(boolean changed, int left, int top, int right, int bottom)
+    1，主要用于管理孩子的显示位置
+
+    2，对于View，他没有孩子，所以不需要重写他
+
+    3，对于ViewGroup，他的onLayout被变成抽象的，要求子类一定要重写,也就是ViewGroup需要指定孩子的显示位置，得到孩子调用
+	孩子的layout即可，如果某个孩子本身是系统已经实现的布局，那么他也会指定孩子的孩子的布局，如果某个孩子是自己定义的
+	ViewGroup，我们也需要重写他的onLayout

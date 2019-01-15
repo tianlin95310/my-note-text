@@ -1,0 +1,35 @@
+相关概念：
+像素大小：即图片或者手机屏幕的长和宽有多少个像素点
+分辨率：即每厘米，或者每英寸上有多少个像素点
+	其中一英寸等于2.54厘米
+
+android屏幕像素
+
+// 得到Display
+Display dis = wm.getDefaultDisplay();
+
+// 设备度量器
+DisplayMetrics dm = new DisplayMetrics();
+
+// 得到设备数据
+dis.getMetrics(dm);
+
+// 每一英寸上的像素密度，有120,160,240,320等
+dm.densityDpi;
+
+// 内部用于像素渲染的密度，160为1,240为1.5
+dm.density;
+
+// x,y方向上的寸密度，正常情况等于dm.densityDpi
+dm.xdpi;
+dm.ydpi;
+
+// 实际的像素大小
+dm.heightPixels;
+dm.widthPixels;
+
+如我的手机宽高为
+5.6 * 10.0 厘米单位
+2.2 * 3.94 英寸单位
+（2.2*240）* （3.94*240）约等于540 * 960分辨率大小
+  宽  英寸密度

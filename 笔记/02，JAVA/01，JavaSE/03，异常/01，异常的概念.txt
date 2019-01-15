@@ -1,0 +1,9 @@
+1，异常的分类
+
+Object->Throwable->(Error,Exception)->RuntimeException
+
+Error->(AWTError,ThreadDeath)
+
+Exception->(SQLException,IOexception,....)受检异常
+
+RuntimeException->(NULLPointerException,ClassCastException,...)非受检异常

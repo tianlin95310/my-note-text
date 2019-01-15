@@ -1,0 +1,68 @@
+package com.example.draw2d;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.view.View;
+
+public class MyView extends View
+{
+
+	Bitmap bmp;
+
+	public MyView(Context context)
+	{
+		super(context);
+
+		bmp = BitmapFactory.decodeResource(getResources(), R.drawable.star);
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		super.onDraw(canvas);
+
+		Paint paint1 = new Paint();
+		paint1.setTextSize(20);
+		// // 1,写字时若在（0,0）处，则会被覆盖掉一部分
+		// canvas.drawText("画文字", 0, 30, paint1);
+		//
+		// // 画bitmap
+		// canvas.drawBitmap(bmp, 100, 0, paint1);
+		//
+		Paint paint2 = new Paint();
+		paint2.setColor(Color.RED);
+		paint2.setStrokeWidth(5);
+		// // 画一个点
+		// canvas.drawPoint(180, 10, paint2);
+		// // 画一组点，两个两个一组
+		// canvas.drawPoints(new float[]
+		// { 150, 30, 200, 30 }, paint2);
+		//
+		// // 画一条线
+		// canvas.drawLine(20, 50, 180, 50, paint2);
+		// // 画一组线，4个一组
+		// canvas.drawLines(new float[]
+		// { 30, 120, 200, 150, 30, 150, 200, 120 }, paint2);
+
+		// 画矩形
+		// STROKE 空心
+		// Fill   实心
+		paint2.setStyle(Style.STROKE);
+		canvas.drawRect(50, 50, 150, 150, paint2);
+
+		// 画圆
+		canvas.drawCircle(200, 200, 50, paint2);
+		
+		// canvas.save();
+		// // 可以将canvas进行移动，使绘图中心发生移动，同理其他的操作也是可以的，如旋转，等等
+		// canvas.translate(80, 80);
+		// canvas.drawText("哈韩 ", 0, 0, paint1);
+		// canvas.restore();
+	}
+
+}

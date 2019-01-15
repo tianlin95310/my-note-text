@@ -1,0 +1,55 @@
+新版本在res新建anim文件，系统会为其产生id，专门用于放置帧动画布局文件。
+
+所有的动画都是通过ImageView来呈现的，包括图片都是
+
+public class MainActivity extends ActionBarActivity
+{
+
+	// 帧动画播放对象
+	private AnimationDrawable ad;
+	private ImageView iv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		iv = (ImageView) findViewById(R.id.iv);
+		// 将帧动画文件设置到iv上
+		iv.setBackgroundResource(R.anim.flash);
+		// 帧动画就是的iv的背景不断变化的结果
+		ad = (AnimationDrawable) iv.getBackground();
+	}
+
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		// 设置主界面的触摸事件
+		if(event.getAction() == MotionEvent.ACTION_DOWN)
+		{
+			// 按下就开始
+			ad.start();
+			return true;
+		}
+		return super.onTouchEvent(event);
+	}
+}
+
+
+//帧动画布局文件
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:oneshot="false">
+// oneshot表示是否只播放一次，默认的是循环的
+// duration表示持续时间
+// drawable表示帧动画的源
+    <item android:drawable="@drawable/girl_1" android:duration="200"/>
+    <item android:drawable="@drawable/girl_2" android:duration="200"/>
+    <item android:drawable="@drawable/girl_3" android:duration="200"/>
+    <item android:drawable="@drawable/girl_4" android:duration="200"/>
+    <item android:drawable="@drawable/girl_5" android:duration="200"/>
+    <item android:drawable="@drawable/girl_6" android:duration="200"/>
+    <item android:drawable="@drawable/girl_7" android:duration="200"/>
+    <item android:drawable="@drawable/girl_8" android:duration="200"/>
+    <item android:drawable="@drawable/girl_9" android:duration="200"/>
+    <item android:drawable="@drawable/girl_10" android:duration="200"/>
+    <item android:drawable="@drawable/girl_11" android:duration="200"/>
+</animation-list>

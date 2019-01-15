@@ -1,0 +1,3 @@
+概念：为延时意图，对意图做一些包装
+核心还是Intent
+PendingIntent contentIntent = PendingIntent.getActivity(this, 10, intent, PendingIntent.FLAG_ONE_SHOT);

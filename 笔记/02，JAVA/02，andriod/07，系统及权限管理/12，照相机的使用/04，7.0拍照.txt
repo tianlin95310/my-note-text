@@ -1,0 +1,56 @@
+1.	配置provider
+<provider
+    android:name="android.support.v4.content.FileProvider"
+    android:authorities="@string/authorities"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths"/>
+</provider>
+
+引用的string资源
+<string name="authorities">tl.com.testmaterialdesign.fileProvider</string>
+
+2.	配置file_paths
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path name="images" path="Android/data/tl.com.testmaterialdesign/files/Pictures"/>
+</paths>
+
+3.	权限
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+4.	函数
+private void takePhoto(Context context, String fileName)
+{
+    File root_dir = Environment.getExternalStorageDirectory().getAbsoluteFile();
+// 这里的路径也可以通过读取
+    File img_dir = new File(root_dir, "Android/data/tl.com.testmaterialdesign/files/Pictures");
+    if(!img_dir.exists())
+    {
+        Log.d("my", "创建目录成功！");
+        img_dir.mkdirs();
+    }
+
+    File file = new File(img_dir, fileName + ".jpg");
+    Uri uri = FileProvider.getUriForFile(context, context.getString(R.string.authorities), file);
+
+    Log.d("my","string" + uri.toString());
+    Log.d("my","path" + uri.getPath());
+
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+    // 让照相的activity具有该临时权限
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    startActivityForResult(intent, 1);
+}
+
+5.	使用
+SimpleDateFormat simple = new SimpleDateFormat("yyyyMMdd-HHmmss");
+// 构建文件名
+String fileName = "IMAGE" + simple.format(new Date());
+takePhoto(MainActivity.this, fileName);
+
+

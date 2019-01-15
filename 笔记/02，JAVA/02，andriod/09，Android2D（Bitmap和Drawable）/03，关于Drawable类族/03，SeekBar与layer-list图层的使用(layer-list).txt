@@ -1,0 +1,51 @@
+自定义 ProgressBar的样式
+
+<ProgressBar
+            android:layout_gravity="center_vertical"
+            android:id="@+id/pb_sync_item_pro"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:progress="20"
+            android:progressDrawable="@drawable/m_progress_horizontal"
+            android:secondaryProgress="40" />
+
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle" android:innerRadius="5dp">
+            <corners android:radius="5dp" />
+            <solid android:color="#D8D8D8"/>
+        </shape>
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape android:shape="rectangle" android:innerRadius="5dp">
+                <corners android:radius="5dp" />
+                <solid android:color="#D86D6D"/>
+            </shape>
+        </clip>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle" android:innerRadius="5dp">
+                <corners android:radius="5dp" />
+                <gradient
+                    android:startColor="#CDDDBD"
+                    android:centerY="0.5"
+                    android:endColor="#82A985"
+                    />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

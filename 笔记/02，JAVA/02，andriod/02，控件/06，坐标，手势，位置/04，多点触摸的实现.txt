@@ -1,0 +1,151 @@
+public class MainActivity extends ActionBarActivity
+{
+
+	// 用于显示的ImageView
+	ImageView iv;
+
+	// 用于显示的图片
+	Bitmap bmp;
+
+	// 该值不能为负数,否则反向放大
+	float scale = 1.0f;
+
+	// 变换矩阵
+	Matrix matrix;
+
+	// 单手，多手标志
+	private int flag = 0;
+
+	// 记录个点信息
+	PointF begin = new PointF();
+
+	// 初始举例
+	float beginDis = 0;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		iv = (ImageView) findViewById(R.id.iv);
+		bmp = BitmapFactory.decodeResource(getResources(), R.drawable.m003);
+		matrix = new Matrix();
+		iv.setImageBitmap(bmp);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		// ACTION_MASK用于让多点触摸起作用，否则无法识别多点触摸
+		switch (event.getAction() & MotionEvent.ACTION_MASK)
+		{
+		// 按下第一个手指时，会调用有此消息
+		case MotionEvent.ACTION_DOWN:
+
+			// 注意的是getX(1)，也就是第二个点的坐标只有在第二个点按下去，才会有，否则第二点不存在，getX(1)会抛异常
+			// 只有一个点，也就是只有一个手指操作，可以将0省略掉
+			begin.x = event.getX(0);
+			begin.y = event.getY(0);
+
+			System.out.println(begin.x + "," + begin.y);
+
+			// 将标志置为1，表示有一个手指
+			flag = 1;
+			break;
+
+			// 第二个手指按下时，才有此消息
+		case MotionEvent.ACTION_POINTER_DOWN:
+
+			PointF second = new PointF();
+			// 只有当第二个点按下以后，才会有第二个点
+			second.x = event.getX(1);
+			second.y = event.getY(1);
+
+			// 计算初始的位置
+			beginDis = getDis(begin, second);
+
+			System.out.println("begin" + beginDis);
+
+			// 将标志置为21，表示有两个手指
+			flag = 2;
+			break;
+
+			// 两只手一次放开，会有此消息，先放第二只手，再放第一只手
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_POINTER_UP:
+
+			flag = 0;
+			break;
+
+			// 移动时，根据flag来区分是一只手，还是两只手
+		case MotionEvent.ACTION_MOVE:
+
+			if (flag == 1)
+			{
+				// 若只有一个手指，得到移动中点的坐标，并平移指定长度
+				PointF end = new PointF();
+				end.x = event.getX(0);
+				end.y = event.getY(0);
+				// 平移到移动的位置
+				matrix.postTranslate(end.x - begin.x, end.y - begin.y);
+				iv.setImageMatrix(matrix);
+				// 更新起始点，为了持续移动
+				begin = end;
+			}
+
+			// 放大的灵敏度太差了
+			if (flag == 2)
+			{
+				PointF temp = new PointF();
+				temp.x = event.getX(1);
+				temp.y = event.getY(1);
+
+				float newDis = getDis(begin, temp);
+
+				System.out.println("new" + newDis);
+
+				if (newDis + 1 < beginDis)
+				{
+					// scale不能小于0，否则会反向变大
+					if(scale <= 0.5f)
+						return true;
+					
+					scale -= 0.001f * newDis / beginDis;
+						
+					matrix.postScale(scale, scale, bmp.getWidth() / 2,
+							bmp.getHeight() / 2);
+					iv.setImageMatrix(matrix);
+				}
+				else if (newDis > beginDis + 1)
+				{
+					if(scale >= 2.0f)
+						return true;
+					
+					scale = scale + 0.001f * newDis / beginDis;
+					matrix.postScale(scale, scale, bmp.getWidth() / 2,
+							bmp.getHeight() / 2);
+					iv.setImageMatrix(matrix);
+				} 
+			}
+			break;
+		}
+		return true;
+	}
+
+	public void rolate(View v)
+	{
+		// post不会清除掉以前的设置，所以能连续旋转
+		matrix.postRotate(90, bmp.getWidth() / 2, bmp.getHeight() / 2);
+		
+		iv.setImageMatrix(matrix);
+	}
+
+	private float getDis(PointF begin, PointF end)
+	{
+		// 关于float类型的Math类，求两点的距离
+		return FloatMath.sqrt((begin.x - end.x) * (begin.x - end.x)
+				+ (begin.y - end.y) * (begin.y - end.y));
+	}
+
+}

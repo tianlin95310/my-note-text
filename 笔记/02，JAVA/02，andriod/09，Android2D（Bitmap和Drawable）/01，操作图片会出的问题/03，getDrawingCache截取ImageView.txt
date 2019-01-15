@@ -1,0 +1,59 @@
+// 1，系统的ImageView实现截屏，缺点是图片的大小有可能超过系统的ImageView
+规定的图片缓冲的大小，导致返回null，所以有时候需要自定义ImageView
+public class MainActivity extends ActionBarActivity
+{
+	// 自定义的ImageView类
+	private MyImageView iv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		iv = (MyImageView) findViewById(R.id.iv);
+		
+		iv.setImageResource(R.drawable.ppp);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		if(event.getAction() == MotionEvent.ACTION_DOWN)
+		{
+			// 让图片能获取缓存
+			iv.setDrawingCacheEnabled(true);
+			// 将缓存构造成Bitmap对象
+			Bitmap bmp = iv.getDrawingCache();
+			
+			if(bmp == null)
+			{
+				System.out.println("null");
+				return false;
+			}
+			
+			try
+			{
+				// 保存文件
+				File dir = Environment.getExternalStorageDirectory();
+				bmp.compress(CompressFormat.JPEG, 100, new FileOutputStream(dir.getPath() +  "/p.jpg"));
+				
+			} catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return super.onTouchEvent(event);
+	}
+	
+}
+
+// 有时候需要重写该函数，得到实际的测量大小,而不受系统内部的限制
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		int w = getDefaultSize(100, widthMeasureSpec);
+		
+		int h = getDefaultSize(100, heightMeasureSpec);
+		
+		setMeasuredDimension(w, h);
+	}
+}

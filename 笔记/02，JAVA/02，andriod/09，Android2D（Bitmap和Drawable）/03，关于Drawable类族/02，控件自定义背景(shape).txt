@@ -1,0 +1,71 @@
+// 1，控件的布局
+<TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_world" 
+        android:background="@drawable/tv_bg"
+        android:gravity="center"
+        />
+<Button 
+        android:id="@+id/bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/bt_sel"
+        />
+
+// 2，一下两个为drawable资源，规定了他的形状，通过selecter来选择，并且bt_bg1,2都是drawable资源
+可以被drawable引用
+// 3，bt_bg1
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <corners android:radius="4dp"/>
+    <solid android:color="#2302FF"/>
+
+    // 表示控件内部的字体与控件边缘的内间距
+    <padding android:left="10dp"
+	    android:top="10dp"
+	    android:right="10dp"
+	    android:bottom="10dp"/>
+
+</shape>
+
+// 4，bt_bg2
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <corners android:radius="4dp"/>
+    <solid android:color="#F60D15"/>
+</shape>
+// 5，selecter选择器
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="true" android:drawable="@drawable/bt_bg2"/>
+    <item android:state_pressed="false" android:drawable="@drawable/bt_bg1"/>
+
+</selector>
+
+
+// 6，以下的shape规定了TextView具有边框，填充色等等，圆角
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- solid表示背景填充 -->
+	<solid android:color="#ffffff"
+	    />
+    
+    <!-- 背景渐变 与solid有同在冲突，就后原则-->
+   <gradient android:startColor="#6F81Fd"
+       android:endColor="#8B45BE"/>
+    <!-- 边框的线条宽度和颜色 -->
+    <stroke
+        android:color="#F30BE0"
+        android:width="2dp"
+        />
+     <!-- 角半径 -->
+    <corners android:radius="20dp"/>
+    
+    <!-- padding表示整个TextView的背景距离父控件的间距 -->
+	<padding android:top="20dp"/>
+	
+	
+</shape>

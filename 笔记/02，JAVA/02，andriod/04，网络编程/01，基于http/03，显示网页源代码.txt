@@ -1,0 +1,79 @@
+public class MainActivity extends Activity {
+
+	private EditText et;
+	private TextView tv;
+	// 涉及到多线程操作，需要借助Handler来实现
+	private Handler handle = new Handler() {
+		@Override
+		// 重写消息处理函数
+		public void handleMessage(Message msg) {
+			// 根据消息种类来分离各个消息
+			switch (msg.what) {
+
+			case 0x1001:
+				StringBuffer text = (StringBuffer)(msg.obj);
+				tv.setText(text.toString());
+				break;
+
+			case 0x1002:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		et = (EditText) findViewById(R.id.et);
+
+		tv = (TextView) findViewById(R.id.tv);
+
+	}
+	public void get(View v) {
+		// 网络等耗时操作需要借助多线程
+		new Thread() {
+			public void run() {
+				try {
+					String path = et.getText().toString().trim();
+					URL url = new URL(path);
+					
+					HttpURLConnection con = (HttpURLConnection) url.openConnection();
+					con.setConnectTimeout(5000);
+					con.setRequestMethod("GET");
+					int code = con.getResponseCode();
+					
+					if(code != 200)
+						return;
+					// 获取服务器返回的流
+					InputStream is = con.getInputStream();
+					// 构造网页的内容
+					StringBuffer sb = new StringBuffer();
+					byte []bytes = new byte[1024];
+					int len = -1;
+					while( (len = is.read(bytes)) != -1)
+					{
+						sb.append(new String(bytes,0,len));
+					}
+					
+					Message msg = new Message();
+					msg.what = 0x1001;
+					msg.obj = sb;
+					// 将内容发送到消息队列中等待主线程处理
+					handle.sendMessage(msg);
+					
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+
+			};
+
+		}.start();
+
+	}
+
+}

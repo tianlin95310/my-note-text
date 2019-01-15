@@ -1,0 +1,139 @@
+package com.itjob;
+
+public class List<T>
+{
+	private Node<T> head = null;	//头结点
+	public void add(T e)
+	{
+		if(head == null)			//如果头结点为空，创建头结点
+			head = getNode(e);
+		else
+			head.add(e);			//如果头结点不为空，以头结点作为递归头进行添加
+	}
+	public void del(T e)
+	{
+		if(head == null)	//如果头结点为空，退出
+		{
+			return ;
+		}
+		else if(head.e.equals(e))	//如果头结点即为所需值，删除头结点
+		{
+			if(head.next == null)
+			{
+				head = null;
+				return;
+			}
+			else
+			{
+				head = head.next;
+				return;
+			}
+		}
+		else					//如果头结点不为空，且值不合所需
+		{
+			head.del(e);
+		}
+	}
+	public void print()
+	{
+		if(head == null)	//如果头结点为空，直接退出
+			return;
+		else
+		{
+			head.print();	//头结点不为空，从头节点开始递归
+		}
+	}
+	public Node<T> getNode()
+	{
+		return new Node<T>();
+	}
+	public Node<T> getNode(T e)
+	{
+		return new Node<T>(e);
+	}
+	protected static class Node<T>
+	{
+		private T e;
+		private Node<T> next;
+		public void del(T e)
+		{
+			if(this.next == null)
+			{
+				return;
+			}
+			else if(this.next.e.equals(e))
+			{
+				if(this.next.next == null)
+				{
+					this.next = null;
+					return;
+				}
+				else
+				{
+					this.next = this.next.next;
+					return;
+				}
+			}
+			else
+			{
+				this.next.del(e);
+			}
+		}
+		@Override
+		public int hashCode()
+		{
+			return super.hashCode();
+		}
+		@Override
+		public boolean equals(Object obj)
+		{
+			return false;
+		}
+		public void print()
+		{
+			if(this.next == null)			//如果头结点的下一个节点为空，打印下一个节点退出，递归结束
+			{
+				System.out.println(this);
+				return ;
+			}
+			else
+			{
+				System.out.println(this);	//如果头结点的写一个节点不为空，打印该节点
+				this.next.print();			//并以头结点下一个节点为头结点继续递归
+			}
+		}
+		public void add(T e)		//以第一次为例，如果头结点的下一个节点为空，就把新节点放到头节点的后面
+		{
+			if(this.next == null)
+			{
+				Node<T> temp = new Node<T>(e);
+				this.next = temp;
+				return;
+			}
+			else					//如果头结点的下一个节点不为空，那么以头结点为头结点继续添加，直到找到
+									//一个空节点为止
+			{
+				this.next.add(e);
+			}
+		}
+		
+		public T getE()
+		{
+			return e;
+		}
+		public void setE(T e)
+		{
+			this.e = e;
+		}
+		public Node(){}
+		public Node(T e)
+		{
+			super();
+			this.e = e;
+		}
+		public String toString()
+		{
+			return "[e=" + e + "]";
+		}
+	}
+}

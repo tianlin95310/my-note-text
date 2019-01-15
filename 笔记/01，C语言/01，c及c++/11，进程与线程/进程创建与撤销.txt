@@ -1,0 +1,40 @@
+#include "stdio.h"
+#include "Windows.h"
+PROCESS_INFORMATION ProcessInfo;
+void main()
+{
+    int flag;
+	STARTUPINFO stinfo;//指定新进程的主窗口特性
+	int iCommand;
+	ZeroMemory((void*)&stinfo, sizeof(STARTUPINFO));//宏定义用0填充
+    stinfo.cb = sizeof(STARTUPINFO);//包含STARTUPINFO结构中的字节数
+	stinfo.dwFlags = STARTF_USESHOWWINDOW;
+	stinfo.wShowWindow = SW_SHOW;//用于设定如果子应用程序初次调用的ShowWindow
+	
+    printf("请选择命令（数字），1 创建新进程；2 终止创建的进程 3 退出\n");
+	for(;;)
+	{
+		scanf("%d",&iCommand);//菜单选择
+		switch(iCommand)
+		{
+		case 1:
+			flag=CreateProcess(
+				"E:\\KuGou2012\\KuGou.exe",//进程名
+				NULL, NULL, NULL, FALSE, 
+				CREATE_NEW_CONSOLE, 
+				NULL,
+				"E:\\KuGou2012",
+				&stinfo, &ProcessInfo);
+			break;
+		case 2:
+			
+			TerminateProcess(ProcessInfo.hProcess,0);//终止指定进程及其所有线程
+			CloseHandle(ProcessInfo.hProcess);//关闭一个内核对象。其中包括文件、文件映射、
+									//进程、线程、安全和同步对象等
+			break;  
+		case 3:
+			exit(0);
+		}  
+	}
+	CloseHandle(ProcessInfo.hProcess);//关闭一个内核对象。其中包括文件、文件映射、进程、线程、安全和同步对象等
+}

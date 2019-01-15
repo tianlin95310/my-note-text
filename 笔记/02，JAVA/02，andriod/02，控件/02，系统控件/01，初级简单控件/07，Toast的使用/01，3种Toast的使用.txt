@@ -1,0 +1,61 @@
+public class MainActivity extends ActionBarActivity implements OnClickListener
+{
+
+	private Button bt_text,bt_bt,bt_img;
+	
+	TextView tv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		bt_text = (Button) findViewById(R.id.bt_text);
+		bt_bt = (Button) findViewById(R.id.bt_bt);
+		bt_img = (Button) findViewById(R.id.bt_img);
+		tv = (TextView) findViewById(R.id.tv);
+		
+		bt_text.setOnClickListener(this);
+		bt_bt.setOnClickListener(this);
+		bt_img.setOnClickListener(this);
+	}
+	@Override
+	public void onClick(View v)
+	{
+		switch(v.getId())
+		{
+		case R.id.bt_text:
+			// Toast可以显示普通文本，
+			Toast.makeText(this, "test", 0).show();
+			break;
+		case R.id.bt_bt:
+			
+			// Toast也可以显示按钮，但按钮好像不能点击
+			Toast btToast = new Toast(this);
+			Button bt = new Button(this);
+			bt.setText("点我！");
+			bt.setOnClickListener(new OnClickListener()
+			{
+				public void onClick(View v)
+				{
+					tv.setText("哈哈哈！");
+				}
+			});
+			btToast.setView(bt);
+			btToast.setDuration(Toast.LENGTH_LONG);
+			btToast.show();
+			
+			break;
+		case R.id.bt_img:
+			// Toast可以显示图片
+			Toast imgToast =  new Toast(this);
+			ImageView img = new ImageView(this);
+			img.setImageResource(R.drawable.ic_launcher);
+			imgToast.setView(img);
+			imgToast.setDuration(Toast.LENGTH_LONG);
+			imgToast.show();
+			break;
+		}
+		
+	}
+
+}

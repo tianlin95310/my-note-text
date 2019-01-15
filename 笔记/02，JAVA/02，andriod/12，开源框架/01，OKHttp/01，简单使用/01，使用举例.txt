@@ -1,0 +1,89 @@
+package com.example.testokhttpandfastjson;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+
+public class MainActivity extends Activity
+{
+
+    public static final MediaType JSONMEDIATYPE = MediaType
+            .parse("application/json; charset=utf-8");
+
+    // get方式提交
+    String urlget = "http://192.168.0.102:8080/001%20login/Login?username=111&password=111";
+
+    // post方式提交
+    String urlpost = "http://192.168.0.102:8080/001%20login/Login";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // new Thread(){
+        // @Override
+        // public void run()
+        // {
+        // http();
+        // }
+        // }.start();
+
+        http();
+    }
+
+    private void http()
+    {
+        OkHttpClient client = new OkHttpClient();
+
+        // 提交的内容
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.username = "123";
+        loginRequest.password = "123";
+
+        String json = JSON.toJSONString(loginRequest);
+
+        Log.d("my", json);
+
+        // // 1，表单形式添加
+        // FormBody.Builder builder = new FormBody.Builder();
+        // builder.add("username", loginRequest.username);
+        // builder.add("password", loginRequest.password);
+        // FormBody form = builder.build();
+
+        // 2,发送json数据到服务器
+        RequestBody form = RequestBody.create(JSONMEDIATYPE, json);
+
+        Request r = new Request.Builder().url(urlpost).post(form).build();
+
+        client.newCall(r).enqueue(new Callback()
+        {
+            @Override
+            public void onFailure(Call call, IOException e)
+            {
+                Log.d("my", "onFailure");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException
+            {
+                Log.d("my", "message:" + response.message()); // is always OK
+                Log.d("my", "body:" + response.body().string());
+                Log.d("my", "code:" + "" + response.code());
+            }
+        });
+    }
+}

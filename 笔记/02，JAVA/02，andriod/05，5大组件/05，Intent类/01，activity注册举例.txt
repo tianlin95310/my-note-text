@@ -1,0 +1,32 @@
+1,不仅可以打开应用自身的activity，还可以打开其他应用的activity，并且只要安装了就可以。
+
+
+<activity
+            android:name=".MainActivity"	// 类名要求完整，可以简写
+            android:label="@string/app_name" >
+            <intent-filter>			// 过滤器，用隐式调用时需要setAction
+                <action android:name="android.intent.action.MAIN" />
+			// android.intent.category.LAUNCHER表示普通activity
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.newactivity.NewActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.example.newactivity.Way2Activity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="aaa.bbb.ccc" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data		// 有需要setData
+                    android:port="8080"
+                    android:host="bbb"
+                    android:mimeType="vnd.android.cursor.item/xxx"
+                    android:scheme="aaa" />
+			//mimeType和scheme相互互斥，需要用其他的API来同时添加 
+            </intent-filter>
+        </activity>

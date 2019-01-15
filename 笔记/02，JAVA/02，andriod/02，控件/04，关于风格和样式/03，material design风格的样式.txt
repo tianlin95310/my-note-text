@@ -1,0 +1,5 @@
+1，android:windowTranslucentStatus
+能让状态栏半透明
+
+2，<!--textAllCaps 保留大小写-->
+<item name="android:textAllCaps">false</item>

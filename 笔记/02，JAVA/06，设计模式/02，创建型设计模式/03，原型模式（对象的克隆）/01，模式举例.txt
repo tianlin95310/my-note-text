@@ -1,0 +1,82 @@
+定义：用原形实例指定创建对象的种类，并通过拷贝这些原型创建新的对象。
+
+实现：
+	定义一个类，实现一个Cloneable接口，重写clone方法即可
+
+优点：
+1，性能优良
+	clone的效率，比new出一个对象的效率高，他是拷贝内存的二进制流,
+2，逃避了构造函数的约束
+	因为是拷贝内存实现，所以对象的产生不会调用构造函数。
+
+//实例
+package com.my;
+
+
+class Person implements Cloneable
+{
+	private String name;
+	private int age;
+	public String getName()
+	{
+		return name;
+	}
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	public int getAge()
+	{
+		return age;
+	}
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+	public Person(String name, int age)
+	{
+		super();
+		this.name = name;
+		this.age = age;
+	}
+	public Person()
+	{
+		super();
+	}
+	
+	// 重写父类的clone方法，本质上还是调用父类的方法，他是一个native地方法
+	@Override
+	protected Object clone() throws CloneNotSupportedException
+	{
+		return super.clone();
+	}
+	@Override
+	public String toString()
+	{
+		// 父类的toString会得到对象的地址
+		return super.toString() + "[name=" + name + ", age=" + age + "]";
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		try
+		{
+			Person p1 = new Person("qqq", 21);
+			
+			Person p2 = (Person) p1.clone();
+			
+			// p1,p2的内容一样，但地址不同，p2的产生不会调用构造函数
+			// 这个与引用的直接赋值不一样，饮用赋值得到的对象的地址值是一样的
+			System.out.println(p1 + "\n" + p2);
+			
+		} catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+}

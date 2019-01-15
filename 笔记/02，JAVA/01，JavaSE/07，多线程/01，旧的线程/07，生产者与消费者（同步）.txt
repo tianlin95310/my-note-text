@@ -1,0 +1,126 @@
+package com.itjob;
+
+class Person
+{
+	private String name;
+	private String sex;
+
+	private int full = 0;
+
+	public synchronized void set(String name, String sex)
+	{
+		if (full == 1)
+		{
+			try
+			{
+				wait();
+				//如果已经生产了，不能在生产，等待消费者取走
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		if(full == 0)
+		{
+			//没有生产的话，就立即生产一个
+			this.name = name;
+			this.sex = sex;
+			
+			full++;		//将标志加1
+			
+			notify();	//并唤醒第一个等待的消费线程
+		}
+	}
+
+	public synchronized void get()
+	{
+		if(full == 0)
+		{
+			try
+			{
+				wait();	//没有生产的话，就等待
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		if(full == 1)
+		{
+			//如果有，就立即取走。
+			try
+			{
+				Thread.sleep(1000);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			
+			System.out.println(name + " " + sex);
+			
+			full--;		//将标志减1
+			
+			notify();	//并唤醒第一次等待的生产线程
+		}
+		
+	}
+
+}
+
+class Producer implements Runnable
+{
+	private Person p = null;
+	private boolean which = false;
+
+	public Producer(Person p)
+	{
+		this.p = p;
+	}
+
+	public void run()
+	{
+		while (true)
+		{
+			if (which == false)
+				p.set("person1", "male");
+			else
+				p.set("person2", "female");
+
+			which = !which;
+
+		}
+	}
+}
+
+class Consumer implements Runnable
+{
+	private Person p = null;
+
+	public void run()
+	{
+		while (true)
+		{
+			p.get();
+		}
+	}
+	public Consumer(Person p)
+	{
+		this.p = p;
+	}
+
+}
+
+public class TestTimer
+{
+	public static void main(String[] args)
+	{
+		Person p = new Person();
+		
+		Thread thread1 = new Thread(new Producer(p));
+		Thread thread2 = new Thread(new Consumer(p));
+		
+		thread1.start();
+		thread2.start();
+	}
+
+}

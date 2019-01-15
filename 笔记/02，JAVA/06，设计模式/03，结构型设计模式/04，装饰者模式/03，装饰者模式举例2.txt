@@ -1,0 +1,120 @@
+
+在豆浆的生产中，比如要加一个原料，不同原料之间的组合可能产生很多种豆浆，
+每个都将都产生一个类，会存在子类过多（类爆炸）的问题
+
+// 1，定义饮料接口
+interface Drink
+{
+	public abstract String description();
+	public abstract float money();
+}
+
+// 2，定义某一个具体的未加作料的纯豆浆类,被装饰对象
+class SoyaBean implements Drink
+{
+	public String description()
+	{
+		return "纯豆浆";
+	}
+	public float money()
+	{
+		return 5.0f;
+	}
+}
+// 3，定义装饰者基类，可为抽象类，也可不是
+// 他继承自Drink，保证了类的统一
+abstract class Decorator implements Drink
+{
+	// 4，关联另一个饮料，用于得到上一次的饮料的信息
+	private Drink drink ;
+	public Decorator(Drink drink)
+	{
+		this.drink = drink;
+	}
+	public String description()
+	{
+		return drink.description();
+	}
+	public float money()
+	{
+		return drink.money();
+	}
+}
+// 5，具体的装饰类，加了鸡蛋的类
+// 由于EggSoyaBean 继承自Decorator，所以他也是Drink，每一次修饰得到的最终结果都是Drink
+// 但具有的功能越来越多
+class EggSoyaBean extends Decorator
+{
+	// 6，将饮料传给基类，用于得到未加该作料之前的饮料的信息
+	public EggSoyaBean(Drink drink)
+	{
+		super(drink);
+	}
+	// 7，传给基类后，调用基类的相关方法得到上一次饮料的信息，再加上
+		本次添加的原料的信息就得到了添加了该原料之后的信息
+	public String description()
+	{
+		return super.description() + "+鸡蛋";
+	}
+	public float money()
+	{
+		return super.money() + 2.0f;
+	}
+}
+
+class MilkSoyaBean extends Decorator
+{
+	public MilkSoyaBean(Drink drink)
+	{
+		super(drink);
+	}
+	public String description()
+	{
+		return super.description() + "+牛奶";
+	}
+	public float money()
+	{
+		return super.money() + 3.0f;
+	}
+}
+
+class SugerSoyaBean extends Decorator
+{
+	public SugerSoyaBean(Drink drink)
+	{
+		super(drink);
+	}
+	public String description()
+	{
+		return super.description() + "+糖";
+	}
+	public float money()
+	{
+		return super.money() + 1.0f;
+	}
+}
+
+public class Test
+{
+	public static void main(String[] args)
+	{
+		//创建纯豆浆
+		Drink sb = new SoyaBean();
+		System.out.println(sb.description());
+		System.out.println(sb.money());
+		
+		// 用鸡蛋来装饰纯豆浆，得到的还是一个Drink，后面的MilkSoyaBean，SugerSoyaBean也是Drink
+		// 保证了子类数量不会过多的问题
+		EggSoyaBean esb = new EggSoyaBean(sb);
+		System.out.println(esb.description());
+		System.out.println(esb.money());
+		
+		MilkSoyaBean msb = new MilkSoyaBean(esb);
+		System.out.println(msb.description());
+		System.out.println(msb.money());
+		
+		SugerSoyaBean ssb = new SugerSoyaBean(msb);
+		System.out.println(ssb.description());
+		System.out.println(ssb.money());
+	}
+}

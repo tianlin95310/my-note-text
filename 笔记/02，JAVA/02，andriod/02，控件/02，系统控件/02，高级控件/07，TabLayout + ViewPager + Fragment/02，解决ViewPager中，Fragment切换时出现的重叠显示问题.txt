@@ -1,0 +1,130 @@
+public class OrderCreateFragment extends ViewPagerFragment implements IOrderCreateView
+    ,SwipeRefreshLayout.OnRefreshListener
+{
+    @BindView(R.id.rv_order_create)
+    RecyclerView rvOrderCreate;
+    @BindView(R.id.swipe_order_create)
+    SwipeRefreshLayout swipeOrderCreate;
+
+    @Inject
+    OrderCreatePresenter presenter;
+
+    public OrderCreateFragment(String title)
+    {
+        super();
+        this.title = title;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        inject();
+    }
+
+    @Override
+    public void initView()
+    {
+        swipeOrderCreate.setOnRefreshListener(this);
+
+        swipeOrderCreate.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light
+        );
+
+        rvOrderCreate.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setPadingLeft((int) getActivity().getResources().getDimension(R.dimen.activity_horizontal_margin));
+        dividerItemDecoration.setPaddingRight((int) getActivity().getResources().getDimension(R.dimen.activity_horizontal_margin));
+
+        rvOrderCreate.addItemDecoration(dividerItemDecoration);
+
+    }
+
+    @Override
+    public void onRefresh()
+    {
+        Log.d("my" ,"onRefresh");
+       presenter.refreshData();
+    }
+
+    @Override
+    public void stopRefresh()
+    {
+        swipeOrderCreate.setRefreshing(false);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        Log.d("my", "OrderCreateFragment onCreateView");
+        View view = inflater.inflate(R.layout.fragment_order_create, null);
+        ButterKnife.bind(this, view);
+
+        initView();
+
+        presenter.initData();
+
+        return view;
+    }
+
+    @Override
+    public void setAdapter(List<OrderCreateVo> list)
+    {
+        if(rvOrderCreate.getAdapter() == null)
+        {
+            OrderCreateAdapter adapter = new OrderCreateAdapter(getActivity(), list);
+            rvOrderCreate.setAdapter(adapter);
+        }
+        else {
+            OrderCreateAdapter adapter = (OrderCreateAdapter) rvOrderCreate.getAdapter();
+            adapter.setList(list);
+        }
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        /**
+         * 显示第3个tab时，会自动调用该方法，并且View里面的信息没有了，需要为View重新设置信息
+         */
+        Log.d("my", "OrderCreateFragment onDestroyView");
+
+        /**
+         * 解决当第二次打开同一个Fragment时，出现与Fragment上次显示的内容有重叠的问题，这种问题不是100
+         * %出现的，将它的adapter的数据清空是解决不了的，仅仅通过刷新adapter的数据也是解决不了的
+         * 通过移除rvOrderCreate的所有视图发现能够解决
+         */
+        rvOrderCreate.removeAllViews();
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        Log.d("my", "OrderCreateFragment onDestroy");
+        presenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
+    public OrderCreateComponent getOrderCreateComponent()
+    {
+        OrderCreateComponent orderCreateComponent =
+        DaggerOrderCreateComponent.builder()
+                .orderCreateModule(new OrderCreateModule(this))
+                .build();
+        return orderCreateComponent;
+    }
+
+    @Override
+    public void inject()
+    {
+        getOrderCreateComponent().injectIntoOrderCreateFragment(this);
+    }
+}

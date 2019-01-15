@@ -1,0 +1,104 @@
+SQLiteDatabase类还提供了一些其他的方法来实现增删改查操作，但也只是做了一层封装而已，效率反而降低了，尽量
+	就用原始的sql语句来写更好，因为少了一层调用，减少了调用开销
+
+
+1，插入操作
+	sdb.insert(
+	"student", 	//表名
+	null, 		//字段是否允许为空
+	values);	//实际的值ContentValues类
+
+ContentValues values = new ContentValues();	，这个跟PrepareStatement差不多，内部是一个HashMap结构
+			values.put("sNo", s.getsNo());
+			values.put("sName", s.getsName());
+			values.put("sex", s.getSex());
+			values.put("sAge", s.getsAge());
+2，删除操作
+	sdb.delete("student",	//表名
+	 "sNo=?", 		//条件，条件仍然是通配符的方式，where内部已经写出，不必再写了。
+	new String[]{});	//条件的值是一个String数组
+
+3，更新操作
+	sdb.update("student", 	//表名	
+	new ContentValues(), 	//需要更新的值
+	"sNo=?", 		//条件
+	new String[]{});	//条件值
+
+4，查询操作
+	Cursor rs = sdb.query	//返回的结果集
+	("student", 		//表名
+	null, 			//为null，表示返回所有的咧
+	"sNo=?", 		//查询条件
+	new String[]{} 		//条件通配符的值
+	groupBy, 		//分组依据
+	having, 		//having子句
+	orderBy, 		//以什么排序
+	limit)			//查询限制
+
+操作实例
+1，添加
+public boolean add()
+	{
+		SQLiteDatabase sdb = sql.getWritableDatabase();
+		
+		for(int i = 0 ; i < 100 ; i++)
+		{
+			StudentVo s = new StudentVo();
+			s.setsNo(i);
+			s.setsName("wang" + i);
+			s.setSex(new Random().nextBoolean() ? "男" : "女");
+			s.setsAge(new Random().nextInt(50));
+
+			// 1，sql元语句
+			sdb.execSQL("insert into student values(?,?,?,?)", new Object[]{s.getsNo(),s.getsName(),s.getSex(),s.getsAge()});
+			
+			// 2，封装的API
+
+//			ContentValues values = new ContentValues();
+//			values.put("sNo", s.getsNo());
+//			values.put("sName", s.getsName());
+//			values.put("sex", s.getSex());
+//			values.put("sAge", s.getsAge());
+//			
+//			sdb.insert("student", null, values);
+		
+		}
+		sdb.close();
+		return true;
+	}
+
+2，删除
+	public boolean del(int sNo)
+	{
+		SQLiteDatabase sdb = sql.getWritableDatabase();
+		// 1，sql元语句
+//		sdb.execSQL("delete from student where sNo=?", new String[]{""+sNo});
+
+		// 2，封装的API
+		sdb.delete("student", "sNo=?", new String[]{"" + sNo});
+		
+		sdb.close();
+		return true;
+	}
+3，查询
+public StudentVo query(int sNo)
+	{
+		SQLiteDatabase sdb = sql.getWritableDatabase();
+		// 1，sql元语句
+//		Cursor rs = sdb.rawQuery("select * from student where sNo=?", new String[]{"" + sNo});
+
+		// 2，封装的API，两者返回的东西是一样的，都是Cursor结果集
+		Cursor rs = sdb.query("student", null, "sNo=?", new String[]{"" + sNo}, null, null, null);
+		if(rs.moveToNext() == false)
+			return null;
+		
+		StudentVo s = new StudentVo();
+		
+		s.setsNo(rs.getInt(rs.getColumnIndex("sNo")));
+		s.setsName(rs.getString(rs.getColumnIndex("sName")));
+		s.setSex(rs.getString(rs.getColumnIndex("sex")));
+		s.setsAge(rs.getInt(rs.getColumnIndex("sAge")));
+		
+		sdb.close();
+		return s;
+	}

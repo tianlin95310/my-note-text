@@ -1,0 +1,67 @@
+// 主Activity
+public class MainActivity extends ActionBarActivity
+{
+	// 由于系统的VideoView的视图太小，所以重写了系统的VideoView
+	private MyVideoView mvv;
+	// 媒体播放控制对象
+	private MediaController mc;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		// 得到视频播放视图
+		mvv = (MyVideoView) findViewById(R.id.mvv);
+		// 得到控制对象
+		mc = new MediaController(this);
+		// 设置视频源
+		mvv.setVideoPath("/sdcard/ppp.mp4");
+		// 为视图设置控制器
+		mvv.setMediaController(mc);
+		// 微控制器设置播放的view
+		mc.setMediaPlayer(mvv);
+		// 让控制器获取焦点
+		mc.requestFocus();
+		// 横屏
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		
+	}
+
+}
+
+// 自定义的VideoView类
+public class MyVideoView extends VideoView
+{
+	// 必要的三个构造函数 
+	public MyVideoView(Context context, AttributeSet attrs, int defStyle)
+	{
+		super(context, attrs, defStyle);
+	}
+	public MyVideoView(Context context, AttributeSet attrs)
+	{
+		super(context, attrs);
+	}
+	public MyVideoView(Context context)
+	{
+		super(context);
+	}
+	
+	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		int w = getDefaultSize(100, widthMeasureSpec);
+		
+		int h = getDefaultSize(100, heightMeasureSpec);
+		
+		setMeasuredDimension(w, h);;
+	}
+
+}xml的定义
+
+// 自定义的控件，要求要全名
+//<com.example.mediacontrol.MyVideoView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/mvv"
+    />

@@ -1,0 +1,126 @@
+package com.my;
+
+// 核心处理方法类
+interface Receiver
+{
+	void doSomething();
+}
+
+class Receiver1 implements Receiver
+{
+
+	@Override
+	public void doSomething()
+	{
+		System.out.println("Receiver1");
+	}
+}
+
+class Receiver2 implements Receiver
+{
+	@Override
+	public void doSomething()
+	{
+		System.out.println("Receiver2");
+	}
+	
+}
+// 命令将要执行的操作
+abstract class Command
+{
+	private Receiver receiver;
+	
+	public Receiver getReceiver()
+	{
+		return receiver;
+	}
+
+	public void setReceiver(Receiver receiver)
+	{
+		this.receiver = receiver;
+	}
+
+	public Command(Receiver receiver)
+	{
+		this.receiver = receiver;
+	}
+	
+	public abstract void exec();
+	
+}
+
+class Command1 extends Command
+{
+
+	public Command1(Receiver receiver)
+	{
+		super(receiver);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void exec()
+	{
+		System.out.print("Command1-->");
+		getReceiver().doSomething();
+	}
+	
+}
+
+class Command2 extends Command
+{
+
+	public Command2(Receiver receiver)
+	{
+		super(receiver);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void exec()
+	{
+		System.out.print("Command2-->");
+		getReceiver().doSomething();
+	}
+	
+}
+// 调用命令
+class Invoker
+{
+	private Command command;
+
+	public Command getCommand()
+	{
+		return command;
+	}
+
+	public void setCommand(Command command)
+	{
+		this.command = command;
+	}
+	
+	public void action()
+	{
+		command.exec();
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		// 两个具体实现
+		Receiver1 receiver1 = new Receiver1();
+		Receiver2 receiver2 = new Receiver2();
+		// 两个命令分别有不同的处理
+		Command1 command1 = new Command1(receiver1);
+		Command2 command2 = new Command2(receiver2);
+		// 调用命令
+		Invoker invoker1 = new Invoker();
+		
+		invoker1.setCommand(command1);
+		invoker1.action();
+		
+		invoker1.setCommand(command2);
+		invoker1.action();
+	}
+}

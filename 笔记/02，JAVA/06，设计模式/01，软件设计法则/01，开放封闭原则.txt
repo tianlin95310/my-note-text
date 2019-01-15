@@ -1,0 +1,136 @@
+面向抽象
+
+特点
+1，对修改封闭
+2，对扩展开放
+3，对操作进行抽象成一个一个函数，分一个人或多个人来实现函数
+4，应将修改减少到最少
+
+// 代码举例
+interface Book
+{
+	float getPrice();
+}
+
+class NovelBook implements Book
+{
+	private String name;
+	private float price;
+
+	public NovelBook(String name, float price)
+	{
+		this.name = name;
+		this.price = price;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public float getPrice()
+	{
+		return price;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public void setPrice(float price)
+	{
+		this.price = price;
+	}
+
+}
+
+// 这里就出现一个自以为误区的误区，说private修饰的子类不可见，但它仍然被继承过来了
+// 在c语言里，private继承时是占有内存空间的,虽然private子类不可见，但通过父类继承
+// 的public方法仍然能对private属性进行操作
+//
+class OffPriceNovelBook1 extends NovelBook
+{
+	public OffPriceNovelBook1(String name, float price)
+	{
+		// 调用父类的构造方法，是为了构造子类的对象
+		super(name, price);
+	}
+
+	// 1，这里重写了getPrice方法，super用于区分是子类，还是父类的，以免造成递归调用
+	// c++是用父类加上::类区分的，原理是一样的
+	@Override
+	public float getPrice()
+	{
+		float prePrice = super.getPrice();
+		return prePrice * 0.5f;
+	}
+}
+
+class OffPriceNovelBook2 extends NovelBook
+{
+	public OffPriceNovelBook2(String name, float price)
+	{
+		// 调用父类的构造方法，是为了构造子类的对象。
+		
+		super(name, price);
+	}
+
+	public float getOffPrice()
+	{
+		// 直接调用父类继承的函数隐式访问private成员
+		return getPrice() * 0.5f;
+	}
+}
+
+public class Test
+{
+	public static void main(String[] args)
+	{
+		// 原版价格
+		ArrayList<NovelBook> list1 = new ArrayList<NovelBook>();
+		for (int i = 1; i <= 4; i++)
+		{
+			list1.add(new NovelBook("i'm book " + i, i * 10 + i));
+		}
+
+		for (NovelBook book : list1)
+		{
+			System.out.println("书名: " + book.getName() + ", 价格: " + book.getPrice());
+		}
+		// 现在书的价格因市场因素需要下降，有3种解决方案
+		// 1，为Book添加一个方法，但显然不合适，接口是一组标准，不能所编修改
+		// 2，修改NovelBook的getPrice方法，但也不合适，
+		// 3，用子类重写getPrice方法，这是一个不错的解决方案，该方案尽量不写该原来的业务逻辑
+		// 4，用子类继承NovelBook，添加一个offset方法来降价，与3的本质一样
+		System.out.println("降价后***************");
+
+		// 降价1
+		ArrayList<NovelBook> list2 = new ArrayList<NovelBook>();
+		for (int i = 1; i <= 4; i++)
+		{
+			list2.add(new OffPriceNovelBook1("i'm book " + i, i * 10 + i));
+		}
+
+		for (NovelBook book : list2)
+		{
+			System.out.println("书名: " + book.getName() + ", 价格: " + book.getPrice());
+		}
+
+		System.out.println("降价后***************");
+
+		// 降价2
+		ArrayList<OffPriceNovelBook2> list3 = new ArrayList<OffPriceNovelBook2>();
+		for (int i = 1; i <= 4; i++)
+		{
+			list3.add(new OffPriceNovelBook2("i'm book " + i, i * 10 + i));
+		}
+
+		for (OffPriceNovelBook2 book : list3)
+		{
+			System.out.println("书名: " + book.getName() + ", 价格: " + book.getOffPrice());
+		}
+
+	}
+
+}

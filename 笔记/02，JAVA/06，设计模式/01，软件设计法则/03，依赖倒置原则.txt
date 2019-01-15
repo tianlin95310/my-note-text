@@ -1,0 +1,101 @@
+定义：
+1，高层模块不应该依赖底层模块，他们都应该依赖上层接口，在接口里规定形参是什么
+2，抽象不应该依赖具体
+3，具体应该依赖抽象
+
+依赖的实现方式，就是让一个类（或者接口）成员另外一个类的成员，通过构造函数，或者set函数
+为其赋值。得到依赖关系
+
+综合起来解释面向接口，面向抽象编程。每个类都应该继承自接口，或抽象类。
+,
+
+案例：
+// 方式1，通过接口依赖
+interface Animal1 
+{
+	// 定义依赖关系1
+	public abstract void eat(Food food);
+}
+// 人类需要依赖接口Animal1，同时Animal1确定了人类与食物的依赖关系
+class Human implements Animal1
+{
+	public void eat(Food food)
+	{
+		System.out.println("人类可以吃" + food.getName());
+	}
+}
+
+
+// 方式2，通过成员依赖
+interface Animal2 
+{
+	// 定义依赖关系2，接口不能定义可变成员，顾得交由子类完成
+	public abstract void eat();
+}
+class People implements Animal2
+{
+	// 依赖的另一个接口
+	private Food food;
+	
+	public People()
+	{
+	}
+	// 通过构造函数得到接口
+	public People(Food food)
+	{
+		this.food = food;
+	}
+	// 通过set方式得到接口
+	public void setFood(Food food)
+	{
+		this.food = food;
+	}
+	@Override
+	public void eat()
+	{
+		System.out.println("人类可以吃" + food.getName());
+	}
+	
+}
+
+interface Food
+{
+	public abstract String getName();
+}
+
+class Rice implements Food
+{
+	@Override
+	public String getName()
+	{
+		return "米饭";
+	}
+}
+class Fruit implements Food
+{
+	@Override
+	public String getName()
+	{
+		return "水果";
+	}
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Animal1 human = new Human();
+		
+		human.eat(new Fruit());
+		
+		human.eat(new Rice());
+		
+		People people = new People();
+		people.setFood(new Fruit());
+		people.eat();
+		
+		people.setFood(new Rice());
+		people.eat();
+	}
+
+}

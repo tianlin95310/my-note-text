@@ -1,0 +1,115 @@
+概念：Annotation是所有注解的父接口。不需要人为制定继承自该接口。并且不能人为指定继承自该接口
+
+
+
+一,3种标准注解
+@Override:	源文件阶段检测是否复写父类的方法
+
+@Desprecated:	声明过时的方法，字段，类，用横线划掉
+
+@SuppressWarning:能消除单个语句，整个函数内，整个类内的特定的警告
+
+@Target({TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface SuppressWarnings {
+  		String[] value();
+}
+
+二,4种元注解，用来解释注解的注解
+
+1，@Target:表示注解的作用范围
+
+	@Documented
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.ANNOTATION_TYPE)
+	public @interface Target {
+	    ElementType[] value();
+	}
+范围值存在ElementType里面，它是一个枚举类
+public enum ElementType {
+    TYPE,	，有类，接口，枚举
+    FIELD,	，字段
+    METHOD,	，函数
+    PARAMETER,	，参数
+    CONSTRUCTOR,，构造函数
+    LOCAL_VARIABLE,局部变量
+    ANNOTATION_TYPE,注解类型
+    PACKAGE,		，包
+    TYPE_PARAMETER,	，参数类型
+    TYPE_USE	
+}
+
+2，@Retention：作用时间，在RetentionPolicy 枚举里有3种
+public enum RetentionPolicy {
+    SOURCE,	，源文件阶段，还没编译的时候就能检测出
+    CLASS,	，编译完成阶段
+    RUNTIME	，运行时，该注解才能用
+}
+
+3，@Documented:	允许留在Javadoc种
+4，@Inherited:	允许子类继承父类的注解
+
+三，自定义注解
+
+1，没有指明Target，则ElementType的所有都可以
+
+2，若没有指明Retention，默认是Retention.CLASS，具有Retention.RUNTIME才能在用在反射机制里。
+
+3，若注解只有一个成员名为value，不管是基本类型，还是数组。则用注解传参时可以省略values=，
+若为数组，有多个数据时需要加上{}，来传值。
+
+4，若Target指定为ANNOTATION_TYPE，则它可以作为元注解，4种元注解也是这样实现的。
+
+5，注解内部能定义类，接口，枚举，只有枚举比较常见。
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(value = {ElementType.FIELD,ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)	
+@Documented
+@Inherited
+public @interface MyAnnotation
+{
+	int value();
+}
+
+public class Test
+{
+	@MyAnnotation(value = 2)	//value=可以不写
+	//@MyAnnotation(2)
+	public static void main(String[] args)
+	{
+		System.out.println("hello world");
+		
+		int a = 10;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

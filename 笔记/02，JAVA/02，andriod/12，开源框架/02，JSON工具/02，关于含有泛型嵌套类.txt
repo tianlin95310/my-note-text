@@ -1,0 +1,3 @@
+含有泛型泛型嵌套类的时候，我们需要传递一个type对象，由TypeRefrence产生，用class来解析得到的泛型类是一个
+JsonArray或者JsonObject
+如果没有泛型嵌套，我们可以直接使用class解析,当然也可以用TypeRefrence

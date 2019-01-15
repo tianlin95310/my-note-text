@@ -1,0 +1,32 @@
+1,赋值方式1
+struct user
+{
+  char username[20];
+  char password[20];
+  char ch;
+};
+user = {"root","root",1}；
+
+struct type
+{
+	char a;
+	unsigned char b;
+	int c;
+	unsigned int d;
+	
+};
+void main()
+{
+	type s = {0};	//此种用法相当于memset（0）的功能，内存的所有部分都为0
+}
+
+2,空结构体,如MFC里的POSITION结构体
+struct VOID
+{
+
+};
+void main()
+{
+	VOID v;
+	cout<<sizeof(v)<<endl;	他是占有内存的，VC6.0里面站1个字节
+}

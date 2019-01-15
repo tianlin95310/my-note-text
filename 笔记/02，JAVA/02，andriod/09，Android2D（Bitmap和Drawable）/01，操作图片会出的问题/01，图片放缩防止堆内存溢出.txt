@@ -1,0 +1,68 @@
+图片过大需要对图片进行重写采样，改变其真正的大小
+对图片进行简单的缩放处理是不能改变图片的真正的大小的
+
+// 图片放缩函数
+
+
+public class MainActivity extends ActionBarActivity
+{
+	private ImageView img;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		img = (ImageView) findViewById(R.id.img);
+	}
+
+	public void show(View v)
+	{
+		// 得到内存卡路径，/storage/sdcard0，因为内存卡数量不知，所以通常可以用/storage来递归
+		File dir = Environment.getExternalStorageDirectory();
+		// Options内部类可以存贮图片的信息
+		BitmapFactory.Options ops = new BitmapFactory.Options();
+		// 设置为true表示能得到图片的大小信息，decodeFile不会将图片加载到内存中，但一些out属性的值已经得到，如图片的大小
+		ops.inJustDecodeBounds = true;
+		// 带有ops参数时，并且inJustDecodeBounds为true时，表示不将图片显示到内存，只得到图片的大小
+		BitmapFactory.decodeFile(dir.getPath() + "/p1.jpg",ops);
+		// 得到图片的分辨率大小，用out属性表示
+		int picH = ops.outHeight;
+		int picW = ops.outWidth;
+		
+		// 都能得到WindowManager对象
+//		WindowManager window = (WindowManager) this.getSystemService(WINDOW_SERVICE);
+		WindowManager window = this.getWindowManager();
+		// 得到屏幕高宽
+		Point point = new Point();
+		window.getDefaultDisplay().getSize(point);
+		// 得到屏幕的高宽540,960
+		int windowH = point.y;
+		int windowW = point.x;
+		
+		// 得到比率
+		int rateH = picH / windowH;
+		int rateW = picW / windowW;
+		int rate = 0;
+		if(rateH > 1 && rateH > rateW)
+			rate = rateH;
+		if(rateW > 1 && rateW > rateH)
+			rate = rateW;
+		
+		// 如果图片分辨率过大，占用的对内存就大多，需要降低图片的分辨率，所以需要重采样，单纯的改变图片烦人大小是不能改变图片的分辨率
+		
+		// 如果inSampleSize等于2，那么分辨率将减少到1 / 4，长宽都变为一半。
+		// inSampleSize的值为2的整数幂，即是不是他也会自动的近似处理
+		ops.inSampleSize = rate;
+		// inJustDecodeBounds设置为false，表示要显示图片
+		ops.inJustDecodeBounds = false;
+		// 重新将图片加载到内存中
+		Bitmap bmp = BitmapFactory.decodeFile(dir.getPath() + "/p1.jpg",ops);
+		
+		img.setImageBitmap(bmp);
+		
+	}
+}
+
+

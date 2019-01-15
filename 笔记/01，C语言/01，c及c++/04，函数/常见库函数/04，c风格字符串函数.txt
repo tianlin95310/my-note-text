@@ -1,0 +1,10 @@
+char str1[20];
+char str2[20];
+1,转大写
+strlwr(str1),将字符串转为小写
+
+2，比较
+strcmp(str1,str2);
+
+3,复制
+strcpy(str1,str2);

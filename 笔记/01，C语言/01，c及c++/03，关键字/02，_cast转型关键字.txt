@@ -1,0 +1,18 @@
+1，static_cast<b>(a);
+static<int>(5.5);从a→b;此效果等同于int(5.5),当a,b为基本类型时，不涉及指针或引用时，b为转型目标转型，a的源数，做完a的值变成5参与后续运算.
+
+2，D*p=static_cast<D*>(new B),从b→a当涉及到指针和引用时，情况就不一样了，
+p本为D*类型，该转型将p转为B*类型，static_cast<D*>(new B)其结果为new B;
+若D从B继承，则词句虽不会报错，但这种转型是不安全的，因为static在编译期无法识别，若用dynamic，则它能运行期识别，它专为多态服务，类型必须是引用，且要有虚函数，发现不安全，则转型不成功。
+
+const_cast<b>(a)
+1，int* p=const_cast<int *>(const int*)，从a→b，将const转为非const，p用来接收返回值，多用于指针。
+	const char* str1 = m_password.operator LPCSTR();
+	const char* str2 = username.operator LPCSTR();
+	strcpy(u.szPassword , const_cast<char*>(str1));将const类型转换为非const
+	strcpy(u.szUsername , const_cast<char*>(str2));
+	theApp.m_user = u;
+	
+reinterpret_cast<b>(a)
+1,从a→b，通常用于指针转化，int* p=reinterpret_cast<int*>(&d)；此例将double*转为int*;
+2,可用于type与type*的相互转化int a=reinterpret_cast<int>(new int),将int*类型用int保存。int* a=reinterpret_cast<int*>(int p)

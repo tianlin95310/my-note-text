@@ -1,0 +1,5 @@
+Android的Handle消息发送与消息处理类似于Windows的w32编程模式
+
+Android的按钮，等等点击事件函数相当于MFC的消息映射函数。
+
+android的Handler,MessageQueue,Loop消息机制加上Thread是实现android线程通信基本方法

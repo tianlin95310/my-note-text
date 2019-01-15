@@ -1,0 +1,49 @@
+package com.example.tools;
+
+import android.animation.ObjectAnimator;
+import android.view.ViewGroup;
+
+public class Tool1
+{
+
+	public static void show(ViewGroup view, int delay)
+	{
+		// API11 3.0才引入的属性动画
+		// 就是把view类的一些API封装一下，API的参数即是属性动画的第二个参数
+		
+		// view类的关于动画的函数
+//		view.setRotation(rotation);
+//		view.setTranslationX(translationX);
+		
+		ObjectAnimator anim = ObjectAnimator.ofFloat("view", "rotation", 180, 360);
+		// 设置动画的时长，延时时间
+		anim.setDuration(500);
+		anim.setStartDelay(delay);
+		// 设置动画的旋转中心
+		view.setPivotX(view.getWidth() / 2);
+		view.setPivotY(view.getHeight());
+		// 启动动画
+		anim.start();
+	}
+	
+	public static void hide(ViewGroup view, int delay)
+	{
+		ObjectAnimator anim = ObjectAnimator.ofFloat("view", "rotation", 0, 180);
+		anim.setDuration(500);
+		anim.setStartDelay(delay);
+		view.setPivotX(view.getWidth() / 2);
+		view.setPivotY(view.getHeight());
+		
+		anim.start();
+	}
+	
+	public static void hide(ViewGroup view)
+	{
+		hide(view,0);
+	}
+	public static void show(ViewGroup view)
+	{
+		show(view,0);
+	}
+
+}

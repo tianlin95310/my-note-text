@@ -1,0 +1,27 @@
+1，用户变量 不需要定义，可以直接使用，或者理解为在set时就认为是已经定义,他与客户端绑定,类似于会话变量，只有本次访问时才能使用,所谓的本次使用就是在同一个connection中可以跨语句使用
+
+set @var = 'abc';
+	
+	存贮过程如下qurryAllApprovedLeaveInfo
+	BEGIN
+	// 定义用户变量并且赋值为1，当不执行该存贮过程时，@testq是不存在的
+	set @testq = 1;
+	select @testq;
+	END
+
+	select @testq; 得到的空值，当运行了call qurryAllApprovedLeaveInfo;之后，用户变量就会被赋值
+	查询的结果为1
+
+	如果关闭当前的客户端，重新打开的话，select @testq;返回null
+	需要再次call qurryAllApprovedLeaveInfo;再次为testq才能查询
+	
+2，临时变量
+declare var varchar(50);
+set var = 'abc';
+
+3，@@系统变量
+	系统有的才能使用
+
+4，赋值
+有set var = ?
+select xx into var from xx

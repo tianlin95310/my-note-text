@@ -1,0 +1,5 @@
+因为Activity同一时刻只能指向一个Instance，所以只能调用某一个Instance的
+module的生命周期方法，以及只能相应同一个instance的全局事件，其他Instance的的Module的生命周期就无法调用了
+
+按道理一个Activity对应一个Instance，但是如果用导航控件的话，如embed，
+就不会新开Activity，才导致了多个Instance共享Activity的情况

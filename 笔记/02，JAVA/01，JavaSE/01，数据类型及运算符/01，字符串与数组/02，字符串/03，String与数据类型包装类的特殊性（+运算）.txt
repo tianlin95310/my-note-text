@@ -1,0 +1,9 @@
+1，
+String str = null;
+str = str + 1;
+System.out.println(str);	// 输出的结果前面会有null字符串
+		
+		
+2，Integer i1 = null;
+i1 = i1 + 1;			// 会有空指针异常
+System.out.println(i1);		

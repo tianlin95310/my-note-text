@@ -1,0 +1,73 @@
+介绍：
+1，泛型加上<>才是完整的类名,MyClass<Class>，主要用于集合操作，对自己写的类进行管理
+
+2，泛型支持继承，但前提是MyClass部分的继承，Class部分不行。
+
+3，泛型也是一种类类型，只不过的他的数据类型要调用的时候才能确定，且必须要有一种确定。
+
+4,，泛型成员不支持static修饰，因为static修饰时，修饰的属性会对着类的加载被加载到静态区，
+	成为常量成员，即相关的信息已经确定，但泛型是不确定类型的，所以不能用static修饰
+	这个与抽象函数不能被static修饰一样，因为抽象函数的实现是未知的，所以不能
+	放进静态常量区里 
+class My<T>
+{
+	private static T t;// 错误书写
+}
+
+
+
+1，泛型类，泛型方法
+public class TClass<T,V>
+{
+	private T a;
+	private V b;
+	public T getA()	//全局泛型方法
+	{
+		return a;
+	}
+	public TClass(){}
+	public String toString()
+	{
+		return "TClass [a=" + a + ", b=" + b + "]";
+	}
+	public void setA(T a)	//全局泛型方法
+	{
+		this.a = a;
+	}
+	public V getB()		//全局泛型方法
+	{
+		return b;
+	}
+	public void setB(V b)	//全局泛型方法
+	{
+		this.b = b;
+	}
+	public TClass(T a, V b)	//全局泛型方法
+	{
+		super();
+		this.a = a;
+		this.b = b;
+	}
+	
+}
+使用方法
+public static void main(String[] args)
+	{
+		//以下是正确写法，前后都要写，1.7后可以省略后面的类型
+		TClass<Integer,String> p1 = new TClass<Integer,String>();
+		p1.setA(23);
+		p1.setB("sdfd");
+		System.out.println(p1);
+		
+		//如果想使用不同的数据类型，可用Object，p3
+		TClass<Object,Object> p3= new TClass<Object,Object>();
+		p3.setA(123);
+		p3.setB("asd");
+		System.out.println(p3);
+		
+		//特殊的写法，不推荐
+		TClass p4 = new TClass();			//两边都不写默认为Object类
+		TClass<Integer,Integer> p5= new TClass<>();	//后面<>里的类型可以不写，默认与前面的相同
+		TClass<Integer,Integer> p6= new TClass();	//后面整个<>都可以不写，但不规范，它默认也是与前面的相同
+		
+	}

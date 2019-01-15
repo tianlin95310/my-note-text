@@ -1,0 +1,23 @@
+1，draw		尽量不要重写该方法
+	
+	draw的流程
+	1，画背景，对于ViewGroup，背景可以先绘制,此时还没有画孩子
+	2，画内容，需要调用onDraw画自身的内容
+	3，画孩子，需要调用dispatchDraw，
+	4，画装饰，如scrollbars
+
+2，onDraw	重写该方法，绘制自己的内容
+
+对于View，子类需要重写该方法，画自己的内容，如ImageView，TextView
+
+对于ViewGroup，多数情况下，不需要重写他，但有时需要画一些特殊的东西，如LinearLayou要画分界间距等等可以重写，但这是画自身的内容
+
+
+3，dispatchDraw
+对于View，他没有孩子，所以他的dispatchDraw里面没有内容
+对于ViewGroup，他的dispatchDraw就有内容，他需要通知孩子去画,在ViewGroup里他已经实现通知画孩子，我们通常不用去重写dispatchDraw
+了，它自动调用draw时就会画孩子，我们自定义ViewGroup，只要实现onMeasure，测量孩子大小，实现onLayout计算孩子的位置即可，这两部通常都是必须的
+
+4，强制重绘
+invalidate	主线程调用，只涉及当前的视图，不涉及父视图
+postInvalidate	分线程或主线程调用

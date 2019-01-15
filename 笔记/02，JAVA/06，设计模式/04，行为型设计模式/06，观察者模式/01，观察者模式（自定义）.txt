@@ -1,0 +1,97 @@
+原理：观察者观察被观察者，被观察者发生了某些变化，被观察者可以做出一系列的操作通知所有的观察者。
+// 被观察者接口
+interface Subject
+{
+		// 添加观察者
+	public void addSubject(Observe o);
+		// 删除观察者
+	public void removeSubject(Observe o);
+		// 有更新后通知所有的观察者
+	public void notifyAllSubject();
+}
+
+// 观察者接口
+interface Observe
+{
+		// 更新后的处理方法
+	public void update(Float Price);
+}
+
+// 假设被观察者为doll
+class Doll implements Subject
+{
+	// 用于保存观察者信息
+	private ArrayList<Observe> list = new ArrayList<Observe>();
+	// doll的目标观察指标
+	private float price;
+	
+	public Doll(Float price)
+	{
+		this.price = price;
+	}
+	
+	// 每次价格变动，都要更新
+	public void setPrice(float price)
+	{
+		this.price = price;
+		
+		this.notifyAllSubject();
+	}
+	public void addSubject(Observe o)
+	{
+		list.add(o);
+	}
+	public void removeSubject(Observe o)
+	{
+		list.remove(o);
+	}
+	public void notifyAllSubject()
+	{
+		for(Observe o : list)
+		{
+			o.update(this.price);
+		}
+	}
+}
+
+// 假设观察者为people
+class People implements Observe
+{
+	private String name;
+	
+	public People(String name)
+	{
+		this.name = name;
+	}
+	public void update(Float price)
+	{
+		System.out.println(name + "关注的东西" + "的价格为" + price);
+	}
+	
+}
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		Doll doll = new Doll(2000f);
+		
+		People p1 = new People("zhangsan");
+		People p2 = new People("lisi");
+		People p3 = new People("wangwu");
+		
+		doll.addSubject(p3);
+		
+		doll.setPrice(1800f);
+		
+		doll.addSubject(p2);
+		doll.setPrice(1600f);
+		
+		doll.addSubject(p1);
+		doll.setPrice(1400f);
+		
+		doll.removeSubject(p2);
+		doll.setPrice(1200f);
+	}
+
+}

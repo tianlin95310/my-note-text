@@ -1,0 +1,9 @@
+1，switch支持了String
+
+2，泛型new的时候可以省略类型
+
+3，每个case后要加break，否则所有的条件会变成或，也就是都会执行
+
+4，switch不能用boolean作为判断条件
+
+5，default的位置放在哪里都一样

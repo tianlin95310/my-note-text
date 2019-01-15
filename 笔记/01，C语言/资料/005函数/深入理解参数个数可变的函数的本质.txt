@@ -1,0 +1,110 @@
+//深入理解参数个数可变的函数的本质 Kou Conghua. 2011.11.09
+#include <stdio.h>
+
+//提示: 函数参数在内存中是连续存放的!
+int Average1(int first, ...)
+{
+	int count = 0;
+	int sum = 0;
+	int *p = &first;
+
+	while (*p != -1)
+	{
+		sum += *(p++);
+		count++;
+	}
+	return( sum ? (sum / count) : 0 );
+}
+
+int Average2(int argc, ...)
+{
+	int count = 0;
+	int sum = 0;
+	int *p = &argc;
+
+	for (int i = 0; i < argc; i++)
+	{
+		sum += *(++p);
+		count++;
+	}
+	return( sum ? (sum / count) : 0 );
+}
+
+void main()
+{
+	printf("算法1: \r\n");
+	printf( "2, 3, 4之和的平均值 = %d\n", Average1(2, 3, 4, -1));	//最后一个参数-1表示参数结束, 不参与计算
+	printf( "11, 2, 3, 4之和的平均值 = %d\n\n", Average1(11, 2, 3, 4, -1));	//最后一个参数-1表示参数结束, 不参与计算
+
+	printf("算法2: \r\n");
+	printf( "2, 3, 4之和的平均值 = %d\n", Average2(3, 2, 3, 4));	//第一个参数表示后续参数的个数, 不参与计算
+	printf( "11, 2, 3, 4之和的平均值 = %d\n\n", Average2(4, 11, 2, 3, 4));	//第一个参数表示后续参数的个数, 不参与计算
+}
+
+//作业: 请实现自己的printf()函数
+//提示: 参数在内存中是连续存放的, 
+//通过参数format可以得到后续每个
+//参数的类型, 以及后续参数的个数.
+//那么就可以通过fromat参数推算出
+//后续每个参数的首地址, 进而得到
+//其值.
+//简单实现自己的printf()函数，识别%d,%s,%c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+void MyPrintf(const char *format, ...)
+{
+	va_list ap;
+	char c, nc;
+	
+	va_start(ap, format);
+	while (c = *format++)
+	{
+		if (c == '%' && (nc = *format) != '\0')
+		{
+			format++;
+			switch (nc)
+			{
+			case 'c': //%c
+				{
+				/*为了内存对齐，所以要写int*/
+				char ch = va_arg(ap, int);
+				putchar(ch);
+				break;
+				}
+			case 's': //%s
+				{
+				char * p = va_arg(ap, char *);
+				fputs(p, stdout);
+				break;
+				}
+			case 'd'://%d
+				{
+				int data = va_arg(ap, int);
+				char buf[16];
+				itoa(data, buf, 10);
+				fputs(buf, stdout);
+				break;
+				}
+			default:
+				putchar('%');
+				putchar(nc);
+			}
+		}
+		else
+		{
+			putchar(c);
+		}
+	}
+	va_end(ap);
+}
+
+int main()
+{
+	int i = 100;
+	char ch = 'n';
+	char data[] = "nihao";
+	MyPrintf("%d\n%c\n%s\n", i, ch, data);
+	return 0;
+}

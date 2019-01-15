@@ -1,0 +1,58 @@
+使用举例
+
+class Thread1 implements Runnable
+{
+	private int a = 10;	//不是静态通过共用对象也能实现变量共享
+	public void run()
+	{
+		while(a > 0)
+		{
+			try
+			{
+				Thread.sleep(1000);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			System.out.println(Thread.currentThread().getName() + " " + a--);
+		}
+	}
+}
+class Thread2 extends Thread
+{
+	private static int a = 10;	//只有静态的变量不同的对象才能共享
+	public void run()
+	{
+		while(a > 0)
+		{
+			try
+			{
+				Thread.sleep(1000);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			System.out.println(Thread.currentThread().getName() + " " + a--);
+		}
+	}
+}
+public class Test
+{
+	public static void main(String[] args)
+	{
+		//1，继承Thread类
+//		new Thread2().start();
+//		new Thread2().start();
+		//不能实现共享，因为每new一次他都产生一个不同的Runnable对象，只有当线程函数操作的是一个静态数据时
+			//才能实现共享
+		
+		//2，实现Runnable接口
+		//能共享，因为每个线程的Runnable对象都是一样的，调用的是同一个函数，即使不是static变量，也能共享
+		
+		Runnable r = new Thread1();
+		new Thread(r).start();
+		new Thread(r).start();
+		new Thread(r).start();
+		new Thread(r).start();
+	}
+}

@@ -1,0 +1,121 @@
+1,行内单行有效
+<p style="color: #ff00ff;font-family: 隶书">haha</p>
+
+2，内嵌样式
+行内样式表局限于某个标签，如果希望本网页内的所以同类标签都采用统一样式，这时应采用内嵌样式。
+<style type="text/css">
+P 
+{
+	font-size: 20px;
+	color: blue;
+}
+</style>
+</head>
+<body>
+	<p>haha</p>
+	<p>hehe</p>
+	<p>xixi</p>
+	<br>
+</body>
+
+3，html选择器
+与第二种基本类似，只是有多个
+p
+{
+	color: #0000ff;
+}
+h2
+{
+	color:red;
+}
+</style>
+</head>
+<body>
+	
+	<p> haha</p>
+	<h2> daada</h2>
+</body>
+
+4，class选择器
+<style type="text/css">
+// 要求以.开头，用class属性来选择
+.c1
+{
+	color: #0000ff;
+}
+.c2
+{
+	color:red;
+}
+</style>
+</head>
+<body>
+	
+	<p class="c1"> haha</p>
+	<h2 class="c2"> daada</h2>
+</body>
+
+5，id选择
+// 要求以#开头
+#c1
+{
+	color: #0000ff;
+}
+#c2
+{
+	color:red;
+}
+</style>
+</head>
+<body>
+	
+	<p id="c1" > haha</p>
+	<h2 id="c2" > daada</h2>
+</body>
+
+6，id与class的区别
+1、在CSS文件里书写时，ID加前缀"#"；CLASS用"." 
+2、id一个页面只可以使用一次；class可以多次引用。 
+3、ID是一个标签，用于区分不同的结构和内容；class是一个样式，可以套在任何结构和内容上. 
+4、从概念上说就是不一样的：id是先找到结构/内容，再给它定义样式；class是先定义好一种样式，再套给多个结构/内容。
+
+7，特殊的选择器
+<style type="text/css">
+a
+{
+	color: blue;
+	text-decoration: none;//无特殊标记
+}
+// 鼠标靠近时的转态
+a:HOVER 
+{
+	color: red;
+	text-decoration: underline;	// 有下划线
+}
+</style>
+</head>
+<body>
+	
+	<a href="http://www.baidu.com">连接</a>
+</body>
+
+8，引用外部css
+@CHARSET "UTF-8";
+.haha
+{
+	color: red;
+}
+
+<link rel="stylesheet" type="text/css" href="text.css"/>
+
+<body>
+	
+	<p class="haha">wwwwwww</p>
+</body>
+
+9，样式重叠
+对于某个HTML标签：
+1）如果有多种样式，如果规定的样式没有冲突，则叠加；
+2）如果有冲突，则最先考虑行内样式表显示，如果没有，再考虑内嵌样式显示，
+如果还没有，最后采用外面样式表显示，否则就按HTML的默认样式显示；
+

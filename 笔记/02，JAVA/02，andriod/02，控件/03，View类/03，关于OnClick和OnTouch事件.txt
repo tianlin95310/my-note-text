@@ -1,0 +1,17 @@
+1，如果OnTouch事件返回true的话，OnClickListener事件不会执行
+返回false的话，OnClickListener就会执行,最终事件被onClick消费
+OnClickListener事件时在ACTION_UP后做的
+
+2，如果OnTouch事件返回true，那么需要调用super.onTouchEvent(event)，将事件
+回传后，OnClickListener就会执行
+
+3，performClick主要适用于让OnClickListener能够执行一次，他能模拟点击
+bt.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.d("my", "onClick");
+
+			}
+		});
+		bt.performClick();

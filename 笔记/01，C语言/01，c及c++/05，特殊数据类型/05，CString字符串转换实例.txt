@@ -1,0 +1,26 @@
+1，用char*接收
+const char* str1 = m_password.operator LPCSTR();
+const char* str2 = username.operator LPCSTR();	//实际上可以省略重载操作符调用。
+//用CString的该函数将CString对象转换为const char*
+
+strcpy(u.szPassword , const_cast<char*>(str1));
+strcpy(u.szUsername , const_cast<char*>(str2));
+用const_cast将const类型转换为非const类型，并用c语言的字符串赋值函数。
+theApp.m_user = u;
+
+2,const char*
+CString str1;
+LPCSTR str2;
+const char* str3;
+str2 = str1;
+str3 = str1;	//const char*可以直接接收CString对象，但char*不能
+
+3,c++里的string与CString的不同点
+void main()
+{
+	string str1;
+	char * str2;
+	const char* str3;
+	//str2 = str1;	//与CString一样，char *不能接受string对象。
+	//str3 = str1;	//不能将string对象赋给const char*，但CString能
+}

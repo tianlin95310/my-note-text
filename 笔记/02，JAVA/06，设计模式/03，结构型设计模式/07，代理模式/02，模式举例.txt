@@ -1,0 +1,76 @@
+package com.ny;
+
+// 目标接口
+interface InterfaceA
+{
+	public void doSomething();
+	
+}
+// 具体实现A
+class ImplA implements InterfaceA
+{
+
+	@Override
+	public void doSomething()
+	{
+		System.out.println("ImplA " + "实现");
+	}
+	
+}
+//具体实现B
+class ImplB implements InterfaceA
+{
+
+	@Override
+	public void doSomething()
+	{
+		System.out.println("ImplB " + "实现");
+	}
+	
+}
+
+// 代理类
+class Proxy implements InterfaceA
+{
+
+	private InterfaceA inter;
+	
+	public Proxy(InterfaceA inter)
+	{
+		this.inter = inter;
+	}
+	public InterfaceA getInter()
+	{
+		return inter;
+	}
+	public void setInter(InterfaceA inter)
+	{
+		this.inter = inter;
+	}
+
+	@Override
+	public void doSomething()
+	{
+		System.out.println("before");
+		inter.doSomething();
+		System.out.println("after");
+		
+	}
+	
+}
+
+public class Test
+{
+
+	public static void main(String[] args)
+	{
+		// 代理类本身也是一种InterfaceA
+		InterfaceA proxy1 = new Proxy(new ImplA());
+		proxy1.doSomething();
+		
+		InterfaceA proxy2 = new Proxy(new ImplB());
+		proxy2.doSomething();
+
+	}
+
+}

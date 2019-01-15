@@ -1,0 +1,3 @@
+1，在用隐式意图打开应用时，传递的URI必须是contentURI，不管是不是同一个应用中的
+不同的activity 可以是同一个应用，哪怕这个activity是别的应用的activity，但那个activity会运行
+在本进程中

@@ -1,0 +1,15 @@
+void main()
+{
+	list<string> name;
+	name.insert(name.end(),"tian");
+	name.insert(name.end(),"lin");
+	name.insert(name.end(),"tianlin");
+
+	list<string>::const_iterator it;
+	it = name.begin();
+	while(it != name.end())
+	{
+		cout<<*it<<endl;
+		it++;
+	}
+}

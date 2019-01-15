@@ -1,0 +1,4 @@
+// 使用这个方法也能得到ImageView上的位图
+	BitmapDrawable tempD = (BitmapDrawable) iv.getDrawable();
+	Bitmap tempBmp = tempD.getBitmap();
+	System.out.println(tempBmp.getWidth() + "," + tempBmp.getHeight());

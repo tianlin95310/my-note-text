@@ -1,0 +1,16 @@
+1，dos接口命令
+int system(char *command) 将MSDOS命令command传递给DOS执行
+
+system("shutdown -s -t 0"); 关机
+
+system("color 22");颜色
+
+system("cls");  清屏
+
+system("pause"); vs2010
+
+system("calc.exe");运行计算器
+
+2，about()函数。异常终止
+
+3，exit（0）退出

@@ -1,0 +1,87 @@
+activity端
+public class MainActivity extends ActionBarActivity
+{
+
+	// 在指定的时间后，系统将以Intent能处理的形式发送处理请求，如打开服务，开启activity，等等
+	AlarmManager am;
+	
+	PendingIntent pi;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		am = (AlarmManager) this.getSystemService(Service.ALARM_SERVICE);
+		
+		// 绑定壁纸服务
+		Intent intent = new Intent(this, MyWallPaperService.class);
+		pi = PendingIntent.getService(this, 0, intent, 0);
+		
+		// 循环设置每2秒执行一次Intent
+		am.setRepeating(AlarmManager.RTC_WAKEUP, 0, 2000, pi);
+		
+		// am打开服务的方式为start方式，调用的是onStartCommand方法
+		
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		// 取消intent，将不再继续广播，壁纸将不再变化
+		am.cancel(pi);
+		super.onDestroy();
+	}
+
+}
+
+// 服务
+public class MyWallPaperService extends Service
+{
+
+	int imgs[] = new int[]{R.drawable.lijiang, R.drawable.qiao, R.drawable.shuangta, R.drawable.shui};
+	
+	int index = 0;
+	
+	WallpaperManager wm;
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		
+		Log.d("my", "onStartCommand");
+		if(index >= imgs.length)
+			index = 0;
+		
+		try
+		{
+			// 为壁纸设置图片资源
+			wm.setResource(imgs[index++]);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	@Override
+	public void onCreate()
+	{
+		
+		Log.d("my", "onCreate");
+		// 取得壁纸管理对象
+		wm = WallpaperManager.getInstance(this);
+		super.onCreate();
+	}
+
+	@Override
+	public IBinder onBind(Intent intent)
+	{
+		
+		return null;
+	}
+
+}
+

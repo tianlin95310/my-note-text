@@ -1,0 +1,53 @@
+package com.example.contextmenu;
+
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
+
+public class MainActivity extends ActionBarActivity
+{
+
+	TextView tv;
+	ListView lv;
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		tv = (TextView) findViewById(R.id.tv);
+		lv = (ListView) findViewById(R.id.lv);
+//		// 方式1
+//		this.registerForContextMenu(tv);
+//		this.registerForContextMenu(lv);
+		
+		// 方式2
+		tv.setOnCreateContextMenuListener(this);
+		lv.setOnCreateContextMenuListener(this);
+		
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo)
+	{
+		menu.add(0, 1, 0, "qweqwe");
+		menu.setGroupCheckable(00, true, true);
+		menu.setHeaderTitle("qqq");
+		menu.setHeaderIcon(R.drawable.add);
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		Log.d("my", "" + item.getItemId());
+		return super.onContextItemSelected(item);
+	}
+
+}
