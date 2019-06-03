@@ -1,0 +1,7 @@
+webpack 打包时支持 CommonJS、AMD 和 ES6 的模块化系统。
+
+我们通常写 .vue 单文件组件时，在 script 语言块中使用的是 ES6 的语法，使用 export default 进行默认导出。
+
+require 是 CommonJS（和 AMD，想不到吧？）的模块导入方式，不支持模块的默认导出，因此导入的结果其实是一个含 default 属性的对象，因此需要使用 .default 来获取实际的组件选项。或者使用 ES6 的 import 语句，ES6 的模块化导入导出语法参见 http://es6-features.org/#Valu...，import 时需要给定一个变量名，所有 import 语句必须统一放在模块的开头。
+
+如果 .vue 文件中使用的本来就是 CommonJS 或者 AMD 的模块化系统语法，导出的是 module.exports 对象作为组件选项，那么使用 require 导入时就不需要使用 .default 来获取。
