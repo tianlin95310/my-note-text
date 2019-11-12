@@ -1,0 +1,8 @@
+1，关于import
+该parser_test文件可以parser.dart像这样导入：
+
+import '../../lib/parser.dart' ; 
+但这是一条脆弱的相对路径。如果parser_test.dart向上或向下移动目录，则该路径会中断。相反，您可以执行以下操作：
+
+import'包：transmogrify / parser.dart' ; 
+这样，parser.dart无论导入文件在何处，导入都可以始终进行。

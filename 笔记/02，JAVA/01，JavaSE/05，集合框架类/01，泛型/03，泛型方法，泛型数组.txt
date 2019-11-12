@@ -8,6 +8,10 @@ public static <V> V get(V v)	//定义时，写在返回值的前面
 	public static void main(String[] args)
 	{
 		System.out.println(get(new Long(12L)));
+
+get方法前面可以传入<泛型类型>,也可以不用传，不传的话，可能运行时会报类型转换错误
+方法调用时，通过参数可以确定泛型类型，没有参数时，可能会等到执行语句时才会确定泛型类型
+
 		System.out.println(get(new String("asd")));
 	}
 
