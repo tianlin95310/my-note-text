@@ -1,7 +1,0 @@
-1,mysqldump -u root -p tianlin>c:\Users\Administrator\Desktop\tianlin.sql
-导出
-
-2，mysql -u root -p tian<c:\Users\Administrator\Deskttop\tianlin.sql
-导入
-
-3，可视化可以运行sql文件

@@ -1,1 +1,0 @@
-使用PrepareStatement调用存贮过程，可以设置输出参数

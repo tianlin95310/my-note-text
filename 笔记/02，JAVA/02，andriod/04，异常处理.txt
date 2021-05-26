@@ -1,7 +1,0 @@
-java.lang.ClassNotFoundException: Didn't find class "XXX" on path:
-DexPathList[[zip file "/data/app/com.chemao.certification-2/base.apk"],
-nativeLibraryDirectories=[/data/app/com.chemao.certification-2/lib/arm, /vendor/lib, /system/lib]] 
-
-1.so 库加载的问题，解决方法是请合理设置 abiFilters; 
-2.gradle 版本和 gradle tools 的版本问题 
-3.Android Studio clean 和 rebuild 后就能解决。 

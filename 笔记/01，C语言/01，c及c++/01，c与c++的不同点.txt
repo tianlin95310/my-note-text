@@ -1,4 +1,0 @@
-1，
-对于c++
-struct book b;book b;class book b;book b;都是一样的
-c语言要加上struct关键字
